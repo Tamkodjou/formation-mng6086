@@ -579,9 +579,9 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   <h1 data-ed="h-title">Quand le code ne suffit plus.<br><em>Le leadership aussi s'apprend.</em></h1>
   <p class="hero-sub" data-ed="h-sub">Une formation taillée sur mesure pour les chefs d'équipe techniques de CGI, propulsés gestionnaires sans avoir été formés à l'être.</p>
   <div class="cta-r">
-    <button class="btn-p" onclick="showPage('main');setTimeout(()=>document.getElementById('mod-anchor').scrollIntoView({behavior:'smooth'}),100)">Découvrir les modules</button>
-    <button class="btn-o" onclick="showPage('main');setTimeout(()=>document.getElementById('prix-anchor').scrollIntoView({behavior:'smooth'}),100)">Voir les tarifs</button>
-  </div>
+  <button class="btn-p" onclick="document.getElementById('mod-anchor').scrollIntoView({behavior:'smooth'})">Découvrir les modules</button>
+  <button class="btn-o" onclick="document.getElementById('prix-anchor').scrollIntoView({behavior:'smooth'})">Voir les tarifs</button>
+</div>
   <div class="stat-row">
     <div class="stat-item"><div class="num" data-ed="s1">70%</div><div class="lbl">des nouveaux gestionnaires tech manquent de formation managériale</div></div>
     <div class="stat-item"><div class="num" data-ed="s2">4</div><div class="lbl">modules progressifs</div></div>
@@ -671,7 +671,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 </section>
 
-<section class="s">
+<section class="s" id="mod-anchor">
   <div class="s-label">Structure de la formation</div>
   <div class="s-title">4 modules progressifs · 2 jours</div>
   <div class="mod-tabs">
@@ -718,7 +718,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 </section>
 
-<section class="s" style="background:var(--gold-pale)">
+<section class="s" style="background:var(--gold-pale)" id="prix-anchor">
   <div class="s-label">Investissement</div>
   <div class="s-title" data-ed="pr-title">Des tarifs adaptés à la réalité de CGI</div>
   <div class="price-grid">
