@@ -1206,37 +1206,7 @@ function insertInlineImg(url, path) {
   }
 }
 
-async function loadSavedImages() {
-  if (!sb) return;
-  const map = {'__avatar_tm1__':'av1','__avatar_tm2__':'av2','__avatar_tm3__':'av3','__avatar_tm4__':'av4','__avatar_tm5__':'av5'};
-  const keys = [...Object.keys(map), '__logo__'];
-  try {
-    const { data, error } = await sb.from('contenu').select('cle,valeur').in('cle', keys);
-    if (error) { console.warn('loadSavedImages error:', error); return; }
-    if (!data || data.length === 0) return;
-    data.forEach(row => {
-      if (!row.valeur) return;
-      if (row.cle === '__logo__') {
-        const imgEl = document.getElementById('logo-img');
-        const txtEl = document.getElementById('logo-text');
-        if (imgEl) {
-          imgEl.src = row.valeur;
-          imgEl.style.display = 'block';
-          if (txtEl) txtEl.style.display = 'none';
-        }
-      } else if (map[row.cle]) {
-        const imgId = map[row.cle];
-        const imgEl = document.getElementById(imgId);
-        const initEl = document.getElementById(imgId + '-init');
-        if (imgEl) {
-          imgEl.src = row.valeur;
-          imgEl.style.display = 'block';
-          if (initEl) initEl.style.display = 'none';
-        }
-      }
-    });
-  } catch(e) { console.warn('loadSavedImages exception:', e); }
-}
+// Images chargées directement dans loadFromSupabase ci-dessus
 
 // Images chargées directement dans loadFromSupabase ci-dessus
 </script>
