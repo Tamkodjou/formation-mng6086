@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FormationIE Conseil — Intelligence émotionnelle · CGI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --navy:#0A1628; --navy-mid:#132040;
+  --gold:#F5C518; --gold-dark:#C99A00; --gold-pale:#FFFBE6; --gold-light:#FFF3B0;
+  --white:#FFFFFF; --gray-100:#F4F5F7; --gray-200:#E8EAED; --gray-500:#6B7280; --gray-700:#374151;
+  --fd:'DM Serif Display',serif; --fb:'DM Sans',sans-serif;
+}
+body { font-family:var(--fb); background:var(--white); color:var(--navy); font-size:16px; line-height:1.7; }
+
+/* EDIT BAR */
+#edit-bar { position:fixed; top:0; left:0; right:0; z-index:999; background:var(--navy); border-bottom:2px solid var(--gold); padding:0.5rem 1.5rem; display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; }
+#edit-bar .eb-left { color:rgba(255,255,255,0.5); }
+#edit-bar .eb-left strong { color:var(--gold); }
+.eb-btn { background:rgba(245,197,24,0.15); border:1px solid rgba(245,197,24,0.3); color:var(--gold); font-family:var(--fb); font-size:0.75rem; font-weight:600; padding:0.35rem 0.9rem; border-radius:2rem; cursor:pointer; transition:all 0.2s; }
+.eb-btn:hover { background:var(--gold); color:var(--navy); }
+.eb-btn.danger { background:rgba(226,75,74,0.1); border-color:rgba(226,75,74,0.3); color:#E24B4A; }
+.eb-btn.danger:hover { background:#E24B4A; color:white; }
+#edit-indicator { width:8px; height:8px; border-radius:50%; background:#E24B4A; display:inline-block; margin-right:0.4rem; }
+#edit-indicator.on { background:var(--gold); }
+#sync-status { font-size:0.72rem; color:rgba(255,255,255,0.4); margin-left:0.75rem; }
+#sync-status.saving { color:var(--gold); }
+#sync-status.saved { color:#4ade80; }
+
+/* LOCK */
+#lock-overlay { position:fixed; inset:0; background:rgba(10,22,40,0.93); z-index:9999; display:flex; align-items:center; justify-content:center; }
+.lock-box { background:var(--white); border-radius:1rem; padding:2.5rem 2rem; width:340px; text-align:center; border:1px solid var(--gray-200); }
+.lock-icon { font-size:2.5rem; margin-bottom:1rem; }
+.lock-box h2 { font-family:var(--fd); font-size:1.4rem; margin-bottom:0.5rem; color:var(--navy); }
+.lock-box p { font-size:0.85rem; color:var(--gray-500); margin-bottom:1.5rem; }
+.lock-input { width:100%; padding:0.75rem 1rem; border:1px solid var(--gray-200); border-radius:0.5rem; font-family:var(--fb); font-size:1rem; margin-bottom:1rem; text-align:center; letter-spacing:0.2em; }
+.lock-input:focus { outline:none; border-color:var(--gold); }
+.lock-btn { width:100%; background:var(--gold); color:var(--navy); border:none; border-radius:0.5rem; padding:0.85rem; font-family:var(--fb); font-weight:700; font-size:0.95rem; cursor:pointer; }
+.lock-error { color:#E24B4A; font-size:0.8rem; margin-top:0.5rem; display:none; }
+.lock-hint { font-size:0.75rem; color:var(--gray-500); margin-top:1rem; }
+
+[contenteditable="true"] { outline:2px dashed rgba(245,197,24,0.5) !important; border-radius:4px; cursor:text; min-width:20px; }
+[contenteditable="true"]:hover { outline:2px dashed var(--gold) !important; }
+[contenteditable="true"]:focus { outline:2px solid var(--gold) !important; background:rgba(245,197,24,0.04); }
+
+#toast { position:fixed; bottom:1.5rem; right:1.5rem; z-index:9998; background:var(--navy); color:var(--white); border:1px solid var(--gold); padding:0.75rem 1.25rem; border-radius:0.5rem; font-size:0.82rem; opacity:0; transform:translateY(10px); transition:all 0.3s; pointer-events:none; }
+#toast.show { opacity:1; transform:translateY(0); }
+
+/* LOADING */
+#loading-screen { position:fixed; inset:0; background:var(--navy); z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; transition:opacity 0.5s; }
+#loading-screen.hide { opacity:0; pointer-events:none; }
+.loader-firm { font-family:var(--fd); font-size:2rem; color:var(--white); }
+.loader-firm span { color:var(--gold); font-style:italic; }
+.loader-bar { width:200px; height:3px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden; }
+.loader-fill { height:100%; background:var(--gold); border-radius:2px; animation:load 1.5s ease forwards; }
+@keyframes load { from{width:0} to{width:100%} }
+.loader-text { font-size:0.8rem; color:rgba(255,255,255,0.4); }
+
+/* NAV */
+nav { background:var(--navy); padding:1rem 2.5rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:42px; z-index:100; border-bottom:2px solid var(--gold); }
+.nav-logo { font-family:var(--fd); color:var(--white); font-size:1.4rem; }
+.nav-logo span { color:var(--gold); font-style:italic; }
+.nav-links a { color:rgba(255,255,255,0.7); text-decoration:none; font-size:0.8rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; transition:color 0.2s; margin-left:1.5rem; }
+.nav-links a:hover { color:var(--gold); }
+
+.page { display:none; }
+.page.active { display:block; }
+
+/* COVER */
+.cover-page { background:var(--navy); min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:3rem 2rem; position:relative; overflow:hidden; }
+.cover-page::before { content:''; position:absolute; top:-100px; left:-100px; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(245,197,24,0.1) 0%, transparent 70%); pointer-events:none; }
+.cover-quinn-badge { display:inline-flex; align-items:center; gap:0.75rem; background:rgba(245,197,24,0.12); border:1px solid rgba(245,197,24,0.3); border-radius:2rem; padding:0.5rem 1.25rem; margin-bottom:2.5rem; }
+.cover-quinn-dot { width:12px; height:12px; border-radius:2px; background:var(--gold); transform:rotate(45deg); flex-shrink:0; }
+.cover-quinn-badge span { font-size:0.78rem; color:rgba(255,255,255,0.75); letter-spacing:0.06em; }
+.cover-firm { font-family:var(--fd); font-size:clamp(3rem,8vw,5.5rem); color:var(--white); line-height:1; margin-bottom:0.5rem; }
+.cover-firm span { color:var(--gold); font-style:italic; }
+.cover-tagline { font-size:1.05rem; color:rgba(255,255,255,0.5); margin-bottom:3rem; }
+.cover-divider { width:60px; height:3px; background:var(--gold); margin:0 auto 3rem; border-radius:2px; }
+.cover-formation-title { font-family:var(--fd); font-size:clamp(1.4rem,3vw,2rem); color:var(--white); margin-bottom:1.5rem; max-width:700px; line-height:1.3; }
+.cover-meta { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:2.5rem; }
+.cover-meta-line { font-size:0.88rem; color:rgba(255,255,255,0.55); }
+.cover-meta-line strong { color:rgba(255,255,255,0.85); font-weight:500; }
+.cover-team-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:0.75rem; margin-bottom:2.5rem; max-width:820px; }
+.cover-member { background:rgba(245,197,24,0.07); border:1px solid rgba(245,197,24,0.2); border-radius:0.5rem; padding:0.6rem 1.1rem; display:flex; align-items:center; gap:0.5rem; }
+.cover-initial { width:28px; height:28px; border-radius:50%; background:rgba(245,197,24,0.2); border:1px solid rgba(245,197,24,0.4); color:var(--gold); font-size:0.7rem; font-weight:700; line-height:28px; text-align:center; flex-shrink:0; }
+.cover-member-name { font-size:0.82rem; color:rgba(255,255,255,0.8); font-weight:500; }
+.cover-date { font-size:0.8rem; color:rgba(255,255,255,0.35); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:2rem; }
+.cover-btn { background:var(--gold); color:var(--navy); font-family:var(--fb); font-weight:700; font-size:0.95rem; padding:1rem 2.5rem; border:none; border-radius:0.4rem; cursor:pointer; transition:opacity 0.2s; }
+.cover-btn:hover { opacity:0.9; }
+
+/* TEAM */
+.team-hero { background:var(--navy); padding:4rem 2.5rem 3rem; border-bottom:3px solid var(--gold); }
+.team-hero h1 { font-family:var(--fd); color:var(--white); font-size:clamp(2rem,4vw,3rem); margin-bottom:0.75rem; }
+.team-hero p { color:rgba(255,255,255,0.55); max-width:560px; font-size:0.95rem; }
+.team-context { background:var(--gold-pale); padding:2rem 2.5rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; border-bottom:1px solid rgba(245,197,24,0.3); }
+.ctx-card { background:var(--white); border-radius:0.75rem; padding:1.25rem 1.5rem; border:1px solid rgba(245,197,24,0.3); border-top:3px solid var(--gold); }
+.ctx-label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold-dark); font-weight:600; margin-bottom:0.4rem; }
+.ctx-val { font-size:0.9rem; color:var(--navy); font-weight:500; line-height:1.4; }
+.team-grid { padding:3rem 2.5rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; }
+.member-card { background:var(--white); border:1px solid var(--gray-200); border-radius:1rem; padding:2rem 1.75rem; border-top:3px solid var(--gold); transition:transform 0.2s; }
+.member-card:hover { transform:translateY(-3px); }
+.avatar { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--fd); font-size:1.15rem; margin-bottom:1.25rem; background:rgba(245,197,24,0.15); color:var(--gold-dark); border:2px solid rgba(245,197,24,0.4); overflow:hidden; position:relative; flex-shrink:0; }
+.avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.avatar-upload-hint { position:absolute; inset:0; border-radius:50%; background:rgba(10,22,40,0.75); display:none; align-items:center; justify-content:center; cursor:pointer; font-size:1.4rem; }
+.edit-mode .avatar:hover .avatar-upload-hint { display:flex; }
+.logo-img-wrap { display:inline-flex; align-items:center; gap:0.6rem; }
+.logo-img-wrap img { height:30px; width:auto; object-fit:contain; cursor:pointer; }
+.logo-upload-hint { font-size:0.68rem; color:rgba(245,197,24,0.5); display:none; cursor:pointer; margin-left:0.4rem; }
+.edit-mode .logo-upload-hint { display:inline; }
+.inline-img-wrap { display:block; margin:1rem 0; position:relative; }
+.inline-img-wrap img { max-width:100%; border-radius:0.5rem; display:block; }
+.inline-img-delete { position:absolute; top:6px; right:6px; background:rgba(226,75,74,0.9); color:white; border:none; border-radius:50%; width:24px; height:24px; font-size:14px; cursor:pointer; display:none; align-items:center; justify-content:center; line-height:1; }
+.edit-mode .inline-img-wrap:hover .inline-img-delete { display:flex; }
+#img-upload-overlay { position:fixed; inset:0; background:rgba(10,22,40,0.92); z-index:10000; display:none; align-items:center; justify-content:center; }
+#img-upload-overlay.open { display:flex; }
+.img-upload-box { background:var(--white); border-radius:1rem; padding:2rem; width:380px; text-align:center; border:2px solid var(--gold); }
+.img-upload-box h3 { font-family:var(--fd); font-size:1.2rem; color:var(--navy); margin-bottom:0.5rem; }
+.img-upload-box p { font-size:0.82rem; color:var(--gray-500); margin-bottom:1.5rem; }
+.img-drop-zone { border:2px dashed rgba(245,197,24,0.5); border-radius:0.75rem; padding:2rem; margin-bottom:1rem; cursor:pointer; transition:all 0.2s; }
+.img-drop-zone:hover,.img-drop-zone.drag { border-color:var(--gold); background:rgba(245,197,24,0.05); }
+.img-drop-icon { font-size:2.5rem; margin-bottom:0.5rem; }
+.img-drop-text { font-size:0.85rem; color:var(--gray-500); }
+.img-upload-btn { background:var(--gold); color:var(--navy); border:none; border-radius:0.5rem; padding:0.75rem 1.5rem; font-family:var(--fb); font-weight:700; font-size:0.9rem; cursor:pointer; margin-right:0.5rem; }
+.img-cancel-btn { background:transparent; color:var(--gray-500); border:1px solid var(--gray-200); border-radius:0.5rem; padding:0.75rem 1.5rem; font-family:var(--fb); font-size:0.9rem; cursor:pointer; }
+.img-preview { max-width:100%; max-height:160px; border-radius:0.5rem; margin-bottom:1rem; display:none; }
+.img-uploading { font-size:0.82rem; color:var(--gold); margin-top:0.5rem; display:none; }
+.member-card h3 { font-family:var(--fd); font-size:1.05rem; color:var(--navy); margin-bottom:0.25rem; line-height:1.25; }
+.member-role { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold-dark); font-weight:600; margin-bottom:0.75rem; }
+.member-desc { font-size:0.85rem; color:var(--gray-500); line-height:1.6; }
+
+/* HERO FORMATION */
+.hero-f { background:var(--navy); padding:5rem 2.5rem 4rem; position:relative; overflow:hidden; border-bottom:3px solid var(--gold); }
+.hero-f::before { content:''; position:absolute; top:-80px; right:-80px; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle,rgba(245,197,24,0.1) 0%,transparent 70%); pointer-events:none; }
+.hero-tag { display:inline-block; background:rgba(245,197,24,0.15); color:var(--gold); font-size:0.75rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:0.4rem 1rem; border-radius:2rem; margin-bottom:1.5rem; border:1px solid rgba(245,197,24,0.3); }
+.hero-f h1 { font-family:var(--fd); color:var(--white); font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.15; max-width:780px; margin-bottom:1.5rem; }
+.hero-f h1 em { color:var(--gold); font-style:italic; }
+.hero-sub { color:rgba(255,255,255,0.65); font-size:1.05rem; max-width:580px; margin-bottom:2.5rem; }
+.stat-row { display:flex; gap:2.5rem; margin-top:3rem; padding-top:2.5rem; border-top:1px solid rgba(255,255,255,0.1); flex-wrap:wrap; }
+.stat-item .num { font-family:var(--fd); font-size:2.2rem; color:var(--gold); line-height:1; }
+.stat-item .lbl { font-size:0.78rem; color:rgba(255,255,255,0.5); margin-top:0.25rem; text-transform:uppercase; letter-spacing:0.05em; }
+.btn-p { background:var(--gold); color:var(--navy); font-family:var(--fb); font-weight:700; font-size:0.9rem; padding:0.85rem 2rem; border:none; border-radius:0.4rem; cursor:pointer; transition:opacity 0.2s; }
+.btn-p:hover { opacity:0.9; }
+.btn-o { background:transparent; color:var(--white); font-family:var(--fb); font-weight:500; font-size:0.9rem; padding:0.85rem 2rem; border:1px solid rgba(255,255,255,0.3); border-radius:0.4rem; cursor:pointer; transition:all 0.2s; }
+.btn-o:hover { border-color:var(--gold); color:var(--gold); }
+.cta-r { display:flex; gap:1rem; flex-wrap:wrap; }
+
+section.s { padding:4rem 2.5rem; }
+.s-label { font-size:0.75rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:0.75rem; }
+.s-title { font-family:var(--fd); font-size:clamp(1.8rem,3vw,2.4rem); color:var(--navy); line-height:1.2; margin-bottom:1rem; max-width:640px; }
+.s-sub { color:var(--gray-500); max-width:560px; margin-bottom:2.5rem; font-size:0.95rem; }
+
+.firm-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:2rem; }
+.firm-card { background:var(--white); border-radius:1rem; padding:1.75rem; border:1px solid var(--gray-200); border-top:3px solid var(--gold); }
+.firm-icon { width:40px; height:40px; border-radius:0.6rem; background:var(--navy); display:flex; align-items:center; justify-content:center; margin-bottom:1rem; font-size:18px; }
+.firm-card h3 { font-family:var(--fd); font-size:1.1rem; color:var(--navy); margin-bottom:0.5rem; }
+.firm-card p { font-size:0.9rem; color:var(--gray-500); line-height:1.6; }
+
+.accroche { background:var(--navy); }
+.accroche .s-title { color:var(--white); }
+.accroche .s-label { color:var(--gold); }
+.stat-banner { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin:2.5rem 0; }
+.stat-box { background:rgba(245,197,24,0.07); border:1px solid rgba(245,197,24,0.2); border-radius:0.75rem; padding:1.5rem; text-align:center; }
+.stat-box .big { font-family:var(--fd); font-size:2.5rem; color:var(--gold); }
+.stat-box .desc { font-size:0.82rem; color:rgba(255,255,255,0.55); margin-top:0.4rem; line-height:1.4; }
+.qb { border-left:3px solid var(--gold); padding:1rem 1.5rem; background:rgba(245,197,24,0.06); border-radius:0 0.5rem 0.5rem 0; margin-top:2rem; }
+.qb p { font-size:1rem; color:rgba(255,255,255,0.8); font-style:italic; }
+.qb cite { font-size:0.8rem; color:var(--gold); margin-top:0.5rem; display:block; font-style:normal; }
+
+.two-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:2rem; }
+.c-card { border-radius:0.75rem; padding:1.5rem; border:1px solid var(--gray-200); }
+.c-card.hl { background:var(--navy); border-color:var(--navy); }
+.c-card h3 { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold-dark); margin-bottom:0.75rem; font-weight:600; }
+.c-card.hl h3 { color:var(--gold); }
+.c-card ul { list-style:none; }
+.c-card ul li { font-size:0.88rem; padding:0.35rem 0; border-bottom:1px solid rgba(0,0,0,0.06); display:flex; gap:0.5rem; color:var(--gray-700); }
+.c-card.hl ul li { color:rgba(255,255,255,0.8); border-bottom-color:rgba(255,255,255,0.08); }
+.c-card ul li::before { content:'→'; color:var(--gold-dark); font-size:0.85rem; flex-shrink:0; }
+.c-card.hl ul li::before { color:var(--gold); }
+
+.obj-pale { background:var(--gold-pale); }
+.obj-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
+.obj-card { background:var(--white); border-radius:0.75rem; padding:1.5rem; border:1px solid rgba(245,197,24,0.3); border-top:3px solid var(--gold); }
+.obj-num { font-family:var(--fd); font-size:2.5rem; color:rgba(245,197,24,0.3); line-height:1; margin-bottom:0.75rem; }
+.obj-card p { font-size:0.88rem; color:var(--gray-700); line-height:1.6; }
+.obj-card strong { color:var(--navy); font-weight:600; }
+
+.mod-tabs { display:flex; gap:0.5rem; margin-bottom:2rem; flex-wrap:wrap; }
+.tab-btn { background:var(--gray-100); border:1px solid var(--gray-200); color:var(--gray-700); font-family:var(--fb); font-size:0.82rem; font-weight:500; padding:0.5rem 1.2rem; border-radius:2rem; cursor:pointer; transition:all 0.2s; }
+.tab-btn.active,.tab-btn:hover { background:var(--navy); color:var(--gold); border-color:var(--navy); }
+.mod-panel { display:none; }
+.mod-panel.active { display:grid; grid-template-columns:1fr 1.6fr; gap:2rem; }
+.mod-info { background:var(--navy); border-radius:1rem; padding:2rem; color:var(--white); border-top:4px solid var(--gold); }
+.mod-n { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold); margin-bottom:0.5rem; }
+.mod-title { font-family:var(--fd); font-size:1.45rem; color:var(--white); margin-bottom:1rem; line-height:1.25; }
+.mod-dur { display:inline-block; background:rgba(245,197,24,0.15); color:var(--gold); font-size:0.75rem; font-weight:600; padding:0.3rem 0.8rem; border-radius:2rem; margin-bottom:1rem; border:1px solid rgba(245,197,24,0.3); }
+.mod-desc { font-size:0.87rem; color:rgba(255,255,255,0.65); line-height:1.65; }
+.det-block { margin-bottom:1.5rem; background:var(--gray-100); border-radius:0.75rem; padding:1.25rem 1.5rem; }
+.det-block h4 { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--gray-500); margin-bottom:0.75rem; }
+.det-block ul { list-style:none; }
+.det-block ul li { font-size:0.87rem; color:var(--gray-700); padding:0.3rem 0 0.3rem 1.2rem; position:relative; }
+.det-block ul li::before { content:'·'; position:absolute; left:0; color:var(--gold-dark); font-size:1.2rem; line-height:1.2; }
+.tg { background:var(--white); border:1px solid rgba(245,197,24,0.3); color:var(--gray-700); font-size:0.78rem; padding:0.3rem 0.7rem; border-radius:0.3rem; }
+.tag-r { display:flex; gap:0.5rem; flex-wrap:wrap; }
+
+.peda-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.25rem; margin-top:2rem; }
+.peda-card { border:1px solid rgba(245,197,24,0.25); border-radius:0.75rem; padding:1.5rem 1.25rem; text-align:center; border-top:3px solid var(--gold); }
+.peda-icon { font-size:2rem; margin-bottom:0.75rem; }
+.peda-card h4 { font-weight:600; font-size:0.88rem; color:var(--navy); margin-bottom:0.4rem; }
+.peda-card p { font-size:0.8rem; color:var(--gray-500); line-height:1.5; }
+
+.price-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
+.price-card { background:var(--white); border:1px solid var(--gray-200); border-radius:1rem; padding:2rem 1.5rem; position:relative; }
+.price-card.feat { background:var(--navy); border:2px solid var(--gold); }
+.price-badge { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--gold); color:var(--navy); font-size:0.7rem; font-weight:700; padding:0.25rem 1rem; border-radius:2rem; white-space:nowrap; text-transform:uppercase; letter-spacing:0.06em; }
+.price-name { font-weight:600; font-size:0.85rem; color:var(--gray-500); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.06em; }
+.price-card.feat .price-name { color:rgba(255,255,255,0.5); }
+.price-amt { font-family:var(--fd); font-size:2.2rem; color:var(--navy); margin-bottom:0.25rem; }
+.price-card.feat .price-amt { color:var(--gold); }
+.price-unit { font-size:0.8rem; color:var(--gray-500); margin-bottom:1.25rem; }
+.price-card.feat .price-unit { color:rgba(255,255,255,0.5); }
+.price-list { list-style:none; }
+.price-list li { font-size:0.85rem; padding:0.4rem 0; border-bottom:1px solid var(--gray-200); color:var(--gray-700); display:flex; gap:0.5rem; }
+.price-card.feat .price-list li { border-bottom-color:rgba(255,255,255,0.08); color:rgba(255,255,255,0.75); }
+.price-list li::before { content:'✓'; color:var(--gold-dark); font-weight:700; flex-shrink:0; }
+.price-card.feat .price-list li::before { color:var(--gold); }
+
+.ref-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:2rem; }
+.ref-card { border:1px solid var(--gray-200); border-radius:0.5rem; padding:1rem 1.25rem; font-size:0.82rem; color:var(--gray-700); line-height:1.5; border-left:3px solid var(--gold); }
+.ref-card strong { color:var(--navy); }
+
+.quinn-section { background:var(--gold-pale); border-top:3px solid var(--gold); border-bottom:3px solid var(--gold); }
+.quinn-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; align-items:center; margin-top:2rem; }
+.quinn-diagram { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:0; border-radius:0.75rem; overflow:hidden; border:2px solid var(--gold); width:300px; height:300px; }
+.q-cell { display:flex; flex-direction:column; justify-content:center; align-items:center; padding:1rem; text-align:center; }
+.q-cell h4 { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.4rem; }
+.q-cell p { font-size:0.7rem; line-height:1.4; }
+.q-label { font-size:0.65rem; font-weight:700; background:rgba(0,0,0,0.1); padding:0.15rem 0.4rem; border-radius:2rem; margin-bottom:0.3rem; display:inline-block; }
+.q-yellow { background:var(--gold); color:var(--navy); border:3px solid var(--gold-dark); }
+.q-blue { background:#E6F1FB; color:#0A1628; }
+.q-green { background:#EAF3DE; color:#173404; }
+.q-red { background:#FCEBEB; color:#501313; }
+.quinn-text h3 { font-family:var(--fd); font-size:1.4rem; color:var(--navy); margin-bottom:0.75rem; }
+.quinn-text p { font-size:0.88rem; color:var(--gray-700); line-height:1.7; margin-bottom:1rem; }
+.quinn-highlight { background:var(--gold); color:var(--navy); padding:0.75rem 1.25rem; border-radius:0.5rem; font-size:0.85rem; font-weight:600; display:inline-block; }
+
+footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; padding:2.5rem; font-size:0.8rem; border-top:3px solid var(--gold); }
+.ft-firm { font-family:var(--fd); font-size:1.3rem; color:var(--white); margin-bottom:0.4rem; }
+.ft-firm span { color:var(--gold); font-style:italic; }
+.ft-div { width:40px; height:2px; background:var(--gold); margin:1rem auto; border-radius:2px; }
+.ft-acad { font-size:1rem; color:rgba(255,255,255,0.7); margin-top:0.75rem; line-height:1.8; }
+
+/* FORMATTING TOOLBAR */
+#fmt-toolbar {
+  position:fixed; z-index:9997; background:var(--navy); border:1px solid var(--gold);
+  border-radius:0.5rem; padding:0.4rem 0.6rem; display:none;
+  align-items:center; gap:0.3rem; box-shadow:0 4px 20px rgba(0,0,0,0.3);
+}
+#fmt-toolbar.visible { display:flex; }
+.fmt-btn {
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+  color:var(--white); font-family:var(--fb); font-size:0.78rem; font-weight:600;
+  width:28px; height:28px; border-radius:4px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all 0.15s;
+}
+.fmt-btn:hover { background:var(--gold); color:var(--navy); border-color:var(--gold); }
+.fmt-btn.active { background:var(--gold); color:var(--navy); border-color:var(--gold); }
+.fmt-sep { width:1px; height:20px; background:rgba(255,255,255,0.15); margin:0 0.2rem; }
+.fmt-select {
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+  color:var(--white); font-family:var(--fb); font-size:0.75rem;
+  padding:0.2rem 0.4rem; border-radius:4px; cursor:pointer; height:28px;
+}
+.fmt-color-btn {
+  width:28px; height:28px; border-radius:4px; border:2px solid rgba(255,255,255,0.3);
+  cursor:pointer; overflow:hidden; position:relative;
+}
+.fmt-color-btn input[type="color"] {
+  position:absolute; inset:-4px; width:calc(100% + 8px); height:calc(100% + 8px);
+  cursor:pointer; border:none; padding:0; opacity:0;
+}
+.fmt-color-swatch { width:100%; height:100%; pointer-events:none; }
+
+/* CONFIG PANEL */
+#config-panel {
+  position:fixed; top:42px; right:0; bottom:0; width:280px; z-index:998;
+  background:var(--navy); border-left:2px solid var(--gold);
+  transform:translateX(100%); transition:transform 0.3s;
+  overflow-y:auto; padding:1.25rem;
+  display:none;
+}
+#config-panel.open { transform:translateX(0); display:block; }
+.cfg-toggle {
+  position:fixed; right:0; top:50%; transform:translateY(-50%);
+  background:var(--gold); color:var(--navy); border:none;
+  width:28px; height:60px; border-radius:6px 0 0 6px;
+  cursor:pointer; font-size:1rem; z-index:997;
+  display:none; align-items:center; justify-content:center;
+  writing-mode:vertical-rl;
+}
+.cfg-toggle.visible { display:flex; }
+.cfg-section { margin-bottom:1.5rem; }
+.cfg-section-title {
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em;
+  color:var(--gold); font-weight:600; margin-bottom:0.75rem;
+  padding-bottom:0.4rem; border-bottom:1px solid rgba(245,197,24,0.2);
+}
+.cfg-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; }
+.cfg-label { font-size:0.8rem; color:rgba(255,255,255,0.7); }
+.cfg-color {
+  width:36px; height:24px; border-radius:4px; border:1px solid rgba(255,255,255,0.2);
+  cursor:pointer; overflow:hidden; position:relative;
+}
+.cfg-color input[type="color"] {
+  position:absolute; inset:-4px; width:calc(100%+8px); height:calc(100%+8px);
+  opacity:0; cursor:pointer;
+}
+.cfg-color-swatch { width:100%; height:100%; pointer-events:none; border-radius:3px; }
+.cfg-range { width:110px; accent-color:var(--gold); }
+.cfg-range-val { font-size:0.75rem; color:var(--gold); min-width:30px; text-align:right; }
+.cfg-btn-row { display:flex; gap:0.5rem; margin-top:0.5rem; }
+.cfg-apply-btn {
+  flex:1; background:var(--gold); color:var(--navy); border:none;
+  border-radius:0.4rem; padding:0.5rem; font-family:var(--fb);
+  font-size:0.78rem; font-weight:700; cursor:pointer;
+}
+.cfg-reset-btn {
+  flex:1; background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.7);
+  border:1px solid rgba(255,255,255,0.15); border-radius:0.4rem;
+  padding:0.5rem; font-family:var(--fb); font-size:0.78rem; cursor:pointer;
+}
+
+@media(max-width:768px){
+  .firm-grid,.two-grid,.obj-grid,.peda-grid,.price-grid,.ref-grid,.team-context,.stat-banner,.quinn-grid{grid-template-columns:1fr;}
+  .mod-panel.active{grid-template-columns:1fr;}
+  nav{padding:1rem;} section.s{padding:3rem 1.25rem;}
+  .team-grid,.quinn-diagram{width:100%;}
+  #config-panel{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="loader-firm">Formation<span>IE</span></div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <div class="loader-text">Chargement du contenu...</div>
+</div>
+
+<!-- EDIT BAR -->
+<div id="edit-bar">
+  <div class="eb-left">
+    <span id="edit-indicator"></span>
+    <strong id="edit-status">Mode lecture</strong>
+    <span id="sync-status"></span>
+  </div>
+  <div style="display:flex;gap:0.75rem;align-items:center;">
+    <button class="eb-btn" id="toggle-edit-btn" onclick="toggleEditMode()">🔒 Activer l'édition</button>
+    <button class="eb-btn" id="save-btn" onclick="saveAll()" style="display:none">💾 Sauvegarder tout</button>
+    <button class="eb-btn danger" id="reset-btn" onclick="resetContent()" style="display:none">↩ Réinitialiser</button>
+  </div>
+</div>
+
+<!-- LOCK -->
+<div id="lock-overlay" style="display:none">
+  <div class="lock-box">
+    <div class="lock-icon">🔐</div>
+    <h2>Mode édition</h2>
+    <p>Entrez le mot de passe pour modifier le contenu</p>
+    <input class="lock-input" type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="lock-btn" onclick="checkPw()">Déverrouiller</button>
+    <div class="lock-error" id="pw-error">Mot de passe incorrect</div>
+    <div class="lock-hint">Mot de passe : <strong>formationie****</strong></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- FORMATTING TOOLBAR -->
+<div id="fmt-toolbar">
+  <select class="fmt-select" id="fmt-size" onchange="execFmt('fontSize',this.value)" title="Taille">
+    <option value="1">Très petit</option>
+    <option value="2">Petit</option>
+    <option value="3" selected>Normal</option>
+    <option value="4">Grand</option>
+    <option value="5">Très grand</option>
+    <option value="6">Énorme</option>
+  </select>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="execFmt('bold')" title="Gras"><b>G</b></button>
+  <button class="fmt-btn" onclick="execFmt('italic')" title="Italique"><i>I</i></button>
+  <button class="fmt-btn" onclick="execFmt('underline')" title="Souligné"><u>S</u></button>
+  <div class="fmt-sep"></div>
+  <div class="fmt-color-btn" title="Couleur du texte" style="background:#F5C518">
+    <div class="fmt-color-swatch" id="txt-color-swatch" style="background:#F5C518"></div>
+    <input type="color" value="#F5C518" id="txt-color-input" oninput="document.getElementById('txt-color-swatch').style.background=this.value" onchange="execFmt('foreColor',this.value)">
+  </div>
+  <div class="fmt-color-btn" title="Surlignage" style="background:#ffffff22">
+    <div class="fmt-color-swatch" id="bg-color-swatch" style="background:#ffffff22"></div>
+    <input type="color" value="#ffffff" id="bg-color-input" oninput="document.getElementById('bg-color-swatch').style.background=this.value" onchange="execFmt('hiliteColor',this.value)">
+  </div>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="execFmt('justifyLeft')" title="Gauche">⬅</button>
+  <button class="fmt-btn" onclick="execFmt('justifyCenter')" title="Centre">☰</button>
+  <button class="fmt-btn" onclick="execFmt('justifyRight')" title="Droite">➡</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="openImgUpload('inline',null,null)" title="Insérer une image">🖼</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="execFmt('removeFormat')" title="Effacer la mise en forme">✕</button>
+</div>
+
+<!-- IMAGE UPLOAD OVERLAY -->
+<div id="img-upload-overlay">
+  <div class="img-upload-box">
+    <h3 id="img-upload-title">Ajouter une image</h3>
+    <p id="img-upload-desc">Glissez une image ou cliquez pour parcourir</p>
+    <img class="img-preview" id="img-preview-el">
+    <div class="img-drop-zone" id="img-drop-zone" onclick="document.getElementById('img-file-input').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleImgDrop(event)">
+      <div class="img-drop-icon">📸</div>
+      <div class="img-drop-text">JPG, PNG, WebP · max 2 Mo</div>
+    </div>
+    <input type="file" id="img-file-input" accept="image/*" style="display:none" onchange="previewImg(this)">
+    <div class="img-uploading" id="img-uploading">⏳ Téléversement en cours...</div>
+    <div style="margin-top:1rem">
+      <button class="img-upload-btn" onclick="confirmImgUpload()">✓ Confirmer</button>
+      <button class="img-cancel-btn" onclick="closeImgUpload()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIG PANEL TOGGLE -->
+<button class="cfg-toggle" id="cfg-toggle-btn" onclick="toggleConfigPanel()" title="Configuration visuelle">⚙</button>
+
+<!-- CONFIG PANEL -->
+<div id="config-panel">
+  <div style="font-family:var(--fd);font-size:1.1rem;color:var(--white);margin-bottom:1.25rem;">Configuration visuelle</div>
+
+  <div class="cfg-section">
+    <div class="cfg-section-title">Couleurs principales</div>
+    <div class="cfg-row">
+      <span class="cfg-label">Couleur accent</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-gold" style="background:#F5C518"></div><input type="color" value="#F5C518" onchange="updateCSSVar('--gold',this.value);document.getElementById('sw-gold').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond principal</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-navy" style="background:#0A1628"></div><input type="color" value="#0A1628" onchange="updateCSSVar('--navy',this.value);document.getElementById('sw-navy').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond clair</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-pale" style="background:#FFFBE6"></div><input type="color" value="#FFFBE6" onchange="updateCSSVar('--gold-pale',this.value);document.getElementById('sw-pale').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond sections grises</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-gray" style="background:#F4F5F7"></div><input type="color" value="#F4F5F7" onchange="updateCSSVar('--gray-100',this.value);document.getElementById('sw-gray').style.background=this.value"></div>
+    </div>
+  </div>
+
+  <div class="cfg-section">
+    <div class="cfg-section-title">Typographie</div>
+    <div class="cfg-row">
+      <span class="cfg-label">Taille corps</span>
+      <input type="range" class="cfg-range" min="12" max="22" value="16" id="font-size-range" oninput="updateFontSize(this.value)">
+      <span class="cfg-range-val" id="font-size-val">16px</span>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Interligne</span>
+      <input type="range" class="cfg-range" min="1.2" max="2.2" step="0.1" value="1.7" id="line-height-range" oninput="updateLineHeight(this.value)">
+      <span class="cfg-range-val" id="line-height-val">1.7</span>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Police corps</span>
+      <select class="fmt-select" onchange="updateBodyFont(this.value)" style="width:130px">
+        <option value="'DM Sans',sans-serif">DM Sans</option>
+        <option value="'Georgia',serif">Georgia</option>
+        <option value="'Arial',sans-serif">Arial</option>
+        <option value="'Helvetica',sans-serif">Helvetica</option>
+        <option value="'Trebuchet MS',sans-serif">Trebuchet</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="cfg-section">
+    <div class="cfg-section-title">Sections spécifiques</div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond Hero/Nav</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-hero" style="background:#0A1628"></div><input type="color" value="#0A1628" onchange="updateSectionBg('.hero-f,.accroche,nav,.team-hero,.cover-page',this.value);document.getElementById('sw-hero').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond footer</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-footer" style="background:#0A1628"></div><input type="color" value="#0A1628" onchange="updateSectionBg('footer',this.value);document.getElementById('sw-footer').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Bordures accent</span>
+      <input type="range" class="cfg-range" min="0" max="6" value="2" id="border-range" oninput="updateBorderWidth(this.value)">
+      <span class="cfg-range-val" id="border-val">2px</span>
+    </div>
+  </div>
+
+  <div class="cfg-btn-row">
+    <button class="cfg-apply-btn" onclick="saveVisualConfig()">💾 Sauvegarder</button>
+    <button class="cfg-reset-btn" onclick="resetVisualConfig()">↩ Réinitialiser</button>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-logo">
+    <span class="logo-img-wrap" id="logo-wrap">
+      <img id="logo-img" src="" alt="" style="display:none" onclick="editMode&&openImgUpload('logo','logo-img','__logo__')">
+      <span id="logo-text">Formation<span>IE</span></span>
+    </span>
+    <span class="logo-upload-hint" onclick="openImgUpload('logo','logo-img','__logo__')" title="Changer le logo">📷 logo</span>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('cover')">Accueil</a>
+    <a onclick="showPage('team')">L'équipe</a>
+    <a onclick="showPage('main')">La formation</a>
+  </div>
+</nav>
+
+<!-- COVER -->
+<div class="page active" id="page-cover">
+<div class="cover-page">
+  <div class="cover-quinn-badge"><div class="cover-quinn-dot"></div><span data-ed="cover-univ">Cadran IE · Modèle CVF de Quinn · Université Laval · MNG-6086 · Avril 2026</span></div>
+  <div class="cover-firm">Formation<span>IE</span></div>
+  <div class="cover-tagline" data-ed="cover-tagline">Intelligence émotionnelle · Leadership technologique · CGI</div>
+  <div class="cover-divider"></div>
+  <div class="cover-formation-title" data-ed="cover-ftitle">Formation en habiletés de gestion :<br>L'intelligence émotionnelle au service du leadership tech</div>
+  <div class="cover-meta">
+    <div class="cover-meta-line">Cours : <strong data-ed="cover-cours">Habiletés personnelles de gestion — MNG-6086</strong></div>
+    <div class="cover-meta-line">Enseignante : <strong data-ed="cover-prof">Iris Roland</strong></div>
+    <div class="cover-meta-line" data-ed="cover-context">Travail de session — Création et présentation d'une formation sur les habiletés de gestion</div>
+  </div>
+  <div class="cover-team-grid">
+    <div class="cover-member"><div class="cover-initial">GT</div><span class="cover-member-name" data-ed="m1">Guy Carlos Tamkodjou Tchio</span></div>
+    <div class="cover-member"><div class="cover-initial">AP</div><span class="cover-member-name" data-ed="m2">Aka Pierre Patrick Aka</span></div>
+    <div class="cover-member"><div class="cover-initial">JF</div><span class="cover-member-name" data-ed="m3">Julien Frascadore</span></div>
+    <div class="cover-member"><div class="cover-initial">AG</div><span class="cover-member-name" data-ed="m4">Amine Gouizine</span></div>
+    <div class="cover-member"><div class="cover-initial">BG</div><span class="cover-member-name" data-ed="m5">Bommanin Franck Aristide Gnonteme</span></div>
+  </div>
+  <div class="cover-date" data-ed="cover-date">Avril 2026 · Présenté à Mme Iris Roland</div>
+  <button class="cover-btn" onclick="showPage('main')">Découvrir la formation →</button>
+</div>
+</div>
+
+<!-- TEAM -->
+<div class="page" id="page-team">
+  <div class="team-hero">
+    <div class="hero-tag">FormationIE Conseil · L'équipe</div>
+    <h1 data-ed="team-h1">Cinq esprits.<br>Une vision commune.</h1>
+    <p data-ed="team-sub">Une équipe multidisciplinaire réunie autour d'une conviction : les organisations technologiques méritent des gestionnaires pleinement équipés pour diriger des humains, pas seulement des projets.</p>
+  </div>
+  <div class="team-context">
+    <div class="ctx-card"><div class="ctx-label">Université</div><div class="ctx-val" data-ed="ctx-univ">Université Laval · Faculté des sciences de l'administration</div></div>
+    <div class="ctx-card"><div class="ctx-label">Cours</div><div class="ctx-val" data-ed="ctx-cours">Habiletés personnelles de gestion · MNG-6086 · Hiver 2026</div></div>
+    <div class="ctx-card"><div class="ctx-label">Enseignante</div><div class="ctx-val" data-ed="ctx-prof">Mme Iris Roland · Travail de session · Avril 2026</div></div>
+  </div>
+  <div class="team-grid">
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av1','__avatar_tm1__')"><span id="av1-init">GT</span><img id="av1" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm1-name">Guy Carlos Tamkodjou Tchio</h3><div class="member-role" data-ed="tm1-role">Chef de projet · Stratégie de contenu</div><p class="member-desc" data-ed="tm1-desc">Responsable de la cohérence globale de la formation et de l'architecture des modules.</p></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av2','__avatar_tm2__')"><span id="av2-init">AP</span><img id="av2" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm2-name">Aka Pierre Patrick Aka</h3><div class="member-role" data-ed="tm2-role">Expert pédagogique · Modules 1 &amp; 2</div><p class="member-desc" data-ed="tm2-desc">Responsable du design pédagogique des deux premiers modules.</p></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av3','__avatar_tm3__')"><span id="av3-init">JF</span><img id="av3" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm3-name">Julien Frascadore</h3><div class="member-role" data-ed="tm3-role">Expert pédagogique · Modules 3 &amp; 4</div><p class="member-desc" data-ed="tm3-desc">Responsable des modules sur l'empathie, le feedback et le leadership résonant.</p></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av4','__avatar_tm4__')"><span id="av4-init">AG</span><img id="av4" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm4-name">Amine Gouizine</h3><div class="member-role" data-ed="tm4-role">Analyste · Recherche &amp; références</div><p class="member-desc" data-ed="tm4-desc">Responsable de la revue de littérature et de la validation des sources académiques.</p></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av5','__avatar_tm5__')"><span id="av5-init">BG</span><img id="av5" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm5-name">Bommanin Franck Aristide Gnonteme</h3><div class="member-role" data-ed="tm5-role">Stratège commercial · Tarification &amp; vente</div><p class="member-desc" data-ed="tm5-desc">Responsable de la stratégie de mise en marché et de l'argumentaire de vente.</p></div>
+  </div>
+  <div style="padding:2.5rem;text-align:center;background:var(--gold-pale);border-top:2px solid rgba(245,197,24,0.3)">
+    <button class="btn-p" onclick="showPage('main')">Voir la formation complète →</button>
+  </div>
+</div>
+
+<!-- FORMATION -->
+<div class="page" id="page-main">
+
+<div class="hero-f">
+  <div class="hero-tag" data-ed="h-tag">Formation en habiletés de gestion · CGI · 2026</div>
+  <h1 data-ed="h-title">Quand le code ne suffit plus.<br><em>Le leadership aussi s'apprend.</em></h1>
+  <p class="hero-sub" data-ed="h-sub">Une formation taillée sur mesure pour les chefs d'équipe techniques de CGI, propulsés gestionnaires sans avoir été formés à l'être.</p>
+  <div class="cta-r">
+    <button class="btn-p">Découvrir les modules</button>
+    <button class="btn-o">Voir les tarifs</button>
+  </div>
+  <div class="stat-row">
+    <div class="stat-item"><div class="num" data-ed="s1">70%</div><div class="lbl">des nouveaux gestionnaires tech manquent de formation managériale</div></div>
+    <div class="stat-item"><div class="num" data-ed="s2">4</div><div class="lbl">modules progressifs</div></div>
+    <div class="stat-item"><div class="num" data-ed="s3">2 jours</div><div class="lbl">présentiel ou hybride</div></div>
+    <div class="stat-item"><div class="num" data-ed="s4">100%</div><div class="lbl">alignée CGI</div></div>
+  </div>
+</div>
+
+<section class="s quinn-section">
+  <div class="s-label">Ancrage théorique</div>
+  <div class="s-title">Pourquoi le jaune ? Le modèle CVF de Quinn</div>
+  <div class="quinn-grid">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;">
+      <div class="quinn-diagram">
+        <div class="q-cell q-yellow"><div class="q-label">Notre formation</div><h4>Relations humaines</h4><p>Intelligence émotionnelle · Cohésion · Empathie</p></div>
+        <div class="q-cell q-blue"><div class="q-label" style="background:rgba(0,0,0,0.1)">Système ouvert</div><h4>Innovation</h4><p>Créativité · Croissance</p></div>
+        <div class="q-cell q-green"><div class="q-label" style="background:rgba(0,0,0,0.1)">Processus interne</div><h4>Contrôle</h4><p>Stabilité · Mesure</p></div>
+        <div class="q-cell q-red"><div class="q-label" style="background:rgba(0,0,0,0.1)">Objectifs rationnels</div><h4>Performance</h4><p>Résultats · Efficacité</p></div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--gray-500);text-align:center;">Modèle CVF — Quinn (1988)</div>
+    </div>
+    <div class="quinn-text">
+      <h3>Le cadran jaune : Relations humaines</h3>
+      <p>Dans le modèle CVF de Quinn, le cadran jaune représente les compétences de relations humaines — la capacité à mobiliser, comprendre, motiver et développer les membres de son équipe.</p>
+      <p>C'est précisément dans ce cadran que s'inscrit l'intelligence émotionnelle. Les gestionnaires TI de CGI maîtrisent les autres cadrans mais négligent souvent le cadran jaune, le plus décisif pour la rétention et l'engagement.</p>
+      <div class="quinn-highlight">Notre formation comble ce cadran jaune.</div>
+    </div>
+  </div>
+</section>
+
+<section class="s" style="background:var(--gray-100)">
+  <div class="s-label">Notre firme</div>
+  <div class="s-title" data-ed="firm-title">FormationIE Conseil</div>
+  <p class="s-sub" data-ed="firm-sub">Nous croyons que les meilleures formations naissent de la rencontre entre la rigueur académique et la réalité organisationnelle.</p>
+  <div class="firm-grid">
+    <div class="firm-card"><div class="firm-icon">🧭</div><h3 data-ed="fc1t">Notre vision</h3><p data-ed="fc1p">Un monde où la promotion interne ne signifie plus isolement, mais croissance accompagnée. Chaque expert mérite les outils pour devenir un leader.</p></div>
+    <div class="firm-card"><div class="firm-icon">💎</div><h3 data-ed="fc2t">Nos valeurs</h3><p data-ed="fc2p">Authenticité, rigueur et empathie. Nous ne vendons pas des formations génériques — nous co-construisons des expériences d'apprentissage.</p></div>
+    <div class="firm-card"><div class="firm-icon">🏗️</div><h3 data-ed="fc3t">Notre approche</h3><p data-ed="fc3p">Inspirée du modèle CVF de Quinn, chaque formation articule savoir, savoir-faire et savoir-être dans une logique centrée sur le cadran des relations humaines.</p></div>
+    <div class="firm-card"><div class="firm-icon">🎯</div><h3 data-ed="fc4t">Notre spécialité</h3><p data-ed="fc4p">Le secteur technologique. Nous connaissons les dynamiques d'équipes agiles et les défis propres aux organisations TI comme CGI.</p></div>
+  </div>
+</section>
+
+<section class="s accroche">
+  <div class="s-label">Le problème qu'on résout</div>
+  <div class="s-title" data-ed="acc-title">Le syndrome du meilleur développeur promu</div>
+  <div class="stat-banner">
+    <div class="stat-box"><div class="big" data-ed="sb1">58%</div><div class="desc" data-ed="sb1d">des gestionnaires n'ont reçu aucune formation avant leur prise de poste (CCL, 2022)</div></div>
+    <div class="stat-box"><div class="big" data-ed="sb2">2×</div><div class="desc" data-ed="sb2d">plus de risque de désengagement quand le gestionnaire manque d'IE (Gallup, 2023)</div></div>
+    <div class="stat-box"><div class="big" data-ed="sb3">46%</div><div class="desc" data-ed="sb3d">des embauches en TI échouent pour des raisons comportementales (Lencioni, 2021)</div></div>
+  </div>
+  <div class="qb"><p data-ed="qbp">« Les organisations qui investissent dans le développement des compétences émotionnelles observent une augmentation de 20 % de la performance des équipes. »</p><cite data-ed="qbc">— Goleman, D. (2020). Emotional Intelligence in Leadership. Harvard Business Review Press.</cite></div>
+</section>
+
+<section class="s">
+  <div class="s-label">Clientèle visée</div>
+  <div class="s-title" data-ed="cib-title">Chefs d'équipe technique chez CGI</div>
+  <p class="s-sub" data-ed="cib-sub">Une cible précise, un problème réel, une solution sur mesure.</p>
+  <div class="two-grid">
+    <div class="c-card hl"><h3>Profil cible</h3><ul>
+      <li data-ed="ci1">Chefs d'équipe (Team Leads) et gestionnaires de projets TI</li>
+      <li data-ed="ci2">En poste depuis moins de 18 mois dans un rôle de gestion</li>
+      <li data-ed="ci3">Promus depuis un poste technique</li>
+      <li data-ed="ci4">Encadrant des équipes de 5 à 15 personnes</li>
+      <li data-ed="ci5">Travaillant en mode agile chez CGI</li>
+    </ul></div>
+    <div class="c-card"><h3>Besoins identifiés</h3><ul>
+      <li data-ed="be1">Comprendre leur nouveau rôle relationnel (savoir)</li>
+      <li data-ed="be2">Donner du feedback constructif (savoir-faire)</li>
+      <li data-ed="be3">Gérer leurs réactions émotionnelles sous pression (savoir-être)</li>
+      <li data-ed="be4">Mobiliser l'équipe sans micro-management</li>
+      <li data-ed="be5">Naviguer les conflits en contexte agile</li>
+      <li data-ed="be6">Créer un environnement psychologiquement sécuritaire</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="s obj-pale">
+  <div class="s-label">Objectifs d'apprentissage</div>
+  <div class="s-title">À la fin de cette formation, le participant sera en mesure de…</div>
+  <div class="obj-grid">
+    <div class="obj-card"><div class="obj-num">01</div><p data-ed="ob1"><strong>Définir et appliquer</strong> les cinq composantes de l'IE selon Goleman dans son contexte quotidien.</p></div>
+    <div class="obj-card"><div class="obj-num">02</div><p data-ed="ob2"><strong>Identifier ses déclencheurs émotionnels</strong> et adopter des stratégies de régulation adaptées.</p></div>
+    <div class="obj-card"><div class="obj-num">03</div><p data-ed="ob3"><strong>Utiliser des modèles de feedback</strong> (SBI, feedforward) pour formuler des rétroactions constructives.</p></div>
+    <div class="obj-card"><div class="obj-num">04</div><p data-ed="ob4"><strong>Appliquer des techniques de communication empathique</strong> pour désamorcer les conflits.</p></div>
+    <div class="obj-card"><div class="obj-num">05</div><p data-ed="ob5"><strong>Poser des gestes concrets</strong> pour créer un environnement de sécurité psychologique.</p></div>
+    <div class="obj-card"><div class="obj-num">06</div><p data-ed="ob6"><strong>Élaborer un plan de développement personnel</strong> en IE avec des indicateurs mesurables.</p></div>
+  </div>
+</section>
+
+<section class="s">
+  <div class="s-label">Structure de la formation</div>
+  <div class="s-title">4 modules progressifs · 2 jours</div>
+  <div class="mod-tabs">
+    <button class="tab-btn active" onclick="showMod(0)">Module 1 · Se connaître</button>
+    <button class="tab-btn" onclick="showMod(1)">Module 2 · Se réguler</button>
+    <button class="tab-btn" onclick="showMod(2)">Module 3 · Comprendre l'autre</button>
+    <button class="tab-btn" onclick="showMod(3)">Module 4 · Agir en leader</button>
+  </div>
+  <div class="mod-panel active" id="mp0">
+    <div class="mod-info"><div class="mod-n">Module 01</div><div class="mod-title" data-ed="m1t">Se connaître soi-même avant de diriger</div><div class="mod-dur">⏱ Demi-journée · 3h</div><p class="mod-desc" data-ed="m1d">Le point de départ de tout leadership authentique : la conscience de soi.</p></div>
+    <div><div class="det-block"><h4>Contenu théorique</h4><ul><li data-ed="m1c1">Le modèle de Goleman : les 5 composantes de l'IE</li><li data-ed="m1c2">Distinction QI vs IE dans les contextes de leadership</li><li data-ed="m1c3">Le modèle CVF de Quinn — cadran relations humaines</li><li data-ed="m1c4">Neurologie des émotions : le détournement amygdalien</li></ul></div><div class="det-block"><h4>Activités</h4><ul><li data-ed="m1a1">Auto-évaluation IE : Questionnaire EQi-2.0</li><li data-ed="m1a2">Cartographie de ses déclencheurs émotionnels</li><li data-ed="m1a3">Discussion en dyades : meilleur/pire moment de gestion</li><li data-ed="m1a4">Journal réflexif : première entrée guidée</li></ul></div><div class="det-block"><h4>Modalité</h4><div class="tag-r"><span class="tg">Présentiel</span><span class="tg">Exposé magistral</span><span class="tg">Exercice individuel</span></div></div></div>
+  </div>
+  <div class="mod-panel" id="mp1">
+    <div class="mod-info"><div class="mod-n">Module 02</div><div class="mod-title" data-ed="m2t">Réguler ses émotions sous pression</div><div class="mod-dur">⏱ Demi-journée · 3h</div><p class="mod-desc" data-ed="m2d">Outils pour rester performant dans la tempête : sprints ratés, déploiements difficiles, conflits d'équipe.</p></div>
+    <div><div class="det-block"><h4>Contenu théorique</h4><ul><li data-ed="m2c1">Les stratégies de régulation émotionnelle (Gross, 2015)</li><li data-ed="m2c2">L'autorégulation en contexte de haute charge cognitive</li><li data-ed="m2c3">Le stress du gestionnaire-expert : surcharge de rôle</li><li data-ed="m2c4">La résilience managériale (Luthans, 2012)</li></ul></div><div class="det-block"><h4>Activités</h4><ul><li data-ed="m2a1">Simulation : gestion d'une crise d'équipe (jeu de rôle filmé)</li><li data-ed="m2a2">Analyse vidéo : signaux émotionnels non verbaux</li><li data-ed="m2a3">Atelier de recadrage cognitif</li><li data-ed="m2a4">Plan personnel de gestion du stress</li></ul></div><div class="det-block"><h4>Modalité</h4><div class="tag-r"><span class="tg">Présentiel</span><span class="tg">Jeu de rôle</span><span class="tg">Analyse de cas</span></div></div></div>
+  </div>
+  <div class="mod-panel" id="mp2">
+    <div class="mod-info"><div class="mod-n">Module 03</div><div class="mod-title" data-ed="m3t">Comprendre et mobiliser son équipe</div><div class="mod-dur">⏱ Demi-journée · 3h</div><p class="mod-desc" data-ed="m3d">Transformer la compréhension des autres en leviers de mobilisation concrets.</p></div>
+    <div><div class="det-block"><h4>Contenu théorique</h4><ul><li data-ed="m3c1">L'empathie cognitive vs émotionnelle (Decety & Jackson, 2004)</li><li data-ed="m3c2">La sécurité psychologique (Edmondson, 1999)</li><li data-ed="m3c3">Motivation intrinsèque en TI (Deci & Ryan)</li><li data-ed="m3c4">Communication non violente (Rosenberg)</li></ul></div><div class="det-block"><h4>Activités</h4><ul><li data-ed="m3a1">Atelier feedback : modèle SBI</li><li data-ed="m3a2">Technique feedforward (Goldsmith)</li><li data-ed="m3a3">Étude de cas CGI : équipe agile en perte de vitesse</li><li data-ed="m3a4">Écoute active en triades</li></ul></div><div class="det-block"><h4>Modalité</h4><div class="tag-r"><span class="tg">Présentiel</span><span class="tg">Étude de cas</span><span class="tg">Feedback entre pairs</span></div></div></div>
+  </div>
+  <div class="mod-panel" id="mp3">
+    <div class="mod-info"><div class="mod-n">Module 04</div><div class="mod-title" data-ed="m4t">Agir en leader émotionnellement intelligent</div><div class="mod-dur">⏱ Demi-journée · 3h</div><p class="mod-desc" data-ed="m4d">Intégration finale : ancrer durablement les nouvelles pratiques dans le quotidien de CGI.</p></div>
+    <div><div class="det-block"><h4>Contenu théorique</h4><ul><li data-ed="m4c1">Leadership résonant vs dissonant (Boyatzis & McKee, 2005)</li><li data-ed="m4c2">Ancrer le changement : modèle de Kotter</li><li data-ed="m4c3">Culture de feedback en équipes agiles</li><li data-ed="m4c4">Mesurer son développement en IE</li></ul></div><div class="det-block"><h4>Activités</h4><ul><li data-ed="m4a1">Simulation : entretien difficile avec un collaborateur</li><li data-ed="m4a2">Co-développement : cas réels vécus</li><li data-ed="m4a3">Plan de Développement Personnel IE</li><li data-ed="m4a4">Pacte d'équipe : « Nos 3 engagements »</li></ul></div><div class="det-block"><h4>Modalité</h4><div class="tag-r"><span class="tg">Présentiel</span><span class="tg">Simulation</span><span class="tg">Co-développement</span></div></div></div>
+  </div>
+</section>
+
+<section class="s" style="background:var(--gray-100)">
+  <div class="s-label">Approche pédagogique</div>
+  <div class="s-title">Apprendre par l'expérience, ancrer par la réflexion</div>
+  <div class="peda-grid">
+    <div class="peda-card"><div class="peda-icon">🎭</div><h4>Jeux de rôle filmés</h4><p>Feedback difficile, gestion de crise, conversation de performance.</p></div>
+    <div class="peda-card"><div class="peda-icon">📋</div><h4>Études de cas CGI</h4><p>Scénarios inspirés de situations authentiques en contexte agile.</p></div>
+    <div class="peda-card"><div class="peda-icon">✏️</div><h4>Journal réflexif</h4><p>Suivi du développement, complété entre modules et à 60 jours post-formation.</p></div>
+    <div class="peda-card"><div class="peda-icon">🤝</div><h4>Co-développement</h4><p>Partage de défis réels, résolution collective, intelligence de groupe.</p></div>
+  </div>
+</section>
+
+<section class="s" style="background:var(--gray-100);padding-top:0">
+  <div class="s-label">Modalités d'évaluation</div>
+  <div class="s-title">Mesurer le transfert, pas la mémorisation</div>
+  <div class="two-grid">
+    <div class="c-card" style="border-left:3px solid var(--gold)"><h3>Pendant la formation</h3><ul><li data-ed="ev1">Auto-évaluation IE en début et en fin de formation</li><li data-ed="ev2">Grille d'observation des jeux de rôle</li><li data-ed="ev3">Rétroaction structurée (modèle SBI)</li></ul></div>
+    <div class="c-card" style="border-left:3px solid var(--navy)"><h3>À 60 jours post-formation</h3><ul><li data-ed="ev4">Remise du Plan de Développement Personnel IE</li><li data-ed="ev5">Questionnaire de transfert (superviseur et participant)</li><li data-ed="ev6">Session de co-développement virtuelle (2h, optionnel)</li></ul></div>
+  </div>
+</section>
+
+<section class="s" style="background:var(--gold-pale)">
+  <div class="s-label">Investissement</div>
+  <div class="s-title" data-ed="pr-title">Des tarifs adaptés à la réalité de CGI</div>
+  <div class="price-grid">
+    <div class="price-card"><div class="price-name" data-ed="p1n">Formule Essentiel</div><div class="price-amt" data-ed="p1a">2 800 $</div><div class="price-unit" data-ed="p1u">par participant · groupe de 12</div><ul class="price-list"><li data-ed="p1i1">4 modules en présentiel (2 jours)</li><li data-ed="p1i2">Matériel pédagogique inclus</li><li data-ed="p1i3">Journal réflexif numérique</li><li data-ed="p1i4">Attestation de formation</li></ul></div>
+    <div class="price-card feat"><div class="price-badge">Recommandé</div><div class="price-name" data-ed="p2n">Formule Complète</div><div class="price-amt" data-ed="p2a">3 950 $</div><div class="price-unit" data-ed="p2u">par participant · groupe de 12</div><ul class="price-list"><li data-ed="p2i1">Tout inclus dans Essentiel</li><li data-ed="p2i2">Session co-développement 60 jours</li><li data-ed="p2i3">Plan de développement IE suivi</li><li data-ed="p2i4">Rapport d'impact organisationnel</li></ul></div>
+    <div class="price-card"><div class="price-name" data-ed="p3n">Formule Sur Mesure</div><div class="price-amt" data-ed="p3a">Sur devis</div><div class="price-unit" data-ed="p3u">adapté à vos besoins</div><ul class="price-list"><li data-ed="p3i1">Diagnostic organisationnel préalable</li><li data-ed="p3i2">Formation co-construite avec CGI</li><li data-ed="p3i3">Coaching individuel</li><li data-ed="p3i4">Formation de formateurs internes</li></ul></div>
+  </div>
+</section>
+
+<section class="s">
+  <div class="s-label">Références académiques et praticiennes</div>
+  <div class="s-title">Fondements scientifiques de la formation</div>
+  <div class="ref-grid">
+    <div class="ref-card" data-ed="r1"><strong>Goleman, D. (1995).</strong> Emotional Intelligence: Why It Can Matter More Than IQ. Bantam Books.</div>
+    <div class="ref-card" data-ed="r2"><strong>Goleman, D., Boyatzis, R., & McKee, A. (2002).</strong> Primal Leadership. Harvard Business School Press.</div>
+    <div class="ref-card" data-ed="r3"><strong>Quinn, R.E. (1988).</strong> Beyond Rational Management. Jossey-Bass.</div>
+    <div class="ref-card" data-ed="r4"><strong>Edmondson, A. (1999).</strong> Psychological Safety and Learning Behavior. Administrative Science Quarterly, 44(2).</div>
+    <div class="ref-card" data-ed="r5"><strong>Gross, J.J. (2015).</strong> Emotion Regulation: Current Status. Psychological Inquiry, 26(1).</div>
+    <div class="ref-card" data-ed="r6"><strong>Deci, E.L. & Ryan, R.M. (2000).</strong> Self-Determination Theory. American Psychologist, 55(1).</div>
+    <div class="ref-card" data-ed="r7"><strong>Lencioni, P. (2002).</strong> The Five Dysfunctions of a Team. Jossey-Bass.</div>
+    <div class="ref-card" data-ed="r8"><strong>Gallup. (2023).</strong> State of the Global Workplace Report.</div>
+    <div class="ref-card" data-ed="r9"><strong>Rosenberg, M. (2003).</strong> Nonviolent Communication. PuddleDancer Press.</div>
+    <div class="ref-card" data-ed="r10"><strong>Luthans, F. (2012).</strong> Psychological Capital and Beyond. Oxford University Press.</div>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="ft-firm">Formation<span>IE</span> Conseil</div>
+  <p style="font-size:1.1rem;">Formation · Coaching · Développement organisationnel</p>
+  <div class="ft-div"></div>
+  <div class="ft-acad" data-ed="footer-acad">
+    Travail présenté dans le cadre du cours Habiletés personnelles de gestion — MNG-6086<br>
+    Enseignante : Mme Iris Roland · Université Laval · Avril 2026<br>
+    Guy Carlos Tamkodjou Tchio · Aka Pierre Patrick Aka · Julien Frascadore · Amine Gouizine · Bommanin Franck Aristide Gnonteme
+  </div>
+</footer>
+
+<script>
+const SUPABASE_URL = 'https://rvtylqrsaahjprnjesam.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_-pFypKhYTd09pRjgoz6vYg_6Kgz_NMF';
+const PW = 'formationie2026';
+let editMode = false;
+let saveTimeout = null;
+let sb = null;
+
+async function initSupabase() {
+  try {
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    await loadFromSupabase();
+  } catch(e) {
+    console.warn('Supabase init error:', e);
+  } finally {
+    setTimeout(() => {
+      const ls = document.getElementById('loading-screen');
+      ls.classList.add('hide');
+      setTimeout(() => ls.style.display = 'none', 500);
+    }, 1500);
+  }
+}
+
+async function loadFromSupabase() {
+  try {
+    const { data, error } = await sb.from('contenu').select('cle, valeur');
+    if (error) throw error;
+    if (!data || data.length === 0) return;
+
+    const avatarMap = {'__avatar_tm1__':'av1','__avatar_tm2__':'av2','__avatar_tm3__':'av3','__avatar_tm4__':'av4','__avatar_tm5__':'av5'};
+    const imageKeys = [...Object.keys(avatarMap), '__logo__'];
+
+    data.forEach(row => {
+      if (!row.valeur) return;
+
+      // Images — avatars
+      if (avatarMap[row.cle]) {
+        const imgEl = document.getElementById(avatarMap[row.cle]);
+        const initEl = document.getElementById(avatarMap[row.cle] + '-init');
+        if (imgEl) { imgEl.src = row.valeur; imgEl.style.display = 'block'; }
+        if (initEl) initEl.style.display = 'none';
+        return;
+      }
+
+      // Image — logo
+      if (row.cle === '__logo__') {
+        const imgEl = document.getElementById('logo-img');
+        const txtEl = document.getElementById('logo-text');
+        if (imgEl) { imgEl.src = row.valeur; imgEl.style.display = 'block'; }
+        if (txtEl) txtEl.style.display = 'none';
+        return;
+      }
+
+      // Config visuelle
+      if (row.cle === '__visual_config__') {
+        try { applyVisualConfig(JSON.parse(row.valeur)); } catch(e) {}
+        return;
+      }
+
+      // Textes éditables
+      const el = document.querySelector('[data-ed="' + row.cle + '"]');
+      if (el) el.innerHTML = row.valeur;
+    });
+
+    setSyncStatus('✓ Contenu chargé', 'saved');
+  } catch(e) {
+    console.warn('Load error:', e);
+  }
+}
+
+async function saveToSupabase(cle, valeur) {
+  if (!sb) return;
+  setSyncStatus('Sauvegarde...', 'saving');
+  try {
+    const { error } = await sb.from('contenu').upsert({ cle, valeur }, { onConflict: 'cle' });
+    if (error) throw error;
+    setSyncStatus('✓ Sauvegardé en ligne', 'saved');
+    setTimeout(() => setSyncStatus('', ''), 3000);
+  } catch(e) {
+    setSyncStatus('⚠ Erreur de sauvegarde', '');
+    console.warn('Save error:', e);
+  }
+}
+
+async function saveAll() {
+  const elements = document.querySelectorAll('[data-ed]');
+  setSyncStatus('Sauvegarde de tout...', 'saving');
+  const rows = Array.from(elements).map(el => ({
+    cle: el.getAttribute('data-ed'),
+    valeur: el.innerHTML
+  }));
+  try {
+    const { error } = await sb.from('contenu').upsert(rows, { onConflict: 'cle' });
+    if (error) throw error;
+    setSyncStatus('✓ Tout sauvegardé !', 'saved');
+    showToast('💾 Tout le contenu sauvegardé en ligne !');
+    setTimeout(() => setSyncStatus('', ''), 4000);
+  } catch(e) {
+    setSyncStatus('⚠ Erreur', '');
+    showToast('⚠️ Erreur de sauvegarde — vérifiez la connexion');
+  }
+}
+
+async function resetContent() {
+  if (!confirm('Supprimer tout le contenu personnalisé et revenir au texte original ?')) return;
+  try {
+    await sb.from('contenu').delete().neq('cle', '');
+    showToast('↩ Réinitialisé — rechargez la page');
+    setTimeout(() => location.reload(), 1500);
+  } catch(e) {
+    showToast('⚠️ Erreur lors de la réinitialisation');
+  }
+}
+
+function setSyncStatus(msg, cls) {
+  const el = document.getElementById('sync-status');
+  el.textContent = msg;
+  el.className = cls;
+}
+
+function showPage(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + n).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function showMod(i) {
+  document.querySelectorAll('.mod-panel').forEach((p,j) => p.classList.toggle('active', i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j) => b.classList.toggle('active', i===j));
+}
+
+function toggleEditMode() {
+  if (!editMode) {
+    document.getElementById('lock-overlay').style.display = 'flex';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-error').style.display = 'none';
+    setTimeout(() => document.getElementById('pw-input').focus(), 100);
+  } else {
+    disableEdit();
+  }
+}
+
+function checkPw() {
+  if (document.getElementById('pw-input').value === PW) {
+    document.getElementById('lock-overlay').style.display = 'none';
+    enableEdit();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+function enableEdit() {
+  editMode = true;
+  document.querySelectorAll('[data-ed]').forEach(el => {
+    el.contentEditable = 'true';
+    el.addEventListener('input', () => {
+      clearTimeout(saveTimeout);
+      setSyncStatus('En attente...', 'saving');
+      saveTimeout = setTimeout(() => {
+        saveToSupabase(el.getAttribute('data-ed'), el.innerHTML);
+      }, 1500);
+    });
+  });
+  document.getElementById('edit-status').textContent = 'Mode édition — sauvegarde automatique activée';
+  document.getElementById('edit-indicator').className = 'on';
+  document.getElementById('toggle-edit-btn').textContent = '🔓 Désactiver';
+  document.getElementById('save-btn').style.display = 'inline-block';
+  document.getElementById('reset-btn').style.display = 'inline-block';
+  showToast('✏️ Mode édition actif — chaque modification se sauvegarde automatiquement en ligne');
+}
+
+function disableEdit() {
+  editMode = false;
+  document.querySelectorAll('[data-ed]').forEach(el => el.contentEditable = 'false');
+  document.getElementById('edit-status').textContent = 'Mode lecture';
+  document.getElementById('edit-indicator').className = '';
+  document.getElementById('toggle-edit-btn').textContent = '🔒 Activer l\'édition';
+  document.getElementById('save-btn').style.display = 'none';
+  document.getElementById('reset-btn').style.display = 'none';
+  showToast('👁 Mode lecture réactivé');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+initSupabase();
+
+// ─── FORMATTING TOOLBAR ───────────────────────────────────────
+function execFmt(cmd, val) {
+  document.execCommand(cmd, false, val || null);
+  const el = document.activeElement.closest('[data-ed]') || lastFocused;
+  if (el) {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => saveToSupabase(el.getAttribute('data-ed'), el.innerHTML), 1500);
+  }
+}
+
+let lastFocused = null;
+let toolbarPinned = false;
+
+document.addEventListener('selectionchange', () => {
+  if (!editMode) return;
+  const sel = window.getSelection();
+  const toolbar = document.getElementById('fmt-toolbar');
+  if (!sel || sel.isCollapsed || sel.toString().trim() === '') {
+    if (!toolbarPinned) toolbar.classList.remove('visible');
+    return;
+  }
+  const range = sel.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  if (rect.width === 0) return;
+  toolbar.classList.add('visible');
+  const top = rect.top + window.scrollY - toolbar.offsetHeight - 10;
+  const left = Math.min(rect.left + window.scrollX, window.innerWidth - toolbar.offsetWidth - 10);
+  toolbar.style.top = Math.max(50, top) + 'px';
+  toolbar.style.left = Math.max(10, left) + 'px';
+});
+
+document.addEventListener('focusin', (e) => {
+  const ed = e.target.closest('[data-ed]');
+  if (ed) lastFocused = ed;
+});
+
+// ─── CONFIG PANEL ─────────────────────────────────────────────
+function toggleConfigPanel() {
+  const panel = document.getElementById('config-panel');
+  panel.classList.toggle('open');
+}
+
+function updateCSSVar(varName, value) {
+  document.documentElement.style.setProperty(varName, value);
+  if (varName === '--gold') {
+    const dark = shadeColor(value, -20);
+    document.documentElement.style.setProperty('--gold-dark', dark);
+  }
+}
+
+function shadeColor(hex, pct) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, Math.max(0, (num >> 16) + pct*2.55|0));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + pct*2.55|0));
+  const b = Math.min(255, Math.max(0, (num & 0xff) + pct*2.55|0));
+  return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function updateFontSize(val) {
+  document.body.style.fontSize = val + 'px';
+  document.getElementById('font-size-val').textContent = val + 'px';
+}
+
+function updateLineHeight(val) {
+  document.body.style.lineHeight = val;
+  document.getElementById('line-height-val').textContent = val;
+}
+
+function updateBodyFont(val) {
+  document.body.style.fontFamily = val;
+}
+
+function updateSectionBg(selector, color) {
+  document.querySelectorAll(selector).forEach(el => el.style.background = color);
+}
+
+function updateBorderWidth(val) {
+  document.getElementById('border-val').textContent = val + 'px';
+  document.querySelectorAll('nav, .team-hero, .hero-f, footer, .quinn-section').forEach(el => {
+    el.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim();
+    if (el.style.borderBottomWidth !== undefined) el.style.borderBottomWidth = val + 'px';
+    if (el.style.borderTopWidth !== undefined) el.style.borderTopWidth = val + 'px';
+  });
+}
+
+function getVisualConfig() {
+  return {
+    gold: document.documentElement.style.getPropertyValue('--gold') || '#F5C518',
+    navy: document.documentElement.style.getPropertyValue('--navy') || '#0A1628',
+    goldPale: document.documentElement.style.getPropertyValue('--gold-pale') || '#FFFBE6',
+    gray100: document.documentElement.style.getPropertyValue('--gray-100') || '#F4F5F7',
+    fontSize: document.getElementById('font-size-range').value,
+    lineHeight: document.getElementById('line-height-range').value,
+    bodyFont: document.body.style.fontFamily || "'DM Sans',sans-serif",
+    borderWidth: document.getElementById('border-range').value,
+  };
+}
+
+async function saveVisualConfig() {
+  const config = getVisualConfig();
+  try {
+    await sb.from('contenu').upsert({ cle: '__visual_config__', valeur: JSON.stringify(config) }, { onConflict: 'cle' });
+    showToast('🎨 Configuration visuelle sauvegardée !');
+  } catch(e) {
+    showToast('⚠️ Erreur de sauvegarde de la configuration');
+  }
+}
+
+function applyVisualConfig(config) {
+  if (!config) return;
+  if (config.gold) { updateCSSVar('--gold', config.gold); document.getElementById('sw-gold').style.background = config.gold; }
+  if (config.navy) { updateCSSVar('--navy', config.navy); document.getElementById('sw-navy').style.background = config.navy; }
+  if (config.goldPale) { updateCSSVar('--gold-pale', config.goldPale); document.getElementById('sw-pale').style.background = config.goldPale; }
+  if (config.gray100) { updateCSSVar('--gray-100', config.gray100); document.getElementById('sw-gray').style.background = config.gray100; }
+  if (config.fontSize) { updateFontSize(config.fontSize); document.getElementById('font-size-range').value = config.fontSize; }
+  if (config.lineHeight) { updateLineHeight(config.lineHeight); document.getElementById('line-height-range').value = config.lineHeight; }
+  if (config.bodyFont) updateBodyFont(config.bodyFont);
+  if (config.borderWidth) { updateBorderWidth(config.borderWidth); document.getElementById('border-range').value = config.borderWidth; }
+}
+
+async function resetVisualConfig() {
+  if (!confirm('Réinitialiser toute la configuration visuelle ?')) return;
+  try {
+    await sb.from('contenu').delete().eq('cle', '__visual_config__');
+    showToast('↩ Configuration réinitialisée — rechargez la page');
+    setTimeout(() => location.reload(), 1500);
+  } catch(e) {
+    showToast('⚠️ Erreur lors de la réinitialisation');
+  }
+}
+
+// Charger la config visuelle depuis Supabase au chargement
+// Patch loadFromSupabase pour la config visuelle (géré directement dans loadFromSupabase)
+
+// Montrer le panneau config + edit-mode class
+const origEnable = enableEdit;
+enableEdit = function() {
+  origEnable();
+  document.getElementById('cfg-toggle-btn').classList.add('visible');
+  document.body.classList.add('edit-mode');
+};
+const origDisable = disableEdit;
+disableEdit = function() {
+  origDisable();
+  document.getElementById('cfg-toggle-btn').classList.remove('visible');
+  document.getElementById('config-panel').classList.remove('open');
+  document.getElementById('fmt-toolbar').classList.remove('visible');
+  document.body.classList.remove('edit-mode');
+};
+
+// ─── IMAGE UPLOAD ─────────────────────────────────────────────
+let imgUploadMode = null;
+let imgTargetId   = null;
+let imgStorageKey = null;
+let imgSavedRange = null;
+let imgSelectedFile = null;
+
+function openImgUpload(mode, targetId, storageKey) {
+  if (!editMode) return;
+  imgUploadMode = mode; imgTargetId = targetId; imgStorageKey = storageKey;
+  imgSelectedFile = null;
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) imgSavedRange = sel.getRangeAt(0).cloneRange();
+  document.getElementById('img-preview-el').style.display = 'none';
+  document.getElementById('img-preview-el').src = '';
+  document.getElementById('img-file-input').value = '';
+  document.getElementById('img-uploading').style.display = 'none';
+  document.getElementById('img-drop-zone').classList.remove('drag');
+  const titles = { avatar:'Photo de profil', logo:'Logo FormationIE', inline:'Insérer une image' };
+  document.getElementById('img-upload-title').textContent = titles[mode] || 'Image';
+  document.getElementById('img-upload-overlay').classList.add('open');
+}
+
+function closeImgUpload() {
+  document.getElementById('img-upload-overlay').classList.remove('open');
+  imgSelectedFile = null;
+}
+
+function handleImgDrop(e) {
+  e.preventDefault();
+  document.getElementById('img-drop-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) { imgSelectedFile = file; showImgPreview(file); }
+}
+
+function previewImg(input) {
+  if (input.files && input.files[0]) { imgSelectedFile = input.files[0]; showImgPreview(imgSelectedFile); }
+}
+
+function showImgPreview(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const p = document.getElementById('img-preview-el');
+    p.src = e.target.result; p.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function confirmImgUpload() {
+  if (!imgSelectedFile) { showToast('⚠️ Veuillez choisir une image'); return; }
+  if (imgSelectedFile.size > 2*1024*1024) { showToast('⚠️ Image trop lourde — max 2 Mo'); return; }
+  document.getElementById('img-uploading').style.display = 'block';
+  try {
+    const ext  = imgSelectedFile.name.split('.').pop().toLowerCase();
+    const key  = imgStorageKey || ('inline_' + Date.now());
+    const path = (key.replace(/^__|__$/g,'') || 'img') + '_' + Date.now() + '.' + ext;
+    const { error: upErr } = await sb.storage.from('images').upload(path, imgSelectedFile, { upsert:true });
+    if (upErr) throw upErr;
+    const { data: urlData } = sb.storage.from('images').getPublicUrl(path);
+    const publicUrl = urlData.publicUrl;
+    await sb.from('contenu').upsert({ cle: key, valeur: publicUrl }, { onConflict:'cle' });
+    if (imgUploadMode === 'avatar') {
+      const imgEl = document.getElementById(imgTargetId);
+      const initEl = document.getElementById(imgTargetId + '-init');
+      imgEl.src = publicUrl; imgEl.style.display = 'block';
+      if (initEl) initEl.style.display = 'none';
+    } else if (imgUploadMode === 'logo') {
+      const imgEl = document.getElementById('logo-img');
+      const txtEl = document.getElementById('logo-text');
+      imgEl.src = publicUrl; imgEl.style.display = 'block';
+      if (txtEl) txtEl.style.display = 'none';
+    } else {
+      insertInlineImg(publicUrl, path);
+    }
+    showToast('🖼 Image sauvegardée en ligne !');
+    closeImgUpload();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('img-uploading').style.display = 'none';
+    showToast('⚠️ Erreur upload — vérifiez que le bucket "images" est Public dans Supabase Storage');
+  }
+}
+
+function insertInlineImg(url, path) {
+  const wrap = document.createElement('span');
+  wrap.className = 'inline-img-wrap';
+  const img = document.createElement('img');
+  img.src = url; img.alt = '';
+  const del = document.createElement('button');
+  del.className = 'inline-img-delete'; del.innerHTML = '✕';
+  del.onclick = async () => {
+    if (!confirm('Supprimer cette image ?')) return;
+    await sb.storage.from('images').remove([path]);
+    wrap.remove(); showToast('Image supprimée');
+  };
+  wrap.appendChild(img); wrap.appendChild(del);
+  if (imgSavedRange) {
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(imgSavedRange);
+    imgSavedRange.deleteContents(); imgSavedRange.insertNode(wrap);
+  } else if (lastFocused) {
+    lastFocused.appendChild(wrap);
+  }
+  if (lastFocused) {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => saveToSupabase(lastFocused.getAttribute('data-ed'), lastFocused.innerHTML), 1500);
+  }
+}
+
+async function loadSavedImages() {
+  if (!sb) return;
+  const map = {'__avatar_tm1__':'av1','__avatar_tm2__':'av2','__avatar_tm3__':'av3','__avatar_tm4__':'av4','__avatar_tm5__':'av5'};
+  const keys = [...Object.keys(map), '__logo__'];
+  try {
+    const { data, error } = await sb.from('contenu').select('cle,valeur').in('cle', keys);
+    if (error) { console.warn('loadSavedImages error:', error); return; }
+    if (!data || data.length === 0) return;
+    data.forEach(row => {
+      if (!row.valeur) return;
+      if (row.cle === '__logo__') {
+        const imgEl = document.getElementById('logo-img');
+        const txtEl = document.getElementById('logo-text');
+        if (imgEl) {
+          imgEl.src = row.valeur;
+          imgEl.style.display = 'block';
+          if (txtEl) txtEl.style.display = 'none';
+        }
+      } else if (map[row.cle]) {
+        const imgId = map[row.cle];
+        const imgEl = document.getElementById(imgId);
+        const initEl = document.getElementById(imgId + '-init');
+        if (imgEl) {
+          imgEl.src = row.valeur;
+          imgEl.style.display = 'block';
+          if (initEl) initEl.style.display = 'none';
+        }
+      }
+    });
+  } catch(e) { console.warn('loadSavedImages exception:', e); }
+}
+
+// Images chargées directement dans loadFromSupabase ci-dessus
+</script>
+</body>
+</html>
