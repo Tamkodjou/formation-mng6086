@@ -254,7 +254,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 
 <!-- EDIT BAR -->
 <div id="edit-bar">
-  <div class="eb-left"><span id="edit-indicator"></span> <strong id="edit-status">Mode lecture</strong> — NexusIE Conseil</div>
+  <div class="eb-left"><span id="edit-indicator"></span> <strong id="edit-status">Mode lecture</strong> — FormationIE Conseil</div>
   <div class="eb-right">
     <button class="eb-btn" id="toggle-edit-btn" onclick="toggleEditMode()">🔒 Activer l'édition</button>
     <button class="eb-btn" id="save-btn" onclick="saveContent()" style="display:none">💾 Sauvegarder</button>
@@ -271,7 +271,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
     <input class="lock-input" type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPw()">
     <button class="lock-btn" onclick="checkPw()">Déverrouiller</button>
     <div class="lock-error" id="pw-error">Mot de passe incorrect</div>
-    <div class="lock-hint">Mot de passe : <strong>nexusie2026</strong></div>
+    <div class="lock-hint">Mot de passe : <strong>FormationIE2026</strong></div>
   </div>
 </div>
 
@@ -316,7 +316,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 <!-- ===== PAGE ÉQUIPE ===== -->
 <div class="page" id="page-team">
   <div class="team-hero">
-    <div class="hero-tag" data-ed="team-tag">NexusIE Conseil · L'équipe</div>
+    <div class="hero-tag" data-ed="team-tag">FormationIE Conseil · L'équipe</div>
     <h1 data-ed="team-h1">Cinq esprits.<br>Une vision commune.</h1>
     <p data-ed="team-sub">Une équipe multidisciplinaire réunie autour d'une conviction : les organisations technologiques méritent des gestionnaires pleinement équipés pour diriger des humains, pas seulement des projets.</p>
   </div>
@@ -359,7 +359,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 
 <section class="s" style="background:var(--gray-100)">
   <div class="s-label">Notre firme</div>
-  <div class="s-title" data-ed="firm-title">NexusIE Conseil</div>
+  <div class="s-title" data-ed="firm-title">FormationIE Conseil</div>
   <p class="s-sub" data-ed="firm-sub">Nous croyons que les meilleures formations naissent de la rencontre entre la rigueur académique et la réalité organisationnelle.</p>
   <div class="firm-grid">
     <div class="firm-card"><div class="firm-card-icon">🧭</div><h3 data-ed="fc1-t">Notre vision</h3><p data-ed="fc1-p">Un monde où la promotion interne ne signifie plus isolement et désorientation, mais croissance accompagnée. Chaque expert mérite les outils pour devenir un leader.</p></div>
@@ -504,7 +504,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 </footer>
 
 <script>
-const PW = 'nexusie2026';
+const PW = 'FormationIE2026';
 let editMode = false;
 
 function showPage(name) {
@@ -573,7 +573,7 @@ function saveContent() {
     data[el.getAttribute('data-ed')] = el.innerHTML;
   });
   try {
-    localStorage.setItem('nexusie-content', JSON.stringify(data));
+    localStorage.setItem('FormationIE-content', JSON.stringify(data));
     showToast('💾 Contenu sauvegardé avec succès !');
   } catch(e) {
     showToast('⚠️ Sauvegarde non disponible dans cet environnement — copiez le fichier HTML pour conserver les modifications');
@@ -582,14 +582,14 @@ function saveContent() {
 
 function resetContent() {
   if (confirm('Réinitialiser tout le contenu à sa version originale ? Cette action est irréversible.')) {
-    try { localStorage.removeItem('nexusie-content'); } catch(e) {}
+    try { localStorage.removeItem('FormationIE-content'); } catch(e) {}
     showToast('↩ Contenu réinitialisé — rechargez la page');
   }
 }
 
 function loadSaved() {
   try {
-    const saved = localStorage.getItem('nexusie-content');
+    const saved = localStorage.getItem('FormationIE-content');
     if (saved) {
       const data = JSON.parse(saved);
       document.querySelectorAll('[data-ed]').forEach(el => {
