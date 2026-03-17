@@ -348,6 +348,11 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   max-width:100% !important;
   width:100%;
 }
+.nav-links a.active {
+  color:var(--gold) !important;
+  border-bottom:2px solid var(--gold);
+  padding-bottom:2px;
+}
 </style>
 </head>
 <body>
@@ -1202,6 +1207,17 @@ function showPage(n) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + n).classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const map = {
+    'cover':'Accueil',
+    'firme':'La firme',
+    'formationie':'Qui sommes-nous ?',
+    'team':'L\'équipe',
+    'main':'La formation'
+  };
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if(a.textContent.trim() === map[n]) a.classList.add('active');
+  });
 }
 
 function showMod(i) {
