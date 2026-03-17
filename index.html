@@ -34,11 +34,11 @@ body { font-family:var(--fb); background:var(--white); color:var(--navy); font-s
 #lock-overlay { position:fixed; inset:0; background:rgba(10,22,40,0.93); z-index:9999; display:flex; align-items:center; justify-content:center; }
 .lock-box { background:var(--white); border-radius:1rem; padding:2.5rem 2rem; width:340px; text-align:center; border:1px solid var(--gray-200); }
 .lock-icon { font-size:2.5rem; margin-bottom:1rem; }
-.lock-box h2 { font-family:var(--fd); font-size:1.4rem; margin-bottom:0.5rem; color:var(--navy); }
+.lock-box h2 { font-family:var(--fd); font-size:1.4rem; margin-bottom:0.5rem; color:var(--y); }
 .lock-box p { font-size:0.85rem; color:var(--gray-500); margin-bottom:1.5rem; }
 .lock-input { width:100%; padding:0.75rem 1rem; border:1px solid var(--gray-200); border-radius:0.5rem; font-family:var(--fb); font-size:1rem; margin-bottom:1rem; text-align:center; letter-spacing:0.2em; }
 .lock-input:focus { outline:none; border-color:var(--gold); }
-.lock-btn { width:100%; background:var(--gold); color:var(--navy); border:none; border-radius:0.5rem; padding:0.85rem; font-family:var(--fb); font-weight:700; font-size:0.95rem; cursor:pointer; }
+.lock-btn { width:100%; background:var(--gold); color:var(--y); border:none; border-radius:0.5rem; padding:0.85rem; font-family:var(--fb); font-weight:700; font-size:0.95rem; cursor:pointer; }
 .lock-error { color:#E24B4A; font-size:0.8rem; margin-top:0.5rem; display:none; }
 .lock-hint { font-size:0.75rem; color:var(--gray-500); margin-top:1rem; }
 
@@ -513,9 +513,10 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
     </span>
     <span class="logo-upload-hint" onclick="openImgUpload('logo','logo-img','__logo__')" title="Changer le logo">📷 logo</span>
   </div>
-  <div class="nav-links">
+    <div class="nav-links">
     <a onclick="showPage('cover')">Accueil</a>
     <a onclick="showPage('firme')">La firme</a>
+    <a onclick="showPage('formationie')">FormationIE Conseil</a>
     <a onclick="showPage('team')">L'équipe</a>
     <a onclick="showPage('main')">La formation</a>
   </div>
@@ -545,6 +546,187 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   <div class="cover-date" data-ed="cover-date">Avril 2026 · Présenté à Mme Iris Roland</div>
   <button class="cover-btn" onclick="showPage('main')">Découvrir la formation →</button>
 </div>
+</div>
+
+  <!-- FORMATIONIE CONSEIL -->
+<div class="page" id="page-formationie">
+
+  <div class="hero-f">
+    <div class="hero-tag">À propos · FormationIE Conseil</div>
+    <h1>Former les leaders<br><em>de demain.</em></h1>
+    <p class="hero-sub" data-ed="fie-hero-sub">FormationIE Conseil est une firme spécialisée en développement du leadership dans les organisations technologiques. Nous croyons que l'intelligence émotionnelle est la compétence la plus rentable qu'un gestionnaire tech puisse développer.</p>
+    <div class="cta-r">
+      <button class="btn-p" onclick="showPage('main')">Voir la formation →</button>
+      <button class="btn-o" onclick="showPage('team')">Rencontrer l'équipe →</button>
+    </div>
+  </div>
+
+  <!-- HISTOIRE & MISSION -->
+  <section class="s" style="background:var(--gray-100)">
+    <div class="s-label">Notre histoire</div>
+    <div class="s-title" data-ed="fie-hist-title">Née d'un constat terrain</div>
+    <p class="s-sub" data-ed="fie-hist-sub">FormationIE Conseil est née de l'observation d'un paradoxe récurrent dans les organisations TI.</p>
+    <div class="two-grid">
+      <div class="c-card hl">
+        <h3>Le constat fondateur</h3>
+        <ul>
+          <li data-ed="fie-h1">Les meilleurs développeurs deviennent chefs d'équipe sans formation managériale</li>
+          <li data-ed="fie-h2">Les compétences techniques ne suffisent plus dès qu'on gère des humains</li>
+          <li data-ed="fie-h3">Les organisations perdent leurs talents faute de leaders émotionnellement compétents</li>
+          <li data-ed="fie-h4">Les formations génériques ne parlent pas le langage des équipes tech</li>
+        </ul>
+      </div>
+      <div class="c-card">
+        <h3>Notre réponse</h3>
+        <ul>
+          <li data-ed="fie-r1">Des formations ancrées dans la réalité des équipes agiles</li>
+          <li data-ed="fie-r2">Un vocabulaire natif : sprints, code review, daily standup</li>
+          <li data-ed="fie-r3">Des études de cas tirées de situations réelles en contexte TI</li>
+          <li data-ed="fie-r4">Un suivi mesurable à 60 jours post-formation</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION VISION VALEURS -->
+  <section class="s accroche">
+    <div class="s-label">Mission · Vision · Valeurs</div>
+    <div class="s-title" data-ed="fie-mvv-title">Ce qui nous anime chaque jour</div>
+    <div class="stat-banner">
+      <div class="stat-box">
+        <div class="big" style="font-size:1.4rem;" data-ed="fie-mission-titre">MISSION</div>
+        <div class="desc" data-ed="fie-mission">Transformer des experts techniques en leaders humains capables de mobiliser, inspirer et retenir leurs équipes.</div>
+      </div>
+      <div class="stat-box">
+        <div class="big" style="font-size:1.4rem;" data-ed="fie-vision-titre">VISION</div>
+        <div class="desc" data-ed="fie-vision">Un monde où la promotion interne ne signifie plus isolement et désorientation, mais croissance accompagnée.</div>
+      </div>
+      <div class="stat-box">
+        <div class="big" style="font-size:1.4rem;" data-ed="fie-impact-titre">IMPACT</div>
+        <div class="desc" data-ed="fie-impact">Chaque formation livrée réduit le risque de départ, améliore la performance d'équipe et renforce la culture organisationnelle.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROCHE QUINN -->
+  <section class="s quinn-section">
+    <div class="s-label">Notre approche pédagogique</div>
+    <div class="s-title">Ancrée dans le modèle CVF de Quinn</div>
+    <p class="s-sub" data-ed="fie-quinn-sub">Le modèle des valeurs concurrentes de Quinn (1988) structure toutes nos formations. Chaque programme cible un ou plusieurs cadrans selon les besoins organisationnels.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem;align-items:start;">
+      <div style="text-align:center;">
+        <img src="https://raw.githubusercontent.com/Tamkodjou/formation-mng6086/main/Orientation.png" alt="Modèle de Quinn — cercle" style="max-width:100%;border-radius:0.75rem;border:2px solid rgba(245,197,24,0.3);">
+        <p style="font-size:0.75rem;color:var(--gray-500);margin-top:0.5rem;">Les 4 cadrans du modèle CVF — Quinn (1988)</p>
+      </div>
+      <div style="text-align:center;">
+        <img src="https://raw.githubusercontent.com/Tamkodjou/formation-mng6086/main/Le_mod%C3%A8le_de_Quinn.png" alt="Modèle de Quinn — détail" style="max-width:100%;border-radius:0.75rem;border:2px solid rgba(245,197,24,0.3);">
+        <p style="font-size:0.75rem;color:var(--gray-500);margin-top:0.5rem;">Les 8 rôles managériaux selon Quinn</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMATIONS PAR CADRAN -->
+  <section class="s obj-pale">
+    <div class="s-label">Nos formations — les 4 cadrans</div>
+    <div class="s-title">Une offre complète couvrant tout le modèle CVF</div>
+    <p class="s-sub" data-ed="fie-cadrans-sub">FormationIE Conseil propose des formations dans chacun des 4 cadrans du modèle de Quinn. Chaque organisation peut ainsi cibler précisément les compétences à développer.</p>
+    <div class="obj-grid">
+      <div class="obj-card" style="border-top:3px solid #F5C518;background:#FFFDE7;">
+        <div class="obj-num" style="color:rgba(245,197,24,0.4);">🟡</div>
+        <p data-ed="fie-c1"><strong style="color:#C99A00;">Cadran Collaborer (Jaune)</strong><br>Relations humaines · Intelligence émotionnelle · Mentorat · Facilitation<br><em style="font-size:0.8rem;color:#8B6914;">← Notre formation CGI actuelle</em></p>
+      </div>
+      <div class="obj-card" style="border-top:3px solid #4CAF50;">
+        <div class="obj-num" style="color:rgba(76,175,80,0.3);">🟢</div>
+        <p data-ed="fie-c2"><strong style="color:#2E7D32;">Cadran Créer (Vert)</strong><br>Innovation · Adaptation au changement · Négociation · Vision stratégique</p>
+      </div>
+      <div class="obj-card" style="border-top:3px solid #F44336;">
+        <div class="obj-num" style="color:rgba(244,67,54,0.3);">🔴</div>
+        <p data-ed="fie-c3"><strong style="color:#C62828;">Cadran Contrôler (Rouge)</strong><br>Intégration · Normalisation · Coordination · Gestion des processus</p>
+      </div>
+      <div class="obj-card" style="border-top:3px solid #2196F3;">
+        <div class="obj-num" style="color:rgba(33,150,243,0.3);">🔵</div>
+        <p data-ed="fie-c4"><strong style="color:#1565C0;">Cadran Concurrencer (Bleu)</strong><br>Performance · Maximisation des résultats · Direction · Production</p>
+      </div>
+      <div class="obj-card" style="border-top:3px solid var(--navy);grid-column:span 2;">
+        <div class="obj-num" style="color:rgba(10,22,40,0.2);">⭐</div>
+        <p data-ed="fie-c5"><strong>Formations intégrées — Multi-cadrans</strong><br>Pour les organisations qui souhaitent développer des leaders capables de naviguer dans tous les cadrans selon les situations. Programme sur mesure, diagnostic préalable inclus.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALEURS -->
+  <section class="s" style="background:var(--gray-100)">
+    <div class="s-label">Nos valeurs</div>
+    <div class="s-title" data-ed="fie-val-title">Ce en quoi nous croyons profondément</div>
+    <div class="firm-grid">
+      <div class="firm-card"><div class="firm-icon">🎯</div><h3 data-ed="fie-v1t">Authenticité</h3><p data-ed="fie-v1p">Nous disons ce que nous faisons et faisons ce que nous disons. Nos formations sont construites sur des résultats réels, pas sur des promesses génériques.</p></div>
+      <div class="firm-card"><div class="firm-icon">📚</div><h3 data-ed="fie-v2t">Rigueur académique</h3><p data-ed="fie-v2p">Chaque contenu repose sur des recherches scientifiques validées. Goleman, Quinn, Edmondson, Deci & Ryan — nos sources sont citées et vérifiables.</p></div>
+      <div class="firm-card"><div class="firm-icon">🤝</div><h3 data-ed="fie-v3t">Empathie pédagogique</h3><p data-ed="fie-v3p">Nous apprenons à nos clients l'empathie en la pratiquant nous-mêmes. Chaque formation est conçue avec une compréhension profonde des défis vécus.</p></div>
+      <div class="firm-card"><div class="firm-icon">📊</div><h3 data-ed="fie-v4t">Imputabilité</h3><p data-ed="fie-v4p">Nous mesurons nos résultats. Le suivi à 60 jours n'est pas optionnel — c'est notre engagement envers la transformation réelle des comportements.</p></div>
+    </div>
+  </section>
+
+  <!-- RÉALISATIONS -->
+  <section class="s accroche">
+    <div class="s-label">Nos réalisations & chiffres clés</div>
+    <div class="s-title" data-ed="fie-real-title">Ce que nous avons accompli</div>
+    <div class="stat-banner">
+      <div class="stat-box"><div class="big" data-ed="fie-stat1">4</div><div class="desc" data-ed="fie-stat1d">cadrans du modèle CVF de Quinn couverts par notre offre de formations</div></div>
+      <div class="stat-box"><div class="big" data-ed="fie-stat2">60j</div><div class="desc" data-ed="fie-stat2d">de suivi post-formation inclus dans chaque programme pour mesurer le transfert</div></div>
+      <div class="stat-box"><div class="big" data-ed="fie-stat3">10×</div><div class="desc" data-ed="fie-stat3d">le ROI minimum si un seul départ de développeur senior est évité grâce à la formation</div></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="s">
+    <div class="s-label">Nos services</div>
+    <div class="s-title" data-ed="fie-serv-title">Une offre complète de développement du leadership</div>
+    <div class="two-grid">
+      <div class="c-card hl">
+        <h3>Formations</h3>
+        <ul>
+          <li data-ed="fie-s1">Formations en présentiel — 2 jours / 4 demi-journées</li>
+          <li data-ed="fie-s2">Formations hybrides pour équipes distribuées</li>
+          <li data-ed="fie-s3">Programmes sur mesure co-construits avec le client</li>
+          <li data-ed="fie-s4">Formation de formateurs internes</li>
+        </ul>
+      </div>
+      <div class="c-card">
+        <h3>Accompagnement</h3>
+        <ul>
+          <li data-ed="fie-a1">Diagnostic organisationnel préalable</li>
+          <li data-ed="fie-a2">Coaching individuel de gestionnaires</li>
+          <li data-ed="fie-a3">Suivi post-formation à 60 jours</li>
+          <li data-ed="fie-a4">Rapport d'impact et recommandations</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENTREPRISES -->
+  <section class="s obj-pale">
+    <div class="s-label">Ils nous font confiance</div>
+    <div class="s-title" data-ed="fie-ent-title">Les entreprises qui nous font confiance</div>
+    <p class="s-sub" data-ed="fie-ent-sub">Nos formations sont conçues pour les organisations technologiques en croissance qui misent sur le développement humain comme levier de performance.</p>
+    <div class="firm-grid">
+      <div class="firm-card" style="text-align:center;">
+        <div class="firm-icon" style="margin:0 auto 1rem;">🏢</div>
+        <h3 data-ed="fie-e1t">CGI</h3>
+        <p data-ed="fie-e1p">Multinationale TI · 90 000+ membres · Formation IE pour chefs d'équipe tech</p>
+      </div>
+      <div class="firm-card" style="text-align:center;">
+        <div class="firm-icon" style="margin:0 auto 1rem;">➕</div>
+        <h3 data-ed="fie-e2t">Votre organisation</h3>
+        <p data-ed="fie-e2p">Vous souhaitez rejoindre nos partenaires ? Contactez-nous pour discuter d'un programme sur mesure.</p>
+      </div>
+    </div>
+  </section>
+
+  <div style="padding:2.5rem;text-align:center;background:var(--navy);border-top:2px solid var(--gold)">
+    <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:1.25rem">Prêt à transformer vos leaders techniques ?</p>
+    <button class="btn-p" onclick="showPage('main')">Découvrir la formation CGI →</button>
+  </div>
+
 </div>
 
   <!-- FIRME -->
