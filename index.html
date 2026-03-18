@@ -506,6 +506,15 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   border-bottom:2px solid var(--gold);
   padding-bottom:2px;
 }
+/* Rendre le message flottant cliquable */
+#iris-floating-msg {
+  cursor: pointer;
+  transition: background 0.2s;
+  pointer-events: auto; /* S'assurer qu'il est cliquable */
+}
+#iris-floating-msg:hover {
+  background: var(--gold-dark);
+}
 </style>
 </head>
 <body>
@@ -2005,7 +2014,7 @@ function startIrisFloatingMessages() {
   msgDiv.classList.remove('hide');
   currentMsgIndex = 0;
   
-  // Changer de message toutes les 3 secondes
+  // Changer de message toutes les 5 secondes
   msgInterval = setInterval(() => {
     if (irisOpen) {
       msgDiv.classList.add('hide');
@@ -2021,7 +2030,7 @@ function startIrisFloatingMessages() {
     msgDiv.offsetHeight; // Force reflow
     msgDiv.style.animation = 'floatMessage 0.5s ease';
     
-  }, 3000);
+  }, 5000);
 }
 
 function stopIrisFloatingMessages() {
@@ -2158,8 +2167,8 @@ setTimeout(() => {
   </div>
 </div>
 
-<!-- Message flottant Iris -->
-<div id="iris-floating-msg" class="hide"></div>
+<!-- Message flottant Iris (cliquable) -->
+<div id="iris-floating-msg" class="hide" onclick="if(!irisOpen){toggleIris()}"></div>
 
 </body>
 </html>
