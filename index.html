@@ -1818,12 +1818,10 @@ async function sendIrisMsg(text) {
   showIrisTyping();
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://rvtylqrsaahjprnjesam.supabase.co/functions/v1/iris-chat', {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:400,
         system: IRIS_SYSTEM,
         messages: irisHistory
       })
