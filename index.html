@@ -1120,10 +1120,22 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
         <input id="cf-autre" type="text" placeholder="Décrivez votre sujet..." style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
       </div>
 
-      <!-- Organisation (optionnel) -->
+      <!-- Organisation + Téléphone -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;">
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Organisation <span style="color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;">(optionnel)</span></label>
+          <input id="cf-org" type="text" placeholder="Votre entreprise ou université" style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Fonction <span style="color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;">(optionnel)</span></label>
+          <input id="cf-fonction" type="text" placeholder="Ex : Directeur, Chef d'équipe..." style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+        </div>
+      </div>
+
+      <!-- Téléphone -->
       <div style="margin-bottom:1.25rem;">
-        <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Organisation <span style="color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;">(optionnel)</span></label>
-        <input id="cf-org" type="text" placeholder="Votre entreprise ou université" style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+        <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Téléphone <span style="color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;">(optionnel)</span></label>
+        <input id="cf-tel" type="tel" placeholder="+1 (514) 000-0000" style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
       </div>
 
       <!-- Message -->
@@ -1842,7 +1854,7 @@ function toggleAutreTheme() {
 }
 
 function resetContactForm() {
-  ['cf-nom','cf-email','cf-org','cf-msg','cf-autre'].forEach(id => {
+  ['cf-nom','cf-email','cf-org','cf-fonction','cf-tel','cf-msg','cf-autre'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -1876,7 +1888,9 @@ async function submitContactForm() {
   const theme  = themeEl.value === 'Autre'
     ? (document.getElementById('cf-autre').value.trim() || 'Autre')
     : themeEl.value;
-  const org    = document.getElementById('cf-org').value.trim();
+  const org      = document.getElementById('cf-org').value.trim();
+  const fonction = document.getElementById('cf-fonction').value.trim();
+  const tel      = document.getElementById('cf-tel').value.trim();
   const status = document.getElementById('cf-status');
 
   if (!nom)  { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez entrer votre nom.'; return; }
@@ -1901,7 +1915,9 @@ async function submitContactForm() {
     await emailjs.send('service_360gift', 'template_45djwlt', {
       nom:          nom,
       email:        email,
-      organisation: org || '—',
+      organisation: org      || '—',
+      fonction:     fonction || '—',
+      telephone:    tel      || '—',
       theme:        theme,
       destinataire: to,
       cc:           cc,
