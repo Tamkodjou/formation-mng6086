@@ -1478,11 +1478,17 @@ function showPage(n, scrollToContact = false) {
     'firme':'Notre Client',
     'formationie':'Qui sommes-nous ?',
     'team':'L\'équipe',
-    'main':'La formation'
+    'main':'La formation',
+    'ecrire':'Nous écrire'  // ← AJOUTÉ
   };
   
   document.querySelectorAll('.nav-links a').forEach(a => {
-    if(a.textContent.trim() === map[n] || (n === 'team' && a.textContent.trim() === 'Nous écrire')) {
+    // Si on est sur la page team et qu'on a scrollToContact = true, on active "Nous écrire"
+    if (n === 'team' && scrollToContact && a.textContent.trim() === 'Nous écrire') {
+      a.classList.add('active');
+    }
+    // Sinon, on active normalement selon le map
+    else if (a.textContent.trim() === map[n]) {
       a.classList.add('active');
     }
   });
