@@ -1861,7 +1861,6 @@ function cancelContactForm() {
 async function submitContactForm() {
   const at = '\u0040';
   const CARLOS  = 'guy-carlos.tamkodjou-tchio.1' + at + 'ulaval.ca';
-  const GMAIL   = 'carlos.tamkodjou' + at + 'gmail.com';
   const MEMBRES_CC = [
     'patrick.aka.1'                          + at + 'ulaval.ca',
     'julien.frascadore.1'                    + at + 'ulaval.ca',
@@ -1889,13 +1888,13 @@ async function submitContactForm() {
   // Déterminer destinataire principal et CC
   let to, cc;
   if (dest === 'ALL') {
-    // Toute l'équipe → Carlos principal + autres membres en CC + Gmail
+    // Toute l'équipe → Carlos principal + autres membres en CC
     to = CARLOS;
-    cc = [...MEMBRES_CC, GMAIL].join(', ');
+    cc = MEMBRES_CC.join(', ');
   } else {
-    // Membre spécifique → lui seul + Gmail en CC
+    // Membre spécifique → lui seul, pas de CC
     to = dest;
-    cc = GMAIL;
+    cc = '';
   }
 
   try {
@@ -2040,7 +2039,6 @@ function buildEmails() {
       'julien.frascadore.1'                 + at + 'ulaval.ca',
       'amine.gouizine.1'                    + at + 'ulaval.ca',
       'bommanin-franck-aristide.gnonteme.1' + at + 'ulaval.ca',
-      'carlos.tamkodjou'                    + at + 'gmail.com',
     ].join(',');
     footer.href = 'mai' + 'lto:' + carlos + '?cc=' + encodeURIComponent(cc);
     footer.textContent = '\u2709 \u00c9crire \u00e0 l\u0027\u00e9quipe';
