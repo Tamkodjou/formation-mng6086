@@ -1092,7 +1092,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
         <div>
           <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Destinataire *</label>
           <select id="cf-dest" style="width:100%;padding:0.75rem 1rem;background:#0e1e35;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;cursor:pointer;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
-            <option value="contact_equipe14@formationie.com">📧 Toute l'équipe</option>
+            <option value="ALL">📧 Toute l'équipe</option>
             <option value="guy-carlos.tamkodjou-tchio.1@ulaval.ca">GT · Guy Carlos Tamkodjou Tchio</option>
             <option value="patrick.aka.1@ulaval.ca">AP · Aka Pierre Patrick Aka</option>
             <option value="julien.frascadore.1@ulaval.ca">JF · Julien Frascadore</option>
@@ -1859,39 +1859,62 @@ function cancelContactForm() {
 }
 
 async function submitContactForm() {
-  const nom = document.getElementById('cf-nom').value.trim();
-  const email = document.getElementById('cf-email').value.trim();
-  const msg = document.getElementById('cf-msg').value.trim();
-  const dest = document.getElementById('cf-dest').value;
-  const themeEl = document.getElementById('cf-theme');
-  const theme = themeEl.value === 'Autre'
+  const at = '\u0040';
+  const CARLOS  = 'guy-carlos.tamkodjou-tchio.1' + at + 'ulaval.ca';
+  const GMAIL   = 'carlos.tamkodjou' + at + 'gmail.com';
+  const MEMBRES_CC = [
+    'patrick.aka.1'                          + at + 'ulaval.ca',
+    'julien.frascadore.1'                    + at + 'ulaval.ca',
+    'amine.gouizine.1'                       + at + 'ulaval.ca',
+    'bommanin-franck-aristide.gnonteme.1'    + at + 'ulaval.ca',
+  ];
+
+  const nom    = document.getElementById('cf-nom').value.trim();
+  const email  = document.getElementById('cf-email').value.trim();
+  const msg    = document.getElementById('cf-msg').value.trim();
+  const dest   = document.getElementById('cf-dest').value;
+  const themeEl= document.getElementById('cf-theme');
+  const theme  = themeEl.value === 'Autre'
     ? (document.getElementById('cf-autre').value.trim() || 'Autre')
     : themeEl.value;
-  const org = document.getElementById('cf-org').value.trim();
+  const org    = document.getElementById('cf-org').value.trim();
   const status = document.getElementById('cf-status');
 
-  if (!nom) { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez entrer votre nom.'; return; }
+  if (!nom)  { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez entrer votre nom.'; return; }
   if (!email || !email.includes('@')) { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez entrer un courriel valide.'; return; }
-  if (!msg) { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez écrire un message.'; return; }
+  if (!msg)  { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez écrire un message.'; return; }
 
   status.style.color='var(--gold)'; status.textContent='⏳ Envoi en cours...';
 
+  // Déterminer destinataire principal et CC
+  let to, cc;
+  if (dest === 'ALL') {
+    // Toute l'équipe → Carlos principal + autres membres en CC + Gmail
+    to = CARLOS;
+    cc = [...MEMBRES_CC, GMAIL].join(', ');
+  } else {
+    // Membre spécifique → lui seul + Gmail en CC
+    to = dest;
+    cc = GMAIL;
+  }
+
   try {
     await emailjs.send('service_360gift', 'template_45djwlt', {
-      nom: nom,
-      email: email,
+      nom:          nom,
+      email:        email,
       organisation: org || '—',
-      theme: theme,
-      destinataire: dest,
-      message: msg,
-      name: nom
+      theme:        theme,
+      destinataire: to,
+      cc:           cc,
+      message:      msg,
+      name:         nom
     });
     status.textContent = '';
     document.getElementById('contact-form-wrap').style.display = 'none';
     document.getElementById('cf-confirm').style.display = 'block';
   } catch(e) {
     status.style.color='#E24B4A';
-    status.textContent='⚠ Erreur d\'envoi. Écrivez-nous directement à contact_equipe14@formationie.com';
+    status.textContent='⚠ Erreur d\'envoi. Contactez-nous directement à guy-carlos.tamkodjou-tchio.1@ulaval.ca';
     console.error('EmailJS error:', e);
   }
 }
@@ -1936,7 +1959,7 @@ INFORMATIONS SUR FormationIE Conseil :
 - Vision : un monde où la promotion interne ne signifie plus isolement, mais croissance accompagnée.
 - Approche : ancrée dans le modèle CVF de Quinn (1988), cadran jaune — Relations humaines.
 - Valeurs : authenticité, rigueur académique, empathie pédagogique, imputabilité.
-- Contact : contact_equipe14@formationie.com · +1 (514) 299-6482
+- Contact : guy-carlos.tamkodjou-tchio.1@ulaval.ca · +1 (514) 299-6482
 
 INFORMATIONS SUR LA FORMATION :
 - Titre : Intelligence émotionnelle au service du leadership tech.
@@ -1993,15 +2016,13 @@ function toggleIris() {
 // ─── EMAILS ANTI-CLOUDFLARE ───────────────────────────────────
 // Les emails sont construits par JS — Cloudflare ne peut pas les détecter
 function buildEmails() {
-  const at = '\u0040'; // @
-  const ul = 'ulaval' + at + 'ca'; // non, on inverse
+  const at = '\u0040';
   const emails = [
-    { id:'em1', u:'guy-carlos.tamkodjou-tchio.1', d:'ulaval.ca' },
-    { id:'em2', u:'patrick.aka.1',               d:'ulaval.ca' },
-    { id:'em3', u:'julien.frascadore.1',          d:'ulaval.ca' },
-    { id:'em4', u:'amine.gouizine.1',             d:'ulaval.ca' },
+    { id:'em1', u:'guy-carlos.tamkodjou-tchio.1',        d:'ulaval.ca' },
+    { id:'em2', u:'patrick.aka.1',                       d:'ulaval.ca' },
+    { id:'em3', u:'julien.frascadore.1',                 d:'ulaval.ca' },
+    { id:'em4', u:'amine.gouizine.1',                    d:'ulaval.ca' },
     { id:'em5', u:'bommanin-franck-aristide.gnonteme.1', d:'ulaval.ca' },
-    { id:'em-footer', u:'contact_equipe14', d:'formationie.com' },
   ];
   emails.forEach(e => {
     const el = document.getElementById(e.id);
@@ -2010,6 +2031,20 @@ function buildEmails() {
     el.href = 'mai' + 'lto:' + addr;
     el.textContent = '\u2709 ' + addr;
   });
+  // Footer — Carlos principal, tous les autres en CC + Gmail
+  const footer = document.getElementById('em-footer');
+  if (footer) {
+    const carlos = 'guy-carlos.tamkodjou-tchio.1' + at + 'ulaval.ca';
+    const cc = [
+      'patrick.aka.1'                       + at + 'ulaval.ca',
+      'julien.frascadore.1'                 + at + 'ulaval.ca',
+      'amine.gouizine.1'                    + at + 'ulaval.ca',
+      'bommanin-franck-aristide.gnonteme.1' + at + 'ulaval.ca',
+      'carlos.tamkodjou'                    + at + 'gmail.com',
+    ].join(',');
+    footer.href = 'mai' + 'lto:' + carlos + '?cc=' + encodeURIComponent(cc);
+    footer.textContent = '\u2709 \u00c9crire \u00e0 l\u0027\u00e9quipe';
+  }
 }
 document.addEventListener('DOMContentLoaded', buildEmails);
 setTimeout(buildEmails, 500);
@@ -2144,13 +2179,13 @@ async function sendIrisMsg(text) {
       })
     });
     const data = await response.json();
-    const reply = data.content?.[0]?.text || "Je n'ai pas pu traiter votre question. Contactez-nous à contact_equipe14@formationie.com";
+    const reply = data.content?.[0]?.text || "Je n'ai pas pu traiter votre question. Contactez-nous à guy-carlos.tamkodjou-tchio.1@ulaval.ca";
     removeIrisTyping();
     addIrisMsg('bot', markdownToHtml(reply));
     irisHistory.push({ role:'assistant', content: reply });
   } catch(e) {
     removeIrisTyping();
-    addIrisMsg('bot', '⚠️ Connexion temporairement indisponible. Écrivez-nous directement à <a href="mailto:contact_equipe14@formationie.com" style="color:var(--gold)">contact_equipe14@formationie.com</a>');
+    addIrisMsg('bot', '⚠️ Connexion temporairement indisponible. Écrivez-nous directement à <a href="mailto:guy-carlos.tamkodjou-tchio.1@ulaval.ca" style="color:var(--gold)">guy-carlos.tamkodjou-tchio.1@ulaval.ca</a>');
   }
 }
 
