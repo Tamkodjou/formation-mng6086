@@ -569,6 +569,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
     <a onclick="showPage('formationie')">Qui sommes-nous ?</a>
     <a onclick="showPage('team')">L'équipe</a>
     <a onclick="showPage('main')">La formation</a>
+    <a onclick="showPage('team', true)">Nous écrire</a>
   </div>
 </nav>
 
@@ -939,7 +940,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 
   <!-- FORMULAIRE DE CONTACT -->
-  <section class="s" style="background:var(--navy);">
+  <section class="s" style="background:var(--navy);" id="contact-section">
     <div class="s-label" style="color:var(--gold);">Nous joindre</div>
     <div class="s-title" style="color:var(--white);">Écrivez-nous</div>
     <p style="color:rgba(255,255,255,0.6);font-size:0.95rem;margin-bottom:2rem;max-width:100%;">Une question sur la formation ? Un intérêt pour un partenariat ? Remplissez le formulaire ci-dessous.</p>
@@ -1349,11 +1350,12 @@ function setSyncStatus(msg, cls) {
   el.className = cls;
 }
 
-function showPage(n) {
+function showPage(n, scrollToContact = false) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + n).classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  
   const map = {
     'cover':'Accueil',
     'firme':'Notre Client',
@@ -1361,9 +1363,22 @@ function showPage(n) {
     'team':'L\'équipe',
     'main':'La formation'
   };
+  
   document.querySelectorAll('.nav-links a').forEach(a => {
-    if(a.textContent.trim() === map[n]) a.classList.add('active');
+    if(a.textContent.trim() === map[n] || (n === 'team' && a.textContent.trim() === 'Nous écrire')) {
+      a.classList.add('active');
+    }
   });
+  
+  // Si c'est le menu "Nous écrire", on scroll vers le formulaire de contact
+  if (scrollToContact && n === 'team') {
+    setTimeout(() => {
+      const contactSection = document.querySelector('#page-team section.s[style*="background:var(--navy)"]');
+      if (contactSection) {
+        contactSection.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+    }, 300);
+  }
 }
 
 function showMod(i) {
