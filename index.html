@@ -334,12 +334,79 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   padding:0.5rem; font-family:var(--fb); font-size:0.78rem; cursor:pointer;
 }
 
-/* IRIS CHATBOT */
-#iris-btn { position:fixed; bottom:1.5rem; left:1.5rem; z-index:9990; width:60px; height:60px; border-radius:50%; background:var(--gold); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.6rem; box-shadow:0 4px 20px rgba(245,197,24,0.4); transition:transform 0.2s; }
+/* IRIS CHATBOT - Position à droite */
+#iris-btn { 
+  position:fixed; 
+  bottom:1.5rem; 
+  right:1.5rem;  /* Changé de left à right */
+  z-index:9990; 
+  width:60px; 
+  height:60px; 
+  border-radius:50%; 
+  background:var(--gold); 
+  border:none; 
+  cursor:pointer; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  font-size:1.6rem; 
+  box-shadow:0 4px 20px rgba(245,197,24,0.4); 
+  transition:transform 0.2s; 
+  animation: gentlePulse 2s infinite; /* Animation de pulsation légère */
+}
 #iris-btn:hover { transform:scale(1.1); }
 #iris-btn .q-notif { position:absolute; top:0; right:0; width:16px; height:16px; background:#E24B4A; border-radius:50%; border:2px solid white; display:none; }
 #iris-btn .q-notif.on { display:block; }
-#iris-panel { position:fixed; bottom:5.5rem; left:1.5rem; z-index:9991; width:360px; max-height:520px; background:var(--navy); border:2px solid var(--gold); border-radius:1rem; display:none; flex-direction:column; box-shadow:0 8px 40px rgba(0,0,0,0.4); overflow:hidden; }
+
+#iris-panel { 
+  position:fixed; 
+  bottom:5.5rem; 
+  right:1.5rem;   /* Changé de left à right */
+  z-index:9991; 
+  width:360px; 
+  max-height:520px; 
+  background:var(--navy); 
+  border:2px solid var(--gold); 
+  border-radius:1rem; 
+  display:none; 
+  flex-direction:column; 
+  box-shadow:0 8px 40px rgba(0,0,0,0.4); 
+  overflow:hidden; 
+}
+
+/* Animation pour le message flottant */
+@keyframes gentlePulse {
+  0% { box-shadow: 0 4px 20px rgba(245,197,24,0.4); }
+  50% { box-shadow: 0 4px 30px rgba(245,197,24,0.8); }
+  100% { box-shadow: 0 4px 20px rgba(245,197,24,0.4); }
+}
+
+#iris-floating-msg {
+  position: fixed;
+  bottom: 5rem;
+  right: 5rem;  /* Positionné au-dessus de l'icône */
+  background: var(--navy);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 2rem;
+  border: 2px solid var(--gold);
+  font-size: 0.9rem;
+  font-family: var(--fb);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 9989;
+  white-space: nowrap;
+  animation: floatMessage 0.5s ease;
+  pointer-events: none;
+}
+
+@keyframes floatMessage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#iris-floating-msg.hide {
+  display: none;
+}
 #iris-panel.open { display:flex; }
 .quinn-head { background:var(--gold); padding:0.85rem 1.25rem; display:flex; align-items:center; gap:0.75rem; flex-shrink:0; }
 .quinn-avatar { width:36px; height:36px; border-radius:50%; background:var(--navy); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
@@ -369,11 +436,61 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 .quinn-send:hover { opacity:0.85; }
 @media(max-width:480px){ #quinn-panel{width:calc(100vw - 2rem);left:1rem;} }
 @media(max-width:768px){
-  .firm-grid,.two-grid,.obj-grid,.peda-grid,.price-grid,.ref-grid,.team-context,.stat-banner,.quinn-grid{grid-template-columns:1fr;}
-  .mod-panel.active{grid-template-columns:1fr;}
-  nav{padding:1rem;} section.s{padding:3rem 1.25rem;}
-  .team-grid,.quinn-diagram{width:100%;}
-  #config-panel{width:100%;}
+  .firm-grid,.two-grid,.obj-grid,.peda-grid,.price-grid,.ref-grid,.team-context,.stat-banner,.quinn-grid{
+    grid-template-columns:1fr;
+  }
+  .mod-panel.active{
+    grid-template-columns:1fr;
+  }
+  nav{
+    padding:1rem;
+  }
+  section.s{
+    padding:3rem 1.25rem;
+  }
+  .team-grid,.quinn-diagram{
+    width:100%;
+  }
+  #config-panel{
+    width:100%;
+  }
+  
+  /* Styles pour Iris en mode mobile */
+  #iris-panel {
+    width: calc(100vw - 2rem);
+    right: 1rem;
+    left: auto;
+    max-height: 450px;
+  }
+  
+  #iris-btn {
+    bottom: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.4rem;
+  }
+  
+  #iris-floating-msg {
+    right: 1rem;
+    bottom: 5rem;
+    font-size: 0.8rem;
+    white-space: normal;
+    max-width: 250px;
+    text-align: center;
+    padding: 0.6rem 1rem;
+  }
+  
+  .quinn-suggestions {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding: 0 0.75rem 0.75rem;
+  }
+  
+  .quinn-sug {
+    white-space: nowrap;
+    font-size: 0.7rem;
+  }
 }
 #page-formationie .s-sub,
 #page-formationie p.s-sub {
@@ -1855,6 +1972,79 @@ function toggleIris() {
   }
 }
 
+// ─── MESSAGES FLOTTANTS IRIS ─────────────────────────────────
+const irisMessages = [
+  "🌸 Je suis Iris, votre assistante virtuelle",
+  "🌸 Je suis Iris, je suis là pour vous aider",
+  "🌸 Je suis Iris, venez discuter avec moi",
+  "🌸 Je suis Iris, je peux vous aider à comprendre la formation",
+  "🌸 Je suis Iris, je sais tout sur la formation et je connais aussi plusieurs choses"
+];
+
+let currentMsgIndex = 0;
+let msgInterval;
+
+function startIrisFloatingMessages() {
+  const msgDiv = document.getElementById('iris-floating-msg');
+  if (!msgDiv) return;
+  
+  // Ne pas démarrer si le chat est ouvert
+  if (irisOpen) {
+    msgDiv.classList.add('hide');
+    return;
+  }
+  
+  // Afficher le premier message
+  msgDiv.textContent = irisMessages[0];
+  msgDiv.classList.remove('hide');
+  currentMsgIndex = 0;
+  
+  // Changer de message toutes les 3 secondes
+  msgInterval = setInterval(() => {
+    if (irisOpen) {
+      msgDiv.classList.add('hide');
+      return;
+    }
+    
+    currentMsgIndex = (currentMsgIndex + 1) % irisMessages.length;
+    msgDiv.textContent = irisMessages[currentMsgIndex];
+    msgDiv.classList.remove('hide');
+    
+    // Petite animation de clignotement
+    msgDiv.style.animation = 'none';
+    msgDiv.offsetHeight; // Force reflow
+    msgDiv.style.animation = 'floatMessage 0.5s ease';
+    
+  }, 3000);
+}
+
+function stopIrisFloatingMessages() {
+  if (msgInterval) {
+    clearInterval(msgInterval);
+  }
+  const msgDiv = document.getElementById('iris-floating-msg');
+  if (msgDiv) {
+    msgDiv.classList.add('hide');
+  }
+}
+
+// Modifier la fonction toggleIris pour arrêter/redémarrer les messages
+const originalToggleIris = toggleIris;
+toggleIris = function() {
+  originalToggleIris();
+  
+  if (irisOpen) {
+    stopIrisFloatingMessages();
+  } else {
+    startIrisFloatingMessages();
+  }
+};
+
+// Démarrer les messages flottants 2 secondes après le chargement
+setTimeout(() => {
+  startIrisFloatingMessages();
+}, 2000);
+
 function markdownToHtml(text) {
   return text
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -1961,6 +2151,9 @@ setTimeout(() => {
     <button class="quinn-send" onclick="sendIrisMsg(document.getElementById('iris-input').value)">➤</button>
   </div>
 </div>
+
+<!-- Message flottant Iris -->
+<div id="iris-floating-msg" class="hide"></div>
 
 </body>
 </html>
