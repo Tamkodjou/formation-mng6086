@@ -376,37 +376,51 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 
 /* Animation pour le message flottant */
 @keyframes gentlePulse {
-  0% { box-shadow: 0 4px 20px rgba(245,197,24,0.4); }
-  50% { box-shadow: 0 4px 30px rgba(245,197,24,0.8); }
-  100% { box-shadow: 0 4px 20px rgba(245,197,24,0.4); }
+  0%,100% { box-shadow: 0 4px 20px rgba(245,197,24,0.4); transform:scale(1); }
+  50% { box-shadow: 0 4px 35px rgba(245,197,24,0.9); transform:scale(1.08); }
 }
+@keyframes irisBlinkBtn {
+  0%,100% { opacity:1; }
+  50% { opacity:0.55; }
+}
+#iris-btn.blinking { animation: irisBlinkBtn 0.9s ease-in-out infinite; }
 
-#iris-floating-msg {
-  position: fixed;
-  bottom: 5rem;
-  right: 5rem;  /* Positionné au-dessus de l'icône */
-  background: var(--navy);
-  color: white;
-  padding: 0.75rem 1.25rem;
-  border-radius: 2rem;
-  border: 2px solid var(--gold);
-  font-size: 0.9rem;
-  font-family: var(--fb);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  z-index: 9989;
-  white-space: nowrap;
-  animation: floatMessage 0.5s ease;
-  pointer-events: none;
+#iris-bubble {
+  position:fixed;
+  bottom:5.2rem;
+  right:1.5rem;
+  z-index:9989;
+  max-width:260px;
+  background:var(--navy);
+  color:rgba(255,255,255,0.92);
+  padding:0.7rem 1.1rem 0.7rem 1rem;
+  border-radius:1.2rem 1.2rem 0.2rem 1.2rem;
+  border:2px solid var(--gold);
+  font-size:0.85rem;
+  font-family:var(--fb);
+  line-height:1.45;
+  box-shadow:0 6px 24px rgba(0,0,0,0.35);
+  cursor:pointer;
+  display:none;
+  align-items:center;
+  gap:0.5rem;
+  transition:opacity 0.3s, transform 0.3s;
 }
-
-@keyframes floatMessage {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+#iris-bubble::after {
+  content:'';
+  position:absolute;
+  bottom:-10px;
+  right:14px;
+  border-width:10px 8px 0 0;
+  border-style:solid;
+  border-color:var(--gold) transparent transparent transparent;
 }
-
-#iris-floating-msg.hide {
-  display: none;
-}
+#iris-bubble.visible { display:flex; animation:bubbleIn 0.35s cubic-bezier(.34,1.56,.64,1) forwards; }
+#iris-bubble.hiding  { animation:bubbleOut 0.25s ease forwards; }
+@keyframes bubbleIn  { from{opacity:0;transform:translateY(12px) scale(0.92)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes bubbleOut { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(8px) scale(0.95)} }
+#iris-bubble .bubble-icon { font-size:1.1rem; flex-shrink:0; }
+#iris-bubble .bubble-text { flex:1; }
 #iris-panel.open { display:flex; }
 .quinn-head { background:var(--gold); padding:0.85rem 1.25rem; display:flex; align-items:center; gap:0.75rem; flex-shrink:0; }
 .quinn-avatar { width:36px; height:36px; border-radius:50%; background:var(--navy); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
@@ -471,14 +485,11 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
     font-size: 1.4rem;
   }
   
-  #iris-floating-msg {
-    right: 1rem;
-    bottom: 5rem;
-    font-size: 0.8rem;
-    white-space: normal;
-    max-width: 250px;
-    text-align: center;
-    padding: 0.6rem 1rem;
+  #iris-bubble {
+    right:1rem;
+    bottom:5rem;
+    max-width:220px;
+    font-size:0.8rem;
   }
   
   .quinn-suggestions {
@@ -506,15 +517,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   border-bottom:2px solid var(--gold);
   padding-bottom:2px;
 }
-/* Rendre le message flottant cliquable */
-#iris-floating-msg {
-  cursor: pointer;
-  transition: background 0.2s;
-  pointer-events: auto; /* S'assurer qu'il est cliquable */
-}
-#iris-floating-msg:hover {
-  background: var(--gold-dark);
-}
+
 </style>
 </head>
 <body>
@@ -1989,76 +1992,84 @@ function toggleIris() {
 
 // ─── MESSAGES FLOTTANTS IRIS ─────────────────────────────────
 const irisMessages = [
-  "🌸 Je suis Iris, votre assistante virtuelle",
-  "🌸 Je suis Iris, je suis là pour vous aider",
-  "🌸 Je suis Iris, venez discuter avec moi",
-  "🌸 Je suis Iris, je peux vous aider à comprendre la formation",
-  "🌸 Je suis Iris, je sais tout sur la formation et je connais aussi plusieurs choses"
+  "Je suis Iris 🌸, votre assistante virtuelle — cliquez pour me parler !",
+  "Bonjour ! Je suis Iris, je suis là pour vous aider 😊",
+  "Venez discuter avec moi — je suis Iris, votre IA FormationIE !",
+  "Je peux vous expliquer la formation en détail — je suis Iris 🌸",
+  "Je connais tout sur la formation, l'équipe, le modèle CVF et bien plus !",
+  "Posez-moi vos questions — je suis Iris, disponible 24h/24 🌸"
 ];
 
-let currentMsgIndex = 0;
-let msgInterval;
+let irisBubbleIndex = 0;
+let irisBubbleTimer = null;
+let irisBubbleActive = false;
 
-function startIrisFloatingMessages() {
-  const msgDiv = document.getElementById('iris-floating-msg');
-  if (!msgDiv) return;
-  
-  // Ne pas démarrer si le chat est ouvert
-  if (irisOpen) {
-    msgDiv.classList.add('hide');
-    return;
-  }
-  
-  // Afficher le premier message
-  msgDiv.textContent = irisMessages[0];
-  msgDiv.classList.remove('hide');
-  currentMsgIndex = 0;
-  
-  // Changer de message toutes les 5 secondes
-  msgInterval = setInterval(() => {
-    if (irisOpen) {
-      msgDiv.classList.add('hide');
-      return;
-    }
-    
-    currentMsgIndex = (currentMsgIndex + 1) % irisMessages.length;
-    msgDiv.textContent = irisMessages[currentMsgIndex];
-    msgDiv.classList.remove('hide');
-    
-    // Petite animation de clignotement
-    msgDiv.style.animation = 'none';
-    msgDiv.offsetHeight; // Force reflow
-    msgDiv.style.animation = 'floatMessage 0.5s ease';
-    
-  }, 5000);
+function showIrisBubble() {
+  if (irisOpen) return;
+  const bubble = document.getElementById('iris-bubble');
+  const text   = document.getElementById('iris-bubble-text');
+  const btn    = document.getElementById('iris-btn');
+  if (!bubble || !text) return;
+
+  // Texte du message courant
+  text.textContent = irisMessages[irisBubbleIndex];
+
+  // Faire clignoter le bouton
+  btn.classList.add('blinking');
+
+  // Animer l'apparition
+  bubble.classList.remove('hiding');
+  bubble.classList.add('visible');
+
+  // Après 4s — masquer puis passer au suivant
+  irisBubbleTimer = setTimeout(() => {
+    hideBubbleThen(() => {
+      irisBubbleIndex = (irisBubbleIndex + 1) % irisMessages.length;
+      if (!irisOpen) showIrisBubble();
+    });
+  }, 4000);
+}
+
+function hideBubbleThen(cb) {
+  const bubble = document.getElementById('iris-bubble');
+  if (!bubble) { if(cb) cb(); return; }
+  bubble.classList.add('hiding');
+  bubble.addEventListener('animationend', function handler() {
+    bubble.removeEventListener('animationend', handler);
+    bubble.classList.remove('visible', 'hiding');
+    if (cb) cb();
+  }, { once: true });
 }
 
 function stopIrisFloatingMessages() {
-  if (msgInterval) {
-    clearInterval(msgInterval);
-  }
-  const msgDiv = document.getElementById('iris-floating-msg');
-  if (msgDiv) {
-    msgDiv.classList.add('hide');
-  }
+  clearTimeout(irisBubbleTimer);
+  irisBubbleActive = false;
+  const bubble = document.getElementById('iris-bubble');
+  const btn    = document.getElementById('iris-btn');
+  if (bubble) { bubble.classList.remove('visible','hiding'); }
+  if (btn) btn.classList.remove('blinking');
 }
 
-// Modifier la fonction toggleIris pour arrêter/redémarrer les messages
+function startIrisFloatingMessages() {
+  if (irisBubbleActive || irisOpen) return;
+  irisBubbleActive = true;
+  irisBubbleIndex = 0;
+  showIrisBubble();
+}
+
+// Modifier toggleIris pour arrêter/reprendre les messages
 const originalToggleIris = toggleIris;
 toggleIris = function() {
   originalToggleIris();
-  
   if (irisOpen) {
     stopIrisFloatingMessages();
   } else {
-    startIrisFloatingMessages();
+    setTimeout(startIrisFloatingMessages, 2000);
   }
 };
 
-// Démarrer les messages flottants 2 secondes après le chargement
-setTimeout(() => {
-  startIrisFloatingMessages();
-}, 2000);
+// Démarrer 3 secondes après le chargement
+setTimeout(startIrisFloatingMessages, 3000);
 
 function markdownToHtml(text) {
   return text
@@ -2129,15 +2140,18 @@ function irisKeydown(e) {
   }
 }
 
-// Afficher notification après 5s si le chat n'a pas été ouvert
-setTimeout(() => {
-  if (!irisOpen) document.querySelector('#iris-btn .q-notif').classList.add('on');
-}, 5000);
+// Notification gérée par le système de bulles ci-dessus
 
 // ─── FIN AJOUTS ────────────────────────────────────────────────
 
 // Images chargées directement dans loadFromSupabase
 </script>
+
+<!-- IRIS BUBBLE MESSAGES -->
+<div id="iris-bubble" onclick="toggleIris()">
+  <span class="bubble-icon">🌸</span>
+  <span class="bubble-text" id="iris-bubble-text"></span>
+</div>
 
 <!-- IRIS CHATBOT HTML -->
 <button id="iris-btn" onclick="toggleIris()" title="Parler à Iris, notre assistante IA">
