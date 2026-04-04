@@ -696,7 +696,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
     <a onclick="showPage('cover')">Accueil</a>
     <a onclick="showPage('firme')">Notre Client</a>
     <a onclick="showPage('formationie')">Qui sommes-nous ?</a>
-    <a onclick="showPage('team')">L'équipe</a>
+    <a onclick="showPage('team')">L'équipe de formation</a>
     <a onclick="showPage('main')">Notre offre</a>
     <a onclick="showPage('team', true)">Nous écrire</a>
   </div>
@@ -745,12 +745,24 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   <section class="s" style="background:var(--gray-100)">
     <div class="s-label">À propos</div>
     <div class="s-title">Qui sommes-nous ?</div>
-    <p class="s-sub">Fondé en mars 2021 à Montréal, FormationIE est un cabinet de formation à taille humaine.</p>
-    <p style="font-size:0.95rem;color:var(--gray-700);line-height:1.8;margin-bottom:1.25rem;max-width:100%;">
-      Notre création repose sur une conviction fondamentale partagée par ses associés : vos collaborateurs constituent la première richesse de votre entreprise.<br><br>
-      Pour consolider votre position de leader, il est crucial de permettre à vos équipes de valoriser leur savoir-faire, mais aussi leur savoir-être et de s'adapter avec agilité aux mutations constantes du marché.<br><br>
-      Notre rôle est de vous accompagner dans cette dynamique de transformation.
-    </p>
+    <ul style="list-style:none;padding:0;margin-bottom:1.5rem;">
+      <li style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.95rem;color:var(--gray-700);line-height:1.7;">
+        <span style="color:var(--gold);font-size:1.1rem;flex-shrink:0;margin-top:0.05rem;">→</span>
+        <span>Fondé en mars 2021 à Montréal, FormationIE est un cabinet de formation à taille humaine.</span>
+      </li>
+      <li style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.95rem;color:var(--gray-700);line-height:1.7;">
+        <span style="color:var(--gold);font-size:1.1rem;flex-shrink:0;margin-top:0.05rem;">→</span>
+        <span>Notre création repose sur une conviction fondamentale partagée par ses associés : vos collaborateurs constituent la première richesse de votre entreprise.</span>
+      </li>
+      <li style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.75rem;font-size:0.95rem;color:var(--gray-700);line-height:1.7;">
+        <span style="color:var(--gold);font-size:1.1rem;flex-shrink:0;margin-top:0.05rem;">→</span>
+        <span>Pour consolider votre position de leader, il est crucial de permettre à vos équipes de valoriser leur savoir-faire, mais aussi leur savoir-être et de s'adapter avec agilité aux mutations constantes du marché.</span>
+      </li>
+      <li style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.95rem;color:var(--gray-700);line-height:1.7;">
+        <span style="color:var(--gold);font-size:1.1rem;flex-shrink:0;margin-top:0.05rem;">→</span>
+        <span>Notre rôle est de vous accompagner dans cette dynamique de transformation.</span>
+      </li>
+    </ul>
     <div class="two-grid" style="margin-top:2rem;">
       <div class="c-card hl">
         <h3>LE CONSTAT FONDATEUR</h3>
@@ -770,6 +782,22 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
           <li>Un suivi mesurable à 60 jours post-formation</li>
         </ul>
       </div>
+    </div>
+  </section>
+
+  <!-- ÉQUIPE DE FORMATION -->
+  <section class="s" style="background:var(--white);padding:0;">
+    <div class="team-hero">
+      <div class="hero-tag">FormationIE Conseil · L'équipe de formation</div>
+      <h1 data-ed="team-h1">Cinq esprits.<br>Une vision commune.</h1>
+      <p data-ed="team-sub">Une équipe multidisciplinaire réunie autour d'une conviction : les organisations technologiques méritent des gestionnaires pleinement équipés pour diriger des humains, pas seulement des projets.</p>
+    </div>
+    <div class="team-grid">
+      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av1','__avatar_tm1__')"><span id="av1-init">GT</span><img id="av1" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm1-name">Guy Carlos Tamkodjou Tchio</h3><div class="member-role" data-ed="tm1-role">Chef de projet · Stratégie de contenu</div><p class="member-desc" data-ed="tm1-desc">Responsable de la cohérence globale de la formation et de l'architecture des modules.</p><a id="em1" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av2','__avatar_tm2__')"><span id="av2-init">AP</span><img id="av2" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm2-name">Aka Pierre Patrick Aka</h3><div class="member-role" data-ed="tm2-role">Expert pédagogique · Modules 1 &amp; 2</div><p class="member-desc" data-ed="tm2-desc">Responsable du design pédagogique des deux premiers modules.</p><a id="em2" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av3','__avatar_tm3__')"><span id="av3-init">JF</span><img id="av3" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm3-name">Julien Frascadore</h3><div class="member-role" data-ed="tm3-role">Expert pédagogique · Modules 3 &amp; 4</div><p class="member-desc" data-ed="tm3-desc">Responsable des modules sur l'empathie, le feedback et le leadership résonant.</p><a id="em3" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av4','__avatar_tm4__')"><span id="av4-init">AG</span><img id="av4" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm4-name">Amine Gouizine</h3><div class="member-role" data-ed="tm4-role">Analyste · Recherche &amp; références</div><p class="member-desc" data-ed="tm4-desc">Responsable de la revue de littérature et de la validation des sources académiques.</p><a id="em4" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av5','__avatar_tm5__')"><span id="av5-init">BG</span><img id="av5" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm5-name">Bommanin Franck Aristide Gnonteme</h3><div class="member-role" data-ed="tm5-role">Stratège commercial · Tarification &amp; vente</div><p class="member-desc" data-ed="tm5-desc">Responsable de la stratégie de mise en marché et de l'argumentaire de vente.</p><a id="em5" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
     </div>
   </section>
 
@@ -967,8 +995,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 
 </div>
-
-  <!-- FIRME -->
+<!-- FIRME -->
 <div class="page" id="page-firme">
 
   <div class="hero-f">
@@ -1066,7 +1093,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 <!-- TEAM -->
 <div class="page" id="page-team">
   <div class="team-hero">
-    <div class="hero-tag">FormationIE Conseil · L'équipe</div>
+    <div class="hero-tag">FormationIE Conseil · L'équipe de formation</div>
     <h1 data-ed="team-h1">Cinq esprits.<br>Une vision commune.</h1>
     <p data-ed="team-sub">Une équipe multidisciplinaire réunie autour d'une conviction : les organisations technologiques méritent des gestionnaires pleinement équipés pour diriger des humains, pas seulement des projets.</p>
   </div>
@@ -1274,6 +1301,63 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 </section>
 
+  <!-- ORGANIGRAMME CGI HIÉRARCHIQUE -->
+  <section class="s" style="background:var(--gray-100);overflow-x:auto;">
+    <div class="s-label">Structure organisationnelle</div>
+    <div class="s-title">Un extrait de l'organigramme de CGI</div>
+    <p style="font-size:0.88rem;color:var(--gray-500);margin-bottom:1.5rem;">Les <strong>gestionnaires TI en italique</strong> sont les profils cibles de notre formation — promus experts devenus leaders d'équipe.</p>
+    <div style="overflow-x:auto;font-family:'Courier New',monospace;font-size:0.82rem;line-height:1.8;background:var(--navy);color:rgba(255,255,255,0.88);padding:1.5rem 2rem;border-radius:0.75rem;border:2px solid var(--gold);">
+      <div style="color:var(--gold);font-weight:700;font-size:1rem;margin-bottom:0.5rem;">CTO / VP TI global</div>
+      <div>│</div>
+      <div>├─ <strong style="color:#ffccaa;">Architecture &amp; Innovation</strong></div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ Directeur architecture d'entreprise</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire architecture applicative</em> → Équipe architectes applicatifs</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire architecture infrastructure</em> → Équipe architectes systèmes / réseaux</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Architectes seniors / solutions</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Directeur innovation &amp; R&amp;D</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire projets IA</em> → Experts IA</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire projets Cloud</em> → Experts Cloud</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <em style="color:var(--gold);">Gestionnaire cybersécurité</em> → Experts cybersécurité</div>
+      <div>│</div>
+      <div>├─ <strong style="color:#aaffaa;">Développement &amp; Livraison</strong></div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ Directeur développement applicatif</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire de projets TI</em> → Équipes de développeurs</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Scrum Master / Lead technique</em> → Développeurs frontend/backend/fullstack</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ QA / Testeurs</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Directeur services-conseils TI</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire consultants TI</em> → Consultants / Analystes fonctionnels</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <em style="color:var(--gold);">Gestionnaire support projet</em> → Experts techniques</div>
+      <div>│</div>
+      <div>├─ <strong style="color:#aaaaff;">Infrastructures &amp; Cloud</strong></div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Directeur infrastructures</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire systèmes</em> → Administrateurs systèmes</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire réseaux</em> → Ingénieurs réseaux</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <em style="color:var(--gold);">Gestionnaire cloud</em> → Ingénieurs cloud / DevOps</div>
+      <div>│</div>
+      <div>├─ <strong style="color:#ffaaff;">Cybersécurité</strong></div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Directeur sécurité (CISO)</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire sécurité opérationnelle</em> → Analystes SOC</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire gouvernance, risque &amp; conformité (GRC)</em> → Analystes GRC</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <em style="color:var(--gold);">Gestionnaire sécurité offensive</em> → Experts pentest</div>
+      <div>│</div>
+      <div>├─ <strong style="color:#ffffaa;">Données &amp; IA</strong></div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Directeur data</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire data engineering</em> → Data engineers</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire data science</em> → Data scientists</div>
+      <div>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <em style="color:var(--gold);">Gestionnaire BI</em> → Analystes BI</div>
+      <div>│</div>
+      <div>└─ <strong style="color:#aaffff;">Support &amp; Exploitation</strong></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Directeur opérations TI</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire support niveau 1-2</em> → Techniciens support</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <em style="color:var(--gold);">Gestionnaire support niveau 3</em> → Experts techniques</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <em style="color:var(--gold);">Gestionnaire ITSM</em> → Analystes processus (incident, change, problem)</div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--gray-500);margin-top:1rem;text-align:center;font-style:italic;">Figure : Extrait représentatif de la structure TI de CGI Inc. · Les <em>gestionnaires en or</em> sont les profils cibles de notre formation.</p>
+  </section>
+
+
 <section class="s">
   <div class="s-label">Clientèle visée</div>
   <div class="s-title" data-ed="cib-title">Chefs d'équipe technique chez CGI</div>
@@ -1357,106 +1441,6 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 </section>
 
-<section class="s" style="background:var(--gold-pale)" id="prix-anchor">
-  <div class="s-label">Investissement</div>
-  <div class="s-title" data-ed="pr-title">Des tarifs adaptés à la réalité de CGI</div>
-  <div class="price-grid">
-    <div class="price-card"><div class="price-name" data-ed="p1n">Formule Essentiel</div><div class="price-amt" data-ed="p1a">2 800 $</div><div class="price-unit" data-ed="p1u">par participant · groupe de 12</div><ul class="price-list"><li data-ed="p1i1">4 modules en présentiel (2 jours)</li><li data-ed="p1i2">Matériel pédagogique inclus</li><li data-ed="p1i3">Journal réflexif numérique</li><li data-ed="p1i4">Attestation de formation</li></ul></div>
-    <div class="price-card feat"><div class="price-badge">Recommandé</div><div class="price-name" data-ed="p2n">Formule Complète</div><div class="price-amt" data-ed="p2a">3 950 $</div><div class="price-unit" data-ed="p2u">par participant · groupe de 12</div><ul class="price-list"><li data-ed="p2i1">Tout inclus dans Essentiel</li><li data-ed="p2i2">Session co-développement 60 jours</li><li data-ed="p2i3">Plan de développement IE suivi</li><li data-ed="p2i4">Rapport d'impact organisationnel</li></ul></div>
-    <div class="price-card"><div class="price-name" data-ed="p3n">Formule Sur Mesure</div><div class="price-amt" data-ed="p3a">Sur devis</div><div class="price-unit" data-ed="p3u">adapté à vos besoins</div><ul class="price-list"><li data-ed="p3i1">Diagnostic organisationnel préalable</li><li data-ed="p3i2">Formation co-construite avec CGI</li><li data-ed="p3i3">Coaching individuel</li><li data-ed="p3i4">Formation de formateurs internes</li></ul></div>
-  </div>
-</section>
-
-
-  <section class="s obj-pale">
-    <div class="s-label">Alignement stratégique</div>
-    <div class="s-title">Pourquoi notre formation est taillée pour CGI</div>
-    <div class="obj-grid">
-      <div class="obj-card">
-        <div class="obj-num">01</div>
-        <p data-ed="cgi-al1"><strong>Vocabulaire natif</strong> — Nos études de cas utilisent le langage CGI : sprints, code review, daily standup, dette technique, livrables agiles.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">02</div>
-        <p data-ed="cgi-al2"><strong>Profil cible précis</strong> — Nous nous adressons spécifiquement aux experts promus gestionnaires, profil dominant chez CGI.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">03</div>
-        <p data-ed="cgi-al3"><strong>Format adapté</strong> — 4 demi-journées modulaires qui s'intègrent dans les cycles de projets sans perturber les livraisons.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">04</div>
-        <p data-ed="cgi-al4"><strong>ROI mesurable</strong> — Chaque dollar investi est justifiable : coût de remplacement d'un développeur senior = 99 000 $ à 220 000 $.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">05</div>
-        <p data-ed="cgi-al5"><strong>Suivi à 60 jours</strong> — Des données concrètes remises aux gestionnaires CGI pour mesurer le transfert des apprentissages.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">06</div>
-        <p data-ed="cgi-al6"><strong>Ancrage académique</strong> — Goleman, Quinn, Edmondson : des auteurs reconnus dans les programmes de formation continue de CGI.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ORGANIGRAMME CGI -->
-  <section class="s" style="background:var(--gray-100);overflow-x:auto;">
-    <div class="s-label">Structure organisationnelle</div>
-    <div class="s-title">Un extrait de l'organigramme de CGI</div>
-    <p style="font-size:0.88rem;color:var(--gray-500);margin-bottom:1.5rem;">Les gestionnaires TI que nous formons se situent aux niveaux intermédiaires — entre les directeurs et les équipes opérationnelles.</p>
-    <div style="font-family:Arial,sans-serif;overflow-x:auto;">
-      <style>
-        .org-node{border:1px solid #888;padding:8px 12px;margin:4px;border-radius:5px;min-width:170px;text-align:center;font-size:0.82rem;line-height:1.4;}
-        .org-level{display:flex;justify-content:center;flex-wrap:wrap;margin-top:12px;}
-        .org-sublevel{display:flex;justify-content:center;flex-wrap:wrap;margin-top:8px;}
-        .org-arch{background:#ffcccc;}.org-dev{background:#ccffcc;}.org-infra{background:#ccccff;}
-        .org-sec{background:#ffccff;}.org-data{background:#ffffcc;}.org-support{background:#ccffff;}
-        .org-top{background:var(--navy);color:var(--gold);font-weight:700;padding:10px 20px;border-radius:8px;display:inline-block;margin-bottom:8px;}
-      </style>
-      <div style="text-align:center;">
-        <div class="org-top">CTO / VP TI global</div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-arch"><strong>Architecture &amp; Innovation</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-arch">Directeur architecture d'entreprise<br><em>Gestionnaire architecture applicative</em><br><em>Gestionnaire architecture infrastructure</em><br>Architectes seniors / solutions</div>
-          <div class="org-node org-arch">Directeur innovation &amp; R&amp;D<br><em>Gestionnaire projets IA</em><br><em>Gestionnaire projets Cloud</em><br><em>Gestionnaire cybersécurité</em><br>Experts IA, Cloud, Cybersécurité</div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-dev"><strong>Développement &amp; Livraison</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-dev">Directeur développement applicatif<br><em>Gestionnaire projets TI</em><br><em>Scrum Master / Lead technique</em><br>QA / Testeurs</div>
-          <div class="org-node org-dev">Directeur services-conseils TI<br><em>Gestionnaire consultants TI</em><br><em>Gestionnaire support projet</em></div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-infra"><strong>Infrastructures &amp; Cloud</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-infra">Directeur infrastructures<br><em>Gestionnaire systèmes</em><br><em>Gestionnaire réseaux</em><br><em>Gestionnaire cloud</em></div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-sec"><strong>Cybersécurité</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-sec">Directeur sécurité (CISO)<br><em>Gestionnaire sécurité opérationnelle</em><br><em>Gestionnaire GRC</em><br><em>Gestionnaire sécurité offensive</em></div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-data"><strong>Données &amp; IA</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-data">Directeur data<br><em>Gestionnaire data engineering</em><br><em>Gestionnaire data science</em><br><em>Gestionnaire BI</em></div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-support"><strong>Support &amp; Exploitation</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-support">Directeur opérations TI<br><em>Gestionnaire support 1-2</em><br><em>Gestionnaire support 3</em><br><em>Gestionnaire ITSM</em></div>
-        </div>
-      </div>
-      <p style="font-size:0.78rem;color:var(--gray-500);margin-top:1rem;text-align:center;font-style:italic;">Figure : Extrait représentatif de la structure TI de CGI Inc. · Les <em>gestionnaires en italique</em> sont les profils cibles de notre formation.</p>
-    </div>
-  </section>
 
 <section class="s">
   <div class="s-label">Références académiques et praticiennes</div>
