@@ -518,20 +518,6 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   padding-bottom:2px;
 }
 
-/* Styles pour l'organigramme CGI */
-.cgi-org-chart { margin:2rem 0; background:white; border-radius:1rem; padding:1rem; border:1px solid var(--gray-200); }
-.cgi-org-title { font-family:var(--fd); font-size:1.2rem; margin-bottom:1rem; color:var(--navy); text-align:center; }
-.org-level { display:flex; justify-content:center; flex-wrap:wrap; margin-top:1rem; }
-.org-node { border:1px solid #ccc; padding:0.6rem 0.8rem; margin:0.4rem; border-radius:8px; min-width:160px; text-align:center; background:#f9f9f9; }
-.org-node strong { display:block; font-size:0.9rem; }
-.org-node em { font-size:0.75rem; color:#555; display:block; }
-.org-sublevel { display:flex; justify-content:center; flex-wrap:wrap; margin-left:1rem; }
-.org-arch { background:#ffcccc; }
-.org-dev { background:#ccffcc; }
-.org-infra { background:#ccccff; }
-.org-sec { background:#ffccff; }
-.org-data { background:#ffffcc; }
-.org-support { background:#ccffff; }
 </style>
 </head>
 <body>
@@ -742,7 +728,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 </div>
 </div>
 
-<!-- FORMATIONIE CONSEIL (Qui sommes-nous ?) -->
+  <!-- FORMATIONIE CONSEIL -->
 <div class="page" id="page-formationie">
 
   <div class="hero-f">
@@ -755,67 +741,53 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
     </div>
   </div>
 
-  <!-- QUI SOMMES-NOUS (remplacé par la présentation de l'équipe) -->
+  <!-- QUI SOMMES NOUS -->
   <section class="s" style="background:var(--gray-100)">
-    <div class="s-label">Notre équipe</div>
-    <div class="s-title" data-ed="team-h1">Cinq esprits.<br>Une vision commune.</div>
-    <p class="s-sub" data-ed="team-sub">Une équipe multidisciplinaire réunie autour d'une conviction : les organisations technologiques méritent des gestionnaires pleinement équipés pour diriger des humains, pas seulement des projets.</p>
-    
-    <div class="team-grid" style="padding:0; margin-top:2rem;">
-      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av1','__avatar_tm1__')"><span id="av1-init">GT</span><img id="av1" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm1-name">Guy Carlos Tamkodjou Tchio</h3><div class="member-role" data-ed="tm1-role">Chef de projet · Stratégie de contenu</div><p class="member-desc" data-ed="tm1-desc">Responsable de la cohérence globale de la formation et de l'architecture des modules.</p><a id="em1" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
-      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av2','__avatar_tm2__')"><span id="av2-init">AP</span><img id="av2" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm2-name">Aka Pierre Patrick Aka</h3><div class="member-role" data-ed="tm2-role">Expert pédagogique · Modules 1 &amp; 2</div><p class="member-desc" data-ed="tm2-desc">Responsable du design pédagogique des deux premiers modules.</p><a id="em2" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
-      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av3','__avatar_tm3__')"><span id="av3-init">JF</span><img id="av3" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm3-name">Julien Frascadore</h3><div class="member-role" data-ed="tm3-role">Expert pédagogique · Modules 3 &amp; 4</div><p class="member-desc" data-ed="tm3-desc">Responsable des modules sur l'empathie, le feedback et le leadership résonant.</p><a id="em3" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
-      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av4','__avatar_tm4__')"><span id="av4-init">AG</span><img id="av4" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm4-name">Amine Gouizine</h3><div class="member-role" data-ed="tm4-role">Analyste · Recherche &amp; références</div><p class="member-desc" data-ed="tm4-desc">Responsable de la revue de littérature et de la validation des sources académiques.</p><a id="em4" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
-      <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av5','__avatar_tm5__')"><span id="av5-init">BG</span><img id="av5" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm5-name">Bommanin Franck Aristide Gnonteme</h3><div class="member-role" data-ed="tm5-role">Stratège commercial · Tarification &amp; vente</div><p class="member-desc" data-ed="tm5-desc">Responsable de la stratégie de mise en marché et de l'argumentaire de vente.</p><a id="em5" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
-    </div>
-  </section>
-
-  <!-- Ajout du texte Fondé en mars 2021 -->
-  <section class="s" style="background:var(--white)">
-    <div class="s-label">Notre histoire</div>
-    <div class="s-title" data-ed="fie-histoire-title">Fondé en mars 2021 à Montréal</div>
-    <div class="two-grid" style="margin-top:1rem;">
+    <div class="s-label">À propos</div>
+    <div class="s-title">Qui sommes-nous ?</div>
+    <p class="s-sub">Fondé en mars 2021 à Montréal, FormationIE est un cabinet de formation à taille humaine.</p>
+    <p style="font-size:0.95rem;color:var(--gray-700);line-height:1.8;margin-bottom:1.25rem;max-width:100%;">
+      Notre création repose sur une conviction fondamentale partagée par ses associés : vos collaborateurs constituent la première richesse de votre entreprise.<br><br>
+      Pour consolider votre position de leader, il est crucial de permettre à vos équipes de valoriser leur savoir-faire, mais aussi leur savoir-être et de s'adapter avec agilité aux mutations constantes du marché.<br><br>
+      Notre rôle est de vous accompagner dans cette dynamique de transformation.
+    </p>
+    <div class="two-grid" style="margin-top:2rem;">
       <div class="c-card hl">
-        <h3>Notre ADN</h3>
-        <p data-ed="fie-histoire-texte">FormationIE est un cabinet de formation à taille humaine. Notre création repose sur une conviction fondamentale partagée par ses associés : vos collaborateurs constituent la première richesse de votre entreprise. Pour consolider votre position de leader, il est crucial de permettre à vos équipes de valoriser leur savoir-faire, mais aussi leur savoir-être et de s'adapter avec agilité aux mutations constantes du marché. Notre rôle est de vous accompagner dans cette dynamique de transformation.</p>
+        <h3>LE CONSTAT FONDATEUR</h3>
+        <ul>
+          <li>Les meilleurs développeurs deviennent chefs d'équipe sans formation managériale</li>
+          <li>Les compétences techniques ne suffisent plus dès qu'on gère des humains</li>
+          <li>Les organisations perdent leurs talents faute de leaders compétents en gestion humaine</li>
+          <li>Les formations génériques ne parlent pas le langage des équipes tech</li>
+        </ul>
       </div>
       <div class="c-card">
         <h3>NOTRE RÉPONSE FACE AUX PROBLÈMES RENCONTRÉS PAR LES ORGANISATIONS</h3>
         <ul>
-          <li data-ed="fie-r1">Des formations ancrées dans la réalité des équipes agiles</li>
-          <li data-ed="fie-r2">Un vocabulaire natif : sprints, code review, daily standup</li>
-          <li data-ed="fie-r3">Des études de cas tirées de situations réelles en contexte TI</li>
-          <li data-ed="fie-r4">Un suivi mesurable à 60 jours post-formation</li>
+          <li>Des formations ancrées dans la réalité des équipes agiles</li>
+          <li>Un vocabulaire natif : sprints, code review, daily standup</li>
+          <li>Des études de cas tirées de situations réelles en contexte TI</li>
+          <li>Un suivi mesurable à 60 jours post-formation</li>
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- Nos Domaines d'Intervention (avant Références clients) -->
-  <section class="s obj-pale">
-    <div class="s-label">Nos Domaines d'Intervention</div>
-    <div class="s-title">Des compétences clés pour transformer vos équipes</div>
-    <div class="obj-grid" style="grid-template-columns:repeat(3,1fr);">
-      <div class="obj-card"><div class="obj-num">🎯</div><p><strong>Leadership et Management</strong><br>Fédérer les équipes et piloter le changement.</p></div>
-      <div class="obj-card"><div class="obj-num">💬</div><p><strong>Communication et Négociation</strong><br>Développer la force de conviction et la communication interpersonnelle.</p></div>
-      <div class="obj-card"><div class="obj-num">⚡</div><p><strong>Efficacité Professionnelle</strong><br>Optimiser les méthodes de travail face aux nouveaux enjeux du marché.</p></div>
-    </div>
-    <p style="font-size:0.85rem; color:var(--gray-500); text-align:center; margin-top:1rem;">Et d'autres interventions sur mesure selon vos besoins.</p>
-  </section>
-
-  <!-- RÉFÉRENCES CLIENTS -->
-  <section class="s obj-pale">
-    <div class="s-label">Références clients</div>
-    <div style="margin-bottom:2rem;">
-      <p style="font-family:var(--fd);font-size:clamp(1.4rem,2.5vw,2rem);color:var(--navy);line-height:1.3;margin-bottom:1rem;" data-ed="fie-ent-titre">Ils nous font confiance pour leurs projets en développement du leadership et en intelligence émotionnelle</p>
-      <p style="font-size:0.95rem;color:var(--gray-500);max-width:100%;width:100%;line-height:1.7;" data-ed="fie-ent-desc">C'est un honneur d'avoir gagné la confiance de nombreuses sociétés de renom. Grâce à notre excellente équipe ainsi qu'à nos formations sur mesure, toutes les entreprises, peu importe leur taille, peuvent bénéficier de nos produits et services.</p>
-    </div>
-    <div style="background:var(--white);border-radius:1rem;padding:2rem;border:1px solid rgba(245,197,24,0.3);">
-      <img src="https://raw.githubusercontent.com/Tamkodjou/formation-mng6086/main/Entreprises.png" alt="Entreprises partenaires" style="max-width:100%;border-radius:0.5rem;display:block;margin:0 auto;">
+  <!-- NOTRE FIRME (déplacé depuis Notre offre) -->
+  <section class="s accroche">
+    <div class="s-label">Notre firme</div>
+    <div class="s-title" data-ed="firm-title">FormationIE Conseil</div>
+    <p class="s-sub" data-ed="firm-sub">Nous croyons que les meilleures formations naissent de la rencontre entre la rigueur académique et la réalité opérationnelle des organisations TI.</p>
+    <div class="firm-grid">
+      <div class="firm-card"><div class="firm-icon">🧭</div><h3 data-ed="fc1t">Notre vision</h3><p data-ed="fc1p">Un monde où la promotion interne ne signifie plus isolement et désorientation, mais croissance accompagnée.</p></div>
+      <div class="firm-card"><div class="firm-icon">💎</div><h3 data-ed="fc2t">Nos valeurs</h3><p data-ed="fc2p">Authenticité · Rigueur académique · Empathie pédagogique · Imputabilité</p></div>
+      <div class="firm-card"><div class="firm-icon">🏗️</div><h3 data-ed="fc3t">Notre approche</h3><p data-ed="fc3p">Inspirée du modèle CVF de Quinn, ancrée dans la pratique agile, validée par le suivi à 60 jours.</p></div>
+      <div class="firm-card"><div class="firm-icon">🎯</div><h3 data-ed="fc4t">Notre spécialité</h3><p data-ed="fc4p">Le secteur TI : sprints, code review, daily standup — nous parlons votre langue.</p></div>
     </div>
   </section>
 
-  <!-- MISSION VISION VALEURS (déjà présent) -->
+
+  <!-- MISSION VISION VALEURS -->
   <section class="s accroche">
     <div class="s-label">Mission · Vision · Valeurs</div>
     <div class="s-title" data-ed="fie-mvv-title">Ce qui nous anime chaque jour</div>
@@ -947,6 +919,48 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
     </div>
   </section>
 
+  
+  <!-- NOS DOMAINES D'INTERVENTION -->
+  <section class="s" style="background:var(--navy);">
+    <div class="s-label" style="color:var(--gold);">Expertise</div>
+    <div class="s-title" style="color:var(--white);">Nos Domaines d'Intervention</div>
+    <p style="font-size:0.9rem;color:rgba(255,255,255,0.6);margin-bottom:2rem;">Des formations adaptées aux enjeux actuels du leadership en organisations technologiques, ancrées dans le modèle CVF de Quinn.</p>
+    <div class="firm-grid">
+      <div class="firm-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(245,197,24,0.2);">
+        <div class="firm-icon">🟡</div>
+        <h3 style="color:var(--gold);">Leadership et Management</h3>
+        <p style="color:rgba(255,255,255,0.75);">Fédérer les équipes et piloter le changement. Intelligence émotionnelle, management situationnel, coaching d'équipe — cadran jaune du modèle CVF de Quinn.</p>
+      </div>
+      <div class="firm-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(245,197,24,0.2);">
+        <div class="firm-icon">🟢</div>
+        <h3 style="color:var(--gold);">Communication et Négociation</h3>
+        <p style="color:rgba(255,255,255,0.75);">Développer la force de conviction et la communication interpersonnelle. Feedback SBI, écoute active, gestion des conflits — cadran vert du modèle CVF de Quinn.</p>
+      </div>
+      <div class="firm-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(245,197,24,0.2);">
+        <div class="firm-icon">🔵</div>
+        <h3 style="color:var(--gold);">Efficacité Professionnelle</h3>
+        <p style="color:rgba(255,255,255,0.75);">Optimiser les méthodes de travail face aux nouveaux enjeux du marché. Gestion des priorités (Matrice Covey), productivité agile — cadran bleu du modèle CVF de Quinn.</p>
+      </div>
+      <div class="firm-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(245,197,24,0.2);">
+        <div class="firm-icon">🔴</div>
+        <h3 style="color:var(--gold);">Gestion du Changement</h3>
+        <p style="color:rgba(255,255,255,0.75);">Accompagner la transformation organisationnelle. Processus d'amélioration continue, conformité et coordination — cadran rouge du modèle CVF de Quinn.</p>
+      </div>
+    </div>
+  </section>
+
+<!-- ENTREPRISES -->
+  <section class="s obj-pale">
+    <div class="s-label">Références clients</div>
+    <div style="margin-bottom:2rem;">
+      <p style="font-family:var(--fd);font-size:clamp(1.4rem,2.5vw,2rem);color:var(--navy);line-height:1.3;margin-bottom:1rem;" data-ed="fie-ent-titre">Ils nous font confiance pour leurs projets en développement du leadership et en intelligence émotionnelle</p>
+      <p style="font-size:0.95rem;color:var(--gray-500);max-width:100%;width:100%;line-height:1.7;" data-ed="fie-ent-desc">C'est un honneur d'avoir gagné la confiance de nombreuses sociétés de renom. Grâce à notre excellente équipe ainsi qu'à nos formations sur mesure, toutes les entreprises, peu importe leur taille, peuvent bénéficier de nos produits et services.</p>
+    </div>
+    <div style="background:var(--white);border-radius:1rem;padding:2rem;border:1px solid rgba(245,197,24,0.3);">
+      <img src="https://raw.githubusercontent.com/Tamkodjou/formation-mng6086/main/Entreprises.png" alt="Entreprises partenaires" style="max-width:100%;border-radius:0.5rem;display:block;margin:0 auto;">
+    </div>
+  </section>
+
   <div style="padding:2.5rem;text-align:center;background:var(--navy);border-top:2px solid var(--gold)">
     <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:1.25rem">Prêt à transformer vos leaders techniques ?</p>
     <button class="btn-p" onclick="showPage('main')">Découvrir la formation CGI →</button>
@@ -954,7 +968,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 
 </div>
 
-<!-- FIRME (Notre Client) -->
+  <!-- FIRME -->
 <div class="page" id="page-firme">
 
   <div class="hero-f">
@@ -1042,88 +1056,6 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
     </div>
   </section>
 
-  <section class="s obj-pale">
-    <div class="s-label">Alignement stratégique</div>
-    <div class="s-title">Pourquoi notre formation est taillée pour CGI</div>
-    <div class="obj-grid">
-      <div class="obj-card">
-        <div class="obj-num">01</div>
-        <p data-ed="cgi-al1"><strong>Vocabulaire natif</strong> — Nos études de cas utilisent le langage CGI : sprints, code review, daily standup, dette technique, livrables agiles.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">02</div>
-        <p data-ed="cgi-al2"><strong>Profil cible précis</strong> — Nous nous adressons spécifiquement aux experts promus gestionnaires, profil dominant chez CGI.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">03</div>
-        <p data-ed="cgi-al3"><strong>Format adapté</strong> — 4 demi-journées modulaires qui s'intègrent dans les cycles de projets sans perturber les livraisons.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">04</div>
-        <p data-ed="cgi-al4"><strong>ROI mesurable</strong> — Chaque dollar investi est justifiable : coût de remplacement d'un développeur senior = 99 000 $ à 220 000 $.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">05</div>
-        <p data-ed="cgi-al5"><strong>Suivi à 60 jours</strong> — Des données concrètes remises aux gestionnaires CGI pour mesurer le transfert des apprentissages.</p>
-      </div>
-      <div class="obj-card">
-        <div class="obj-num">06</div>
-        <p data-ed="cgi-al6"><strong>Ancrage académique</strong> — Goleman, Quinn, Edmondson : des auteurs reconnus dans les programmes de formation continue de CGI.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Organigramme CGI ajouté ici -->
-  <section class="s">
-    <div class="s-label">Organisation TI</div>
-    <div class="s-title">Un extrait de l'organigramme de CGI</div>
-    <div class="cgi-org-chart">
-      <div class="cgi-org-title">Direction des TI - CGI Inc.</div>
-      <div class="org-level">
-        <div class="org-node"><strong>CTO / VP TI global</strong></div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-arch"><strong>Architecture & Innovation</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-arch">Directeur architecture d'entreprise<br><em>Gestionnaire architecture applicative</em><br><em>Gestionnaire architecture infrastructure</em><br>Architectes seniors / solutions</div>
-          <div class="org-node org-arch">Directeur innovation & R&D<br><em>Gestionnaire projets IA</em><br><em>Gestionnaire projets Cloud</em><br><em>Gestionnaire cybersécurité</em><br>Experts IA, Cloud, Cybersécurité</div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-dev"><strong>Développement & Livraison</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-dev">Directeur développement applicatif<br><em>Gestionnaire projets TI</em><br><em>Scrum Master / Lead technique</em><br>QA / Testeurs</div>
-          <div class="org-node org-dev">Directeur services-conseils TI<br><em>Gestionnaire consultants TI</em><br><em>Gestionnaire support projet</em></div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-infra"><strong>Infrastructures & Cloud</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-infra">Directeur infrastructures<br><em>Gestionnaire systèmes</em><br><em>Gestionnaire réseaux</em><br><em>Gestionnaire cloud</em></div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-sec"><strong>Cybersécurité</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-sec">Directeur sécurité (CISO)<br><em>Gestionnaire sécurité opérationnelle</em><br><em>Gestionnaire GRC</em><br><em>Gestionnaire sécurité offensive</em></div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-data"><strong>Données & IA</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-data">Directeur data<br><em>Gestionnaire data engineering</em><br><em>Gestionnaire data science</em><br><em>Gestionnaire BI</em></div>
-        </div>
-      </div>
-      <div class="org-level">
-        <div class="org-node org-support"><strong>Support & Exploitation</strong></div>
-        <div class="org-sublevel">
-          <div class="org-node org-support">Directeur opérations TI<br><em>Gestionnaire support 1-2</em><br><em>Gestionnaire support 3</em><br><em>Gestionnaire ITSM</em></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Le bloc "Pourquoi notre formation est taillée pour CGI" a été déplacé vers la page "Notre offre" -->
   <div style="padding:2.5rem;text-align:center;background:var(--navy);border-top:2px solid var(--gold)">
     <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:1.25rem">Prêt à découvrir la formation conçue pour CGI ?</p>
     <button class="btn-p" onclick="showPage('main')">Voir la formation complète →</button>
@@ -1131,12 +1063,27 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 
 </div>
 
-<!-- TEAM (uniquement formulaire de contact) -->
+<!-- TEAM -->
 <div class="page" id="page-team">
   <div class="team-hero">
-    <div class="hero-tag">FormationIE Conseil · Nous écrire</div>
-    <h1>Une question ?<br>Un projet ?</h1>
-    <p>Notre équipe vous répond dans les plus brefs délais.</p>
+    <div class="hero-tag">FormationIE Conseil · L'équipe</div>
+    <h1 data-ed="team-h1">Cinq esprits.<br>Une vision commune.</h1>
+    <p data-ed="team-sub">Une équipe multidisciplinaire réunie autour d'une conviction : les organisations technologiques méritent des gestionnaires pleinement équipés pour diriger des humains, pas seulement des projets.</p>
+  </div>
+<!--
+  <div class="team-context" style="grid-template-columns:repeat(4,1fr);">
+  <div class="ctx-card"><div class="ctx-label">Université</div><div class="ctx-val" data-ed="ctx-univ">Université Laval · Faculté des sciences de l'administration</div></div>
+  <div class="ctx-card"><div class="ctx-label">Cours</div><div class="ctx-val" data-ed="ctx-cours">Habiletés personnelles de gestion · MNG-6086 · Hiver 2026</div></div>
+  <div class="ctx-card"><div class="ctx-label">Enseignante</div><div class="ctx-val" data-ed="ctx-prof">Mme Iris Roland · Travail de session · Avril 2026</div></div>
+  <div class="ctx-card"><div class="ctx-label">Équipe</div><div class="ctx-val">Équipe #14</div></div>
+  </div>
+  -->
+  <div class="team-grid">
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av1','__avatar_tm1__')"><span id="av1-init">GT</span><img id="av1" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm1-name">Guy Carlos Tamkodjou Tchio</h3><div class="member-role" data-ed="tm1-role">Chef de projet · Stratégie de contenu</div><p class="member-desc" data-ed="tm1-desc">Responsable de la cohérence globale de la formation et de l'architecture des modules.</p><a id="em1" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av2','__avatar_tm2__')"><span id="av2-init">AP</span><img id="av2" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm2-name">Aka Pierre Patrick Aka</h3><div class="member-role" data-ed="tm2-role">Expert pédagogique · Modules 1 &amp; 2</div><p class="member-desc" data-ed="tm2-desc">Responsable du design pédagogique des deux premiers modules.</p><a id="em2" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av3','__avatar_tm3__')"><span id="av3-init">JF</span><img id="av3" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm3-name">Julien Frascadore</h3><div class="member-role" data-ed="tm3-role">Expert pédagogique · Modules 3 &amp; 4</div><p class="member-desc" data-ed="tm3-desc">Responsable des modules sur l'empathie, le feedback et le leadership résonant.</p><a id="em3" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av4','__avatar_tm4__')"><span id="av4-init">AG</span><img id="av4" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm4-name">Amine Gouizine</h3><div class="member-role" data-ed="tm4-role">Analyste · Recherche &amp; références</div><p class="member-desc" data-ed="tm4-desc">Responsable de la revue de littérature et de la validation des sources académiques.</p><a id="em4" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av5','__avatar_tm5__')"><span id="av5-init">BG</span><img id="av5" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm5-name">Bommanin Franck Aristide Gnonteme</h3><div class="member-role" data-ed="tm5-role">Stratège commercial · Tarification &amp; vente</div><p class="member-desc" data-ed="tm5-desc">Responsable de la stratégie de mise en marché et de l'argumentaire de vente.</p><a id="em5" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
   </div>
 
   <!-- FORMULAIRE DE CONTACT -->
@@ -1244,7 +1191,7 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 </div>
 
-<!-- NOTRE OFFRE (anciennement La formation) -->
+<!-- FORMATION -->
 <div class="page" id="page-main">
 
 <div class="hero-f">
@@ -1263,28 +1210,29 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 </div>
 
-<!-- Copie de l'encadré LE CONSTAT FONDATEUR (avant ANCRAGE THÉORIQUE) -->
-<section class="s" style="background:var(--gray-100)">
-  <div class="two-grid" style="margin-bottom:2rem;">
-    <div class="c-card hl">
-      <h3>Le constat fondateur</h3>
-      <ul>
-        <li data-ed="fie-h1">Les meilleurs développeurs deviennent chefs d'équipe sans formation managériale</li>
-        <li data-ed="fie-h2">Les compétences techniques ne suffisent plus dès qu'on gère des humains</li>
-        <li data-ed="fie-h3">Les organisations perdent leurs talents faute de leaders compétents en gestion humaine</li>
-        <li data-ed="fie-h4">Les formations génériques ne parlent pas le langage des équipes tech</li>
-      </ul>
+  <!-- CONSTAT FONDATEUR dans Notre offre -->
+  <section class="s" style="background:var(--gold-pale);border-top:3px solid var(--gold);border-bottom:3px solid var(--gold);">
+    <div class="s-label">Le constat</div>
+    <div class="s-title" style="color:var(--navy);">Les organisations perdent leurs talents faute de leaders compétents en gestion humaine</div>
+    <div class="two-grid" style="margin-top:1.5rem;">
+      <div class="c-card hl">
+        <h3>LE CONSTAT FONDATEUR</h3>
+        <ul>
+          <li>Les meilleurs développeurs deviennent chefs d'équipe sans formation managériale</li>
+          <li>Les compétences techniques ne suffisent plus dès qu'on gère des humains</li>
+          <li>Les organisations perdent leurs talents faute de leaders compétents en gestion humaine</li>
+          <li>Les formations génériques ne parlent pas le langage des équipes tech</li>
+        </ul>
+      </div>
+      <div class="c-card">
+        <h3>Qu'est-ce que nous vous proposons ?</h3>
+        <p style="font-size:0.95rem;color:var(--gray-700);line-height:1.7;">
+          Une formation en Intelligence Émotionnelle basée sur le modèle de Quinn pour les chefs d'équipes techniques et les chefs de projets TI.
+        </p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Qu'est-ce que nous vous proposons ? (encadré ajouté) -->
-<section class="s" style="background:var(--gold-pale); padding:1.5rem 2rem; margin:0 2rem 2rem 2rem; border-radius:1rem;">
-  <div style="text-align:center;">
-    <p style="font-size:1.2rem; font-weight:600; color:var(--navy);">📌 Qu’est-ce que nous vous proposons ?</p>
-    <p style="font-size:1rem; color:var(--gray-700);">Une formation en Intelligence Emotionnelle basée sur le modèle de Quinn pour les chefs d’équipes techniques et les chefs de projets TI.</p>
-  </div>
-</section>
 
 <section class="s quinn-section">
   <div class="s-label">Ancrage théorique</div>
@@ -1308,7 +1256,6 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 </section>
 
-<!-- La section "Notre firme" a été déplacée vers "Qui sommes-nous". On la supprime donc d'ici. -->
 
 <section class="s accroche">
   <div class="s-label">Le problème qu'on résout</div>
@@ -1420,19 +1367,96 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
   </div>
 </section>
 
-<!-- Bloc déplacé depuis "Notre client" : Pourquoi notre formation est taillée pour CGI -->
-<section class="s obj-pale">
-  <div class="s-label">Pour CGI</div>
-  <div class="s-title">Pourquoi notre formation est taillée pour CGI</div>
-  <div class="obj-grid">
-    <div class="obj-card"><div class="obj-num">01</div><p><strong>Vocabulaire natif</strong> — Nos études de cas utilisent le langage CGI : sprints, code review, daily standup, dette technique, livrables agiles.</p></div>
-    <div class="obj-card"><div class="obj-num">02</div><p><strong>Profil cible précis</strong> — Nous nous adressons spécifiquement aux experts promus gestionnaires, profil dominant chez CGI.</p></div>
-    <div class="obj-card"><div class="obj-num">03</div><p><strong>Format adapté</strong> — 4 demi-journées modulaires qui s'intègrent dans les cycles de projets sans perturber les livraisons.</p></div>
-    <div class="obj-card"><div class="obj-num">04</div><p><strong>ROI mesurable</strong> — Chaque dollar investi est justifiable : coût de remplacement d'un développeur senior = 99 000 $ à 220 000 $.</p></div>
-    <div class="obj-card"><div class="obj-num">05</div><p><strong>Suivi à 60 jours</strong> — Des données concrètes remises aux gestionnaires CGI pour mesurer le transfert des apprentissages.</p></div>
-    <div class="obj-card"><div class="obj-num">06</div><p><strong>Ancrage académique</strong> — Goleman, Quinn, Edmondson : des auteurs reconnus dans les programmes de formation continue de CGI.</p></div>
-  </div>
-</section>
+
+  <section class="s obj-pale">
+    <div class="s-label">Alignement stratégique</div>
+    <div class="s-title">Pourquoi notre formation est taillée pour CGI</div>
+    <div class="obj-grid">
+      <div class="obj-card">
+        <div class="obj-num">01</div>
+        <p data-ed="cgi-al1"><strong>Vocabulaire natif</strong> — Nos études de cas utilisent le langage CGI : sprints, code review, daily standup, dette technique, livrables agiles.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">02</div>
+        <p data-ed="cgi-al2"><strong>Profil cible précis</strong> — Nous nous adressons spécifiquement aux experts promus gestionnaires, profil dominant chez CGI.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">03</div>
+        <p data-ed="cgi-al3"><strong>Format adapté</strong> — 4 demi-journées modulaires qui s'intègrent dans les cycles de projets sans perturber les livraisons.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">04</div>
+        <p data-ed="cgi-al4"><strong>ROI mesurable</strong> — Chaque dollar investi est justifiable : coût de remplacement d'un développeur senior = 99 000 $ à 220 000 $.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">05</div>
+        <p data-ed="cgi-al5"><strong>Suivi à 60 jours</strong> — Des données concrètes remises aux gestionnaires CGI pour mesurer le transfert des apprentissages.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">06</div>
+        <p data-ed="cgi-al6"><strong>Ancrage académique</strong> — Goleman, Quinn, Edmondson : des auteurs reconnus dans les programmes de formation continue de CGI.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORGANIGRAMME CGI -->
+  <section class="s" style="background:var(--gray-100);overflow-x:auto;">
+    <div class="s-label">Structure organisationnelle</div>
+    <div class="s-title">Un extrait de l'organigramme de CGI</div>
+    <p style="font-size:0.88rem;color:var(--gray-500);margin-bottom:1.5rem;">Les gestionnaires TI que nous formons se situent aux niveaux intermédiaires — entre les directeurs et les équipes opérationnelles.</p>
+    <div style="font-family:Arial,sans-serif;overflow-x:auto;">
+      <style>
+        .org-node{border:1px solid #888;padding:8px 12px;margin:4px;border-radius:5px;min-width:170px;text-align:center;font-size:0.82rem;line-height:1.4;}
+        .org-level{display:flex;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+        .org-sublevel{display:flex;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+        .org-arch{background:#ffcccc;}.org-dev{background:#ccffcc;}.org-infra{background:#ccccff;}
+        .org-sec{background:#ffccff;}.org-data{background:#ffffcc;}.org-support{background:#ccffff;}
+        .org-top{background:var(--navy);color:var(--gold);font-weight:700;padding:10px 20px;border-radius:8px;display:inline-block;margin-bottom:8px;}
+      </style>
+      <div style="text-align:center;">
+        <div class="org-top">CTO / VP TI global</div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-arch"><strong>Architecture &amp; Innovation</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-arch">Directeur architecture d'entreprise<br><em>Gestionnaire architecture applicative</em><br><em>Gestionnaire architecture infrastructure</em><br>Architectes seniors / solutions</div>
+          <div class="org-node org-arch">Directeur innovation &amp; R&amp;D<br><em>Gestionnaire projets IA</em><br><em>Gestionnaire projets Cloud</em><br><em>Gestionnaire cybersécurité</em><br>Experts IA, Cloud, Cybersécurité</div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-dev"><strong>Développement &amp; Livraison</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-dev">Directeur développement applicatif<br><em>Gestionnaire projets TI</em><br><em>Scrum Master / Lead technique</em><br>QA / Testeurs</div>
+          <div class="org-node org-dev">Directeur services-conseils TI<br><em>Gestionnaire consultants TI</em><br><em>Gestionnaire support projet</em></div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-infra"><strong>Infrastructures &amp; Cloud</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-infra">Directeur infrastructures<br><em>Gestionnaire systèmes</em><br><em>Gestionnaire réseaux</em><br><em>Gestionnaire cloud</em></div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-sec"><strong>Cybersécurité</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-sec">Directeur sécurité (CISO)<br><em>Gestionnaire sécurité opérationnelle</em><br><em>Gestionnaire GRC</em><br><em>Gestionnaire sécurité offensive</em></div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-data"><strong>Données &amp; IA</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-data">Directeur data<br><em>Gestionnaire data engineering</em><br><em>Gestionnaire data science</em><br><em>Gestionnaire BI</em></div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-support"><strong>Support &amp; Exploitation</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-support">Directeur opérations TI<br><em>Gestionnaire support 1-2</em><br><em>Gestionnaire support 3</em><br><em>Gestionnaire ITSM</em></div>
+        </div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--gray-500);margin-top:1rem;text-align:center;font-style:italic;">Figure : Extrait représentatif de la structure TI de CGI Inc. · Les <em>gestionnaires en italique</em> sont les profils cibles de notre formation.</p>
+    </div>
+  </section>
 
 <section class="s">
   <div class="s-label">Références académiques et praticiennes</div>
@@ -1484,11 +1508,850 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
 </footer>
 
 <script>
-// (Le script reste identique à l'original, seule la structure HTML a changé)
-// Afin de préserver toutes les fonctionnalités, je conserve le script exactement comme dans le fichier d'origine.
-// Par souci de longueur, je ne le recopie pas intégralement ici, mais dans le fichier final il sera présent.
-// Pour la version définitive, le script est le même que celui du fichier index-3.html fourni.
-// Je l'inclus ci-dessous sous forme raccourcie (mais dans le fichier téléchargeable, il sera complet).
+const SUPABASE_URL = 'https://rvtylqrsaahjprnjesam.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_-pFypKhYTd09pRjgoz6vYg_6Kgz_NMF';
+const PW = 'formationie2026';
+let editMode = false;
+let saveTimeout = null;
+let sb = null;
+
+async function initSupabase() {
+  try {
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    await loadFromSupabase();
+  } catch(e) {
+    console.warn('Supabase init error:', e);
+  } finally {
+    setTimeout(() => {
+      const ls = document.getElementById('loading-screen');
+      ls.classList.add('hide');
+      setTimeout(() => ls.style.display = 'none', 500);
+    }, 1500);
+  }
+}
+
+async function loadFromSupabase() {
+  try {
+    const { data, error } = await sb.from('contenu').select('cle, valeur');
+    if (error) throw error;
+    if (!data || data.length === 0) return;
+
+    const avatarMap = {'__avatar_tm1__':'av1','__avatar_tm2__':'av2','__avatar_tm3__':'av3','__avatar_tm4__':'av4','__avatar_tm5__':'av5'};
+    const imageKeys = [...Object.keys(avatarMap), '__logo__'];
+
+    data.forEach(row => {
+      if (!row.valeur) return;
+
+      // Images — avatars
+      if (avatarMap[row.cle]) {
+        const imgEl = document.getElementById(avatarMap[row.cle]);
+        const initEl = document.getElementById(avatarMap[row.cle] + '-init');
+        if (imgEl) { imgEl.src = row.valeur; imgEl.style.display = 'block'; }
+        if (initEl) initEl.style.display = 'none';
+        return;
+      }
+
+      // Image — logo
+      if (row.cle === '__logo__') {
+        const imgEl = document.getElementById('logo-img');
+        const txtEl = document.getElementById('logo-text');
+        if (imgEl && row.valeur) { imgEl.src = row.valeur; imgEl.style.display = 'block'; }
+        if (txtEl && row.valeur) txtEl.style.display = 'none';
+        return;
+      }
+
+      // Config visuelle
+      if (row.cle === '__visual_config__') {
+        try { applyVisualConfig(JSON.parse(row.valeur)); } catch(e) {}
+        return;
+      }
+
+      // Textes éditables
+      const el = document.querySelector('[data-ed="' + row.cle + '"]');
+      if (el) el.innerHTML = row.valeur;
+    });
+
+    setSyncStatus('✓ Contenu chargé', 'saved');
+  } catch(e) {
+    console.warn('Load error:', e);
+  }
+}
+
+async function saveToSupabase(cle, valeur) {
+  if (!sb) return;
+  setSyncStatus('Sauvegarde...', 'saving');
+  try {
+    const { error } = await sb.from('contenu').upsert({ cle, valeur }, { onConflict: 'cle' });
+    if (error) throw error;
+    setSyncStatus('✓ Sauvegardé en ligne', 'saved');
+    setTimeout(() => setSyncStatus('', ''), 3000);
+  } catch(e) {
+    setSyncStatus('⚠ Erreur de sauvegarde', '');
+    console.warn('Save error:', e);
+  }
+}
+
+async function saveAll() {
+  const elements = document.querySelectorAll('[data-ed]');
+  setSyncStatus('Sauvegarde de tout...', 'saving');
+  const rows = Array.from(elements).map(el => ({
+    cle: el.getAttribute('data-ed'),
+    valeur: el.innerHTML
+  }));
+  try {
+    const { error } = await sb.from('contenu').upsert(rows, { onConflict: 'cle' });
+    if (error) throw error;
+    setSyncStatus('✓ Tout sauvegardé !', 'saved');
+    showToast('💾 Tout le contenu sauvegardé en ligne !');
+    setTimeout(() => setSyncStatus('', ''), 4000);
+  } catch(e) {
+    setSyncStatus('⚠ Erreur', '');
+    showToast('⚠️ Erreur de sauvegarde — vérifiez la connexion');
+  }
+}
+
+async function resetContent() {
+  if (!confirm('Supprimer tout le contenu personnalisé et revenir au texte original ?')) return;
+  try {
+    await sb.from('contenu').delete().neq('cle', '');
+    showToast('↩ Réinitialisé — rechargez la page');
+    setTimeout(() => location.reload(), 1500);
+  } catch(e) {
+    showToast('⚠️ Erreur lors de la réinitialisation');
+  }
+}
+
+function setSyncStatus(msg, cls) {
+  const el = document.getElementById('sync-status');
+  el.textContent = msg;
+  el.className = cls;
+}
+
+function showPage(n, scrollToContact = false) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + n).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  
+  const map = {
+    'cover':'Accueil',
+    'firme':'Notre Client',
+    'formationie':'Qui sommes-nous ?',
+    'team':'L\'équipe',
+    'main':'La formation',
+    'ecrire':'Nous écrire'  // ← AJOUTÉ
+  };
+  
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    // Si on est sur la page team et qu'on a scrollToContact = true, on active "Nous écrire"
+    if (n === 'team' && scrollToContact && a.textContent.trim() === 'Nous écrire') {
+      a.classList.add('active');
+    }
+    // Sinon, on active normalement selon le map
+    else if (a.textContent.trim() === map[n]) {
+      a.classList.add('active');
+    }
+  });
+  
+  // Si c'est le menu "Nous écrire", on scroll vers le formulaire de contact
+  if (scrollToContact && n === 'team') {
+    setTimeout(() => {
+      const contactSection = document.querySelector('#page-team section.s[style*="background:var(--navy)"]');
+      if (contactSection) {
+        contactSection.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+    }, 300);
+  }
+}
+
+function showMod(i) {
+  document.querySelectorAll('.mod-panel').forEach((p,j) => p.classList.toggle('active', i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j) => b.classList.toggle('active', i===j));
+}
+
+function toggleEditMode() {
+  if (!editMode) {
+    document.getElementById('lock-overlay').style.display = 'flex';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-error').style.display = 'none';
+    setTimeout(() => document.getElementById('pw-input').focus(), 100);
+  } else {
+    disableEdit();
+  }
+}
+
+function checkPw() {
+  if (document.getElementById('pw-input').value === PW) {
+    document.getElementById('lock-overlay').style.display = 'none';
+    enableEdit();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+function enableEdit() {
+  editMode = true;
+  document.querySelectorAll('[data-ed]').forEach(el => {
+    el.contentEditable = 'true';
+    el.addEventListener('input', () => {
+      clearTimeout(saveTimeout);
+      setSyncStatus('En attente...', 'saving');
+      saveTimeout = setTimeout(() => {
+        saveToSupabase(el.getAttribute('data-ed'), el.innerHTML);
+      }, 1500);
+    });
+  });
+  document.getElementById('edit-status').textContent = 'Mode édition — sauvegarde automatique activée';
+  document.getElementById('edit-indicator').className = 'on';
+  document.getElementById('toggle-edit-btn').textContent = '🔓 Désactiver';
+  document.getElementById('save-btn').style.display = 'inline-block';
+  document.getElementById('reset-btn').style.display = 'inline-block';
+  showToast('✏️ Mode édition actif — chaque modification se sauvegarde automatiquement en ligne');
+}
+
+function disableEdit() {
+  editMode = false;
+  document.querySelectorAll('[data-ed]').forEach(el => el.contentEditable = 'false');
+  document.getElementById('edit-status').textContent = 'Mode lecture';
+  document.getElementById('edit-indicator').className = '';
+  document.getElementById('toggle-edit-btn').textContent = '🔒 Activer l\'édition';
+  document.getElementById('save-btn').style.display = 'none';
+  document.getElementById('reset-btn').style.display = 'none';
+  showToast('👁 Mode lecture réactivé');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+initSupabase();
+
+// ─── FORMATTING TOOLBAR ───────────────────────────────────────
+function execFmt(cmd, val) {
+  document.execCommand(cmd, false, val || null);
+  const el = document.activeElement.closest('[data-ed]') || lastFocused;
+  if (el) {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => saveToSupabase(el.getAttribute('data-ed'), el.innerHTML), 1500);
+  }
+}
+
+let lastFocused = null;
+let toolbarPinned = false;
+
+document.addEventListener('selectionchange', () => {
+  if (!editMode) return;
+  const sel = window.getSelection();
+  const toolbar = document.getElementById('fmt-toolbar');
+  if (!sel || sel.isCollapsed || sel.toString().trim() === '') {
+    if (!toolbarPinned) toolbar.classList.remove('visible');
+    return;
+  }
+  const range = sel.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  if (rect.width === 0) return;
+  toolbar.classList.add('visible');
+  const top = rect.top + window.scrollY - toolbar.offsetHeight - 10;
+  const left = Math.min(rect.left + window.scrollX, window.innerWidth - toolbar.offsetWidth - 10);
+  toolbar.style.top = Math.max(50, top) + 'px';
+  toolbar.style.left = Math.max(10, left) + 'px';
+});
+
+document.addEventListener('focusin', (e) => {
+  const ed = e.target.closest('[data-ed]');
+  if (ed) lastFocused = ed;
+});
+
+// ─── CONFIG PANEL ─────────────────────────────────────────────
+function toggleConfigPanel() {
+  const panel = document.getElementById('config-panel');
+  panel.classList.toggle('open');
+}
+
+function updateCSSVar(varName, value) {
+  document.documentElement.style.setProperty(varName, value);
+  if (varName === '--gold') {
+    const dark = shadeColor(value, -20);
+    document.documentElement.style.setProperty('--gold-dark', dark);
+  }
+}
+
+function shadeColor(hex, pct) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, Math.max(0, (num >> 16) + pct*2.55|0));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + pct*2.55|0));
+  const b = Math.min(255, Math.max(0, (num & 0xff) + pct*2.55|0));
+  return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function updateFontSize(val) {
+  document.body.style.fontSize = val + 'px';
+  document.getElementById('font-size-val').textContent = val + 'px';
+}
+
+function updateLineHeight(val) {
+  document.body.style.lineHeight = val;
+  document.getElementById('line-height-val').textContent = val;
+}
+
+function updateBodyFont(val) {
+  document.body.style.fontFamily = val;
+}
+
+function updateSectionBg(selector, color) {
+  document.querySelectorAll(selector).forEach(el => el.style.background = color);
+}
+
+function updateBorderWidth(val) {
+  document.getElementById('border-val').textContent = val + 'px';
+  document.querySelectorAll('nav, .team-hero, .hero-f, footer, .quinn-section').forEach(el => {
+    el.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim();
+    if (el.style.borderBottomWidth !== undefined) el.style.borderBottomWidth = val + 'px';
+    if (el.style.borderTopWidth !== undefined) el.style.borderTopWidth = val + 'px';
+  });
+}
+
+function getVisualConfig() {
+  return {
+    gold: document.documentElement.style.getPropertyValue('--gold') || '#F5C518',
+    navy: document.documentElement.style.getPropertyValue('--navy') || '#0A1628',
+    goldPale: document.documentElement.style.getPropertyValue('--gold-pale') || '#FFFBE6',
+    gray100: document.documentElement.style.getPropertyValue('--gray-100') || '#F4F5F7',
+    fontSize: document.getElementById('font-size-range').value,
+    lineHeight: document.getElementById('line-height-range').value,
+    bodyFont: document.body.style.fontFamily || "'DM Sans',sans-serif",
+    borderWidth: document.getElementById('border-range').value,
+  };
+}
+
+async function saveVisualConfig() {
+  const config = getVisualConfig();
+  try {
+    await sb.from('contenu').upsert({ cle: '__visual_config__', valeur: JSON.stringify(config) }, { onConflict: 'cle' });
+    showToast('🎨 Configuration visuelle sauvegardée !');
+  } catch(e) {
+    showToast('⚠️ Erreur de sauvegarde de la configuration');
+  }
+}
+
+function applyVisualConfig(config) {
+  if (!config) return;
+  if (config.gold) { updateCSSVar('--gold', config.gold); document.getElementById('sw-gold').style.background = config.gold; }
+  if (config.navy) { updateCSSVar('--navy', config.navy); document.getElementById('sw-navy').style.background = config.navy; }
+  if (config.goldPale) { updateCSSVar('--gold-pale', config.goldPale); document.getElementById('sw-pale').style.background = config.goldPale; }
+  if (config.gray100) { updateCSSVar('--gray-100', config.gray100); document.getElementById('sw-gray').style.background = config.gray100; }
+  if (config.fontSize) { updateFontSize(config.fontSize); document.getElementById('font-size-range').value = config.fontSize; }
+  if (config.lineHeight) { updateLineHeight(config.lineHeight); document.getElementById('line-height-range').value = config.lineHeight; }
+  if (config.bodyFont) updateBodyFont(config.bodyFont);
+  if (config.borderWidth) { updateBorderWidth(config.borderWidth); document.getElementById('border-range').value = config.borderWidth; }
+}
+
+async function resetVisualConfig() {
+  if (!confirm('Réinitialiser toute la configuration visuelle ?')) return;
+  try {
+    await sb.from('contenu').delete().eq('cle', '__visual_config__');
+    showToast('↩ Configuration réinitialisée — rechargez la page');
+    setTimeout(() => location.reload(), 1500);
+  } catch(e) {
+    showToast('⚠️ Erreur lors de la réinitialisation');
+  }
+}
+
+// Charger la config visuelle depuis Supabase au chargement
+// Patch loadFromSupabase pour la config visuelle (géré directement dans loadFromSupabase)
+
+// Montrer le panneau config + edit-mode class
+const origEnable = enableEdit;
+enableEdit = function() {
+  origEnable();
+  document.getElementById('cfg-toggle-btn').classList.add('visible');
+  document.body.classList.add('edit-mode');
+};
+const origDisable = disableEdit;
+disableEdit = function() {
+  origDisable();
+  document.getElementById('cfg-toggle-btn').classList.remove('visible');
+  document.getElementById('config-panel').classList.remove('open');
+  document.getElementById('fmt-toolbar').classList.remove('visible');
+  document.body.classList.remove('edit-mode');
+};
+
+// ─── IMAGE UPLOAD ─────────────────────────────────────────────
+let imgUploadMode = null;
+let imgTargetId   = null;
+let imgStorageKey = null;
+let imgSavedRange = null;
+let imgSelectedFile = null;
+
+function openImgUpload(mode, targetId, storageKey) {
+  if (!editMode) return;
+  imgUploadMode = mode; imgTargetId = targetId; imgStorageKey = storageKey;
+  imgSelectedFile = null;
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) imgSavedRange = sel.getRangeAt(0).cloneRange();
+  document.getElementById('img-preview-el').style.display = 'none';
+  document.getElementById('img-preview-el').src = '';
+  document.getElementById('img-file-input').value = '';
+  document.getElementById('img-uploading').style.display = 'none';
+  document.getElementById('img-drop-zone').classList.remove('drag');
+  const titles = { avatar:'Photo de profil', logo:'Logo FormationIE', inline:'Insérer une image' };
+  document.getElementById('img-upload-title').textContent = titles[mode] || 'Image';
+  document.getElementById('img-upload-overlay').classList.add('open');
+}
+
+function closeImgUpload() {
+  document.getElementById('img-upload-overlay').classList.remove('open');
+  imgSelectedFile = null;
+}
+
+function handleImgDrop(e) {
+  e.preventDefault();
+  document.getElementById('img-drop-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) { imgSelectedFile = file; showImgPreview(file); }
+}
+
+function previewImg(input) {
+  if (input.files && input.files[0]) { imgSelectedFile = input.files[0]; showImgPreview(imgSelectedFile); }
+}
+
+function showImgPreview(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const p = document.getElementById('img-preview-el');
+    p.src = e.target.result; p.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function confirmImgUpload() {
+  if (!imgSelectedFile) { showToast('⚠️ Veuillez choisir une image'); return; }
+  if (imgSelectedFile.size > 2*1024*1024) { showToast('⚠️ Image trop lourde — max 2 Mo'); return; }
+  document.getElementById('img-uploading').style.display = 'block';
+  try {
+    const ext  = imgSelectedFile.name.split('.').pop().toLowerCase();
+    const key  = imgStorageKey || ('inline_' + Date.now());
+    const path = (key.replace(/^__|__$/g,'') || 'img') + '_' + Date.now() + '.' + ext;
+    const { error: upErr } = await sb.storage.from('images').upload(path, imgSelectedFile, { upsert:true });
+    if (upErr) throw upErr;
+    const { data: urlData } = sb.storage.from('images').getPublicUrl(path);
+    const publicUrl = urlData.publicUrl;
+    await sb.from('contenu').upsert({ cle: key, valeur: publicUrl }, { onConflict:'cle' });
+    if (imgUploadMode === 'avatar') {
+      const imgEl = document.getElementById(imgTargetId);
+      const initEl = document.getElementById(imgTargetId + '-init');
+      imgEl.src = publicUrl; imgEl.style.display = 'block';
+      if (initEl) initEl.style.display = 'none';
+    } else if (imgUploadMode === 'logo') {
+      const imgEl = document.getElementById('logo-img');
+      const txtEl = document.getElementById('logo-text');
+      imgEl.src = publicUrl; imgEl.style.display = 'block';
+      if (txtEl) txtEl.style.display = 'none';
+    } else {
+      insertInlineImg(publicUrl, path);
+    }
+    showToast('🖼 Image sauvegardée en ligne !');
+    closeImgUpload();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('img-uploading').style.display = 'none';
+    showToast('⚠️ Erreur upload — vérifiez que le bucket "images" est Public dans Supabase Storage');
+  }
+}
+
+function insertInlineImg(url, path) {
+  const wrap = document.createElement('span');
+  wrap.className = 'inline-img-wrap';
+  const img = document.createElement('img');
+  img.src = url; img.alt = '';
+  wrap.appendChild(img); wrap.appendChild(del);
+  if (imgSavedRange) {
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(imgSavedRange);
+    imgSavedRange.deleteContents(); imgSavedRange.insertNode(wrap);
+  } else if (lastFocused) {
+    lastFocused.appendChild(wrap);
+  }
+  if (lastFocused) {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => saveToSupabase(lastFocused.getAttribute('data-ed'), lastFocused.innerHTML), 1500);
+  }
+}
+
+// ─── FORMULAIRE DE CONTACT ────────────────────────────────────
+function toggleAutreTheme() {
+  const sel = document.getElementById('cf-theme');
+  const wrap = document.getElementById('cf-autre-wrap');
+  wrap.style.display = sel.value === 'Autre' ? 'block' : 'none';
+}
+
+function resetContactForm() {
+  ['cf-nom','cf-email','cf-org','cf-fonction','cf-tel','cf-msg','cf-autre'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('cf-dest').selectedIndex = 0;
+  document.getElementById('cf-theme').selectedIndex = 0;
+  document.getElementById('cf-autre-wrap').style.display = 'none';
+  document.getElementById('cf-count').textContent = '0 / 1000';
+  document.getElementById('cf-status').textContent = '';
+}
+
+function cancelContactForm() {
+  resetContactForm();
+  document.getElementById('contact-form-wrap').style.borderColor = 'rgba(245,197,24,0.2)';
+}
+
+async function submitContactForm() {
+  const at = '\u0040';
+  const CARLOS  = 'guy-carlos.tamkodjou-tchio.1' + at + 'ulaval.ca';
+  const MEMBRES_CC = [
+    'patrick.aka.1'                          + at + 'ulaval.ca',
+    'julien.frascadore.1'                    + at + 'ulaval.ca',
+    'amine.gouizine.1'                       + at + 'ulaval.ca',
+    'bommanin-franck-aristide.gnonteme.1'    + at + 'ulaval.ca',
+  ];
+
+  const nom    = document.getElementById('cf-nom').value.trim();
+  const email  = document.getElementById('cf-email').value.trim();
+  const msg    = document.getElementById('cf-msg').value.trim();
+  const dest   = document.getElementById('cf-dest').value;
+  const themeEl= document.getElementById('cf-theme');
+  const theme  = themeEl.value === 'Autre'
+    ? (document.getElementById('cf-autre').value.trim() || 'Autre')
+    : themeEl.value;
+  const org      = document.getElementById('cf-org').value.trim();
+  const fonction = document.getElementById('cf-fonction').value.trim();
+  const tel      = document.getElementById('cf-tel').value.trim();
+  const status = document.getElementById('cf-status');
+
+  if (!nom)  { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez entrer votre nom.'; return; }
+  if (!email || !email.includes('@')) { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez entrer un courriel valide.'; return; }
+  if (!msg)  { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez écrire un message.'; return; }
+
+  status.style.color='var(--gold)'; status.textContent='⏳ Envoi en cours...';
+
+  // Déterminer destinataire principal et CC
+  let to, cc;
+  if (dest === 'ALL') {
+    // Toute l'équipe → Carlos principal + autres membres en CC
+    to = CARLOS;
+    cc = MEMBRES_CC.join(', ');
+  } else {
+    // Membre spécifique → lui seul, pas de CC
+    to = dest;
+    cc = '';
+  }
+
+  try {
+    await emailjs.send('service_360gift', 'template_45djwlt', {
+      nom:          nom,
+      email:        email,
+      organisation: org      || '—',
+      fonction:     fonction || '—',
+      telephone:    tel      || '—',
+      theme:        theme,
+      destinataire: to,
+      cc:           cc,
+      message:      msg,
+      name:         nom
+    });
+    status.textContent = '';
+    document.getElementById('contact-form-wrap').style.display = 'none';
+    document.getElementById('cf-confirm').style.display = 'block';
+  } catch(e) {
+    status.style.color='#E24B4A';
+    status.textContent='⚠ Erreur d\'envoi. Contactez-nous directement à guy-carlos.tamkodjou-tchio.1@ulaval.ca';
+    console.error('EmailJS error:', e);
+  }
+}
+
+// ─── CHATBOT IRIS ─────────────────────────────────────────────
+const IRIS_SYSTEM = `Tu es Iris, l'assistante IA de FormationIE Conseil.
+Ton prénom est un hommage à Mme Iris Roland, professeure du cours MNG-6086 à l'Université Laval, dans le cadre duquel cette formation a été développée.
+
+RÈGLES DE FORMATAGE — à respecter absolument :
+- Écris en français uniquement.
+- Mets un point à la fin de chaque phrase.
+- Va à la ligne après chaque phrase ou chaque nouvelle idée.
+- Utilise le gras avec ** pour les termes importants, les noms de formules, les montants — ex : **Formule Essentiel**, **3 950 $**.
+- Ne fais jamais de listes avec des tirets sauf si on te le demande explicitement.
+- Réponds en 3 à 6 phrases maximum sauf si on demande plus de détails.
+- Sois chaleureuse, professionnelle et enthousiaste.
+
+INFORMATIONS SUR L'ÉQUIPE FormationIE Conseil — Équipe #14 :
+- **Guy Carlos Tamkodjou Tchio** · Chef de projet · Stratégie de contenu · guy-carlos.tamkodjou-tchio.1@ulaval.ca
+- **Aka Pierre Patrick Aka** · Expert pédagogique · Modules 1 & 2 · patrick.aka.1@ulaval.ca
+- **Julien Frascadore** · Expert pédagogique · Modules 3 & 4 · julien.frascadore.1@ulaval.ca
+- **Amine Gouizine** · Analyste · Recherche & références · amine.gouizine.1@ulaval.ca
+- **Bommanin Franck Aristide Gnonteme** · Stratège commercial · Tarification & vente · bommanin-franck-aristide.gnonteme.1@ulaval.ca
+
+CONTEXTE ACADÉMIQUE :
+- Université : Université Laval · Faculté des sciences de l'administration
+- Cours : Habiletés personnelles de gestion · MNG-6086 · Hiver 2026
+- Enseignante : Mme Iris Roland
+- Travail : Création et présentation d'une formation sur les habiletés de gestion
+
+INFORMATIONS SUR CGI :
+- Fondée en 1976 à Québec par Serge Godin et André Imbeau.
+- Plus de 90 000 membres dans le monde, présence dans plus de 40 pays.
+- Revenus annuels dépassant 14 milliards $ CAD.
+- Cotée à la Bourse de Toronto (TSX : GIB.A) et de New York (NYSE : GIB).
+- Secteurs : services-conseils TI, transformation numérique, cybersécurité, infonuagique, gouvernement, santé, finance, défense.
+- Les chefs d'équipe TI de CGI sont souvent promus depuis des postes techniques sans formation managériale.
+
+INFORMATIONS SUR FormationIE Conseil :
+- Firme spécialisée en développement du leadership dans les organisations technologiques.
+- Mission : transformer des experts techniques en leaders humains capables de mobiliser, inspirer et retenir leurs équipes.
+- Vision : un monde où la promotion interne ne signifie plus isolement, mais croissance accompagnée.
+- Approche : ancrée dans le modèle CVF de Quinn (1988), cadran jaune — Relations humaines.
+- Valeurs : authenticité, rigueur académique, empathie pédagogique, imputabilité.
+- Contact : guy-carlos.tamkodjou-tchio.1@ulaval.ca · +1 (514) 299-6482
+
+INFORMATIONS SUR LA FORMATION :
+- Titre : Intelligence émotionnelle au service du leadership tech.
+- Cible : chefs d'équipe TI de CGI, promus depuis un poste technique, en poste depuis moins de 18 mois, supervisant des équipes agiles de 5 à 15 personnes.
+- Format : 4 modules · 2 jours · 4 demi-journées de 3h chacune · présentiel ou hybride.
+- Suivi post-formation à 60 jours inclus avec questionnaire de transfert.
+
+TARIFS :
+- **Formule Essentiel** : **2 800 $** par participant · groupe de 12 · inclut les 4 modules, le matériel pédagogique, le journal réflexif numérique et l'attestation de formation.
+- **Formule Complète** : **3 950 $** par participant · groupe de 12 · inclut tout l'Essentiel + session de co-développement à 60 jours + plan de développement IE suivi + rapport d'impact organisationnel.
+- **Formule Sur Mesure** : sur devis · diagnostic organisationnel préalable + formation co-construite avec CGI + coaching individuel.
+- ROI : le coût de remplacement d'un développeur senior est de 40 000 $ à 80 000 $ — la formation se rembourse si elle retient un seul talent.
+
+LES 4 MODULES :
+- **Module 1 — Se connaître soi-même** (3h) : IE selon Goleman, fenêtre de Johari, profil CVF Quinn jaune, auto-évaluation EQi-2.0.
+- **Module 2 — Réguler ses émotions sous pression** (3h) : modèle CINÉ de Lupien, cohérence cardiaque, pleine conscience MBSR de Kabat-Zinn, matrice Covey.
+- **Module 3 — Comprendre et mobiliser son équipe** (3h) : feedback SBI, management situationnel Tissier, sécurité psychologique Edmondson, écoute active.
+- **Module 4 — Agir en leader émotionnellement intelligent** (3h) : co-développement Payette & Champagne, 8 étapes Cameron, plan de développement personnel IE.
+
+MODÈLE CVF DE QUINN :
+- Modèle des valeurs concurrentes (Competing Values Framework) de Robert Quinn (1988, 2015).
+- 4 cadrans : Collaborer (jaune) · Créer (vert) · Contrôler (rouge) · Concurrencer (bleu).
+- Notre formation est ancrée dans le cadran jaune — Relations humaines — rôles de coach et facilitateur.
+- Pôle flexibilité (haut) vs pôle contrôle (bas) · orientation interne (gauche) vs externe (droite).
+
+RÉFÉRENCES ACADÉMIQUES :
+- Goleman, D. (2000). L'intelligence émotionnelle.
+- Quinn et al. (2015). Becoming a Master Manager (5e éd.).
+- Edmondson, A. (1999). Psychological Safety.
+- Tissier, D. (2001). Le management situationnel.
+- Lupien, S. (2010). Par amour du stress.
+- Kabat-Zinn, J. (2009). Pleine conscience MBSR.
+- Cameron, K. (2004). Changer la culture organisationnelle.
+- Payette & Champagne (1997). Le co-développement professionnel.
+  Réponds toujours en 2-4 phrases maximum, en allant à la ligne pour chaque nouvelle sauf si on demande plus de détails. Sois chaleureuse, professionnelle et enthousiaste.`;
+
+let irisHistory = [];
+let irisOpen = false;
+
+function toggleIris() {
+  irisOpen = !irisOpen;
+  const panel = document.getElementById('iris-panel');
+  const notif = document.querySelector('#iris-btn .q-notif');
+  panel.classList.toggle('open', irisOpen);
+  if (irisOpen) {
+    notif.classList.remove('on');
+    document.getElementById('iris-input').focus();
+    if (irisHistory.length === 0) {
+ setTimeout(() => addIrisMsg('bot', '👋 Bonjour ! Je suis <strong>Iris</strong>, votre assistante IA.<br>Je peux vous parler de notre formation en intelligence émotionnelle, du modèle CVF de Quinn, ou répondre à toutes vos questions sur FormationIE Conseil.<br><strong>Je sais bien plus que ça !</strong><br>Comment puis-je vous aider ?'), 300);
+    }
+  }
+}
+
+// ─── EMAILS ANTI-CLOUDFLARE ───────────────────────────────────
+// Les emails sont construits par JS — Cloudflare ne peut pas les détecter
+function buildEmails() {
+  const at = '\u0040';
+  const emails = [
+    { id:'em1', u:'guy-carlos.tamkodjou-tchio.1',        d:'ulaval.ca' },
+    { id:'em2', u:'patrick.aka.1',                       d:'ulaval.ca' },
+    { id:'em3', u:'julien.frascadore.1',                 d:'ulaval.ca' },
+    { id:'em4', u:'amine.gouizine.1',                    d:'ulaval.ca' },
+    { id:'em5', u:'bommanin-franck-aristide.gnonteme.1', d:'ulaval.ca' },
+  ];
+  emails.forEach(e => {
+    const el = document.getElementById(e.id);
+    if (!el) return;
+    const addr = e.u + at + e.d;
+    el.href = 'mai' + 'lto:' + addr;
+    el.textContent = '\u2709 ' + addr;
+  });
+  // Footer — Carlos principal, tous les autres en CC + Gmail
+  const footer = document.getElementById('em-footer');
+  if (footer) {
+    const carlos = 'guy-carlos.tamkodjou-tchio.1' + at + 'ulaval.ca';
+    const cc = [
+      'patrick.aka.1'                       + at + 'ulaval.ca',
+      'julien.frascadore.1'                 + at + 'ulaval.ca',
+      'amine.gouizine.1'                    + at + 'ulaval.ca',
+      'bommanin-franck-aristide.gnonteme.1' + at + 'ulaval.ca',
+    ].join(',');
+    footer.href = 'mai' + 'lto:' + carlos + '?cc=' + encodeURIComponent(cc);
+    footer.textContent = '\u2709 \u00c9crire \u00e0 l\u0027\u00e9quipe';
+  }
+}
+document.addEventListener('DOMContentLoaded', buildEmails);
+setTimeout(buildEmails, 500);
+const irisMessages = [
+  "Je suis Iris 🌸, votre assistante virtuelle — cliquez pour me parler !",
+  "Bonjour ! Je suis Iris, je suis là pour vous aider 😊",
+  "Venez discuter avec moi — je suis Iris, votre IA FormationIE !",
+  "Je peux vous expliquer la formation en détail — je suis Iris 🌸",
+  "Je connais tout sur la formation, l'équipe, le modèle CVF et bien plus !",
+  "Posez-moi vos questions — je suis Iris, disponible 24h/24 🌸"
+];
+
+let irisBubbleIndex = 0;
+let irisBubbleTimer = null;
+let irisBubbleActive = false;
+
+function showIrisBubble() {
+  if (irisOpen) return;
+  const bubble = document.getElementById('iris-bubble');
+  const text   = document.getElementById('iris-bubble-text');
+  const btn    = document.getElementById('iris-btn');
+  if (!bubble || !text) return;
+
+  // Texte du message courant
+  text.textContent = irisMessages[irisBubbleIndex];
+
+  // Faire clignoter le bouton
+  btn.classList.add('blinking');
+
+  // Animer l'apparition
+  bubble.classList.remove('hiding');
+  bubble.classList.add('visible');
+
+  // Après 4s — masquer puis passer au suivant
+  irisBubbleTimer = setTimeout(() => {
+    hideBubbleThen(() => {
+      irisBubbleIndex = (irisBubbleIndex + 1) % irisMessages.length;
+      if (!irisOpen) showIrisBubble();
+    });
+  }, 4000);
+}
+
+function hideBubbleThen(cb) {
+  const bubble = document.getElementById('iris-bubble');
+  if (!bubble) { if(cb) cb(); return; }
+  bubble.classList.add('hiding');
+  bubble.addEventListener('animationend', function handler() {
+    bubble.removeEventListener('animationend', handler);
+    bubble.classList.remove('visible', 'hiding');
+    if (cb) cb();
+  }, { once: true });
+}
+
+function stopIrisFloatingMessages() {
+  clearTimeout(irisBubbleTimer);
+  irisBubbleActive = false;
+  const bubble = document.getElementById('iris-bubble');
+  const btn    = document.getElementById('iris-btn');
+  if (bubble) { bubble.classList.remove('visible','hiding'); }
+  if (btn) btn.classList.remove('blinking');
+}
+
+function startIrisFloatingMessages() {
+  if (irisBubbleActive || irisOpen) return;
+  irisBubbleActive = true;
+  irisBubbleIndex = 0;
+  showIrisBubble();
+}
+
+// Modifier toggleIris pour arrêter/reprendre les messages
+const originalToggleIris = toggleIris;
+toggleIris = function() {
+  originalToggleIris();
+  if (irisOpen) {
+    stopIrisFloatingMessages();
+  } else {
+    setTimeout(startIrisFloatingMessages, 2000);
+  }
+};
+
+// Démarrer 3 secondes après le chargement
+setTimeout(startIrisFloatingMessages, 3000);
+
+function markdownToHtml(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+}
+
+function addIrisMsg(role, html) {
+  const msgs = document.getElementById('iris-msgs');
+  const div = document.createElement('div');
+  div.className = 'quinn-msg ' + role;
+  div.innerHTML = html;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function showIrisTyping() {
+  const msgs = document.getElementById('iris-msgs');
+  const div = document.createElement('div');
+  div.className = 'quinn-msg typing';
+  div.id = 'iris-typing';
+  div.innerHTML = '<div class="quinn-typing-dots"><span></span><span></span><span></span></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeIrisTyping() {
+  const t = document.getElementById('iris-typing');
+  if (t) t.remove();
+}
+
+async function sendIrisMsg(text) {
+  if (!text.trim()) return;
+  const input = document.getElementById('iris-input');
+  input.value = '';
+  addIrisMsg('user', text);
+  irisHistory.push({ role:'user', content: text });
+  document.getElementById('iris-suggestions').style.display = 'none';
+  showIrisTyping();
+
+  try {
+    const response = await fetch('https://rvtylqrsaahjprnjesam.supabase.co/functions/v1/iris-chat', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        system: IRIS_SYSTEM,
+        messages: irisHistory
+      })
+    });
+    const data = await response.json();
+    const reply = data.content?.[0]?.text || "Je n'ai pas pu traiter votre question. Contactez-nous à guy-carlos.tamkodjou-tchio.1@ulaval.ca";
+    removeIrisTyping();
+    addIrisMsg('bot', markdownToHtml(reply));
+    irisHistory.push({ role:'assistant', content: reply });
+  } catch(e) {
+    removeIrisTyping();
+    addIrisMsg('bot', '⚠️ Connexion temporairement indisponible. Écrivez-nous directement à <a href="mailto:guy-carlos.tamkodjou-tchio.1@ulaval.ca" style="color:var(--gold)">guy-carlos.tamkodjou-tchio.1@ulaval.ca</a>');
+  }
+}
+
+function irisKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    const val = document.getElementById('iris-input').value.trim();
+    if (val) sendIrisMsg(val);
+  }
+}
+
+// Notification gérée par le système de bulles ci-dessus
+
+// ─── FIN AJOUTS ────────────────────────────────────────────────
+
+// Images chargées directement dans loadFromSupabase
 </script>
 
 <!-- IRIS BUBBLE MESSAGES -->
@@ -1524,11 +2387,6 @@ footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center;
     <button class="quinn-send" onclick="sendIrisMsg(document.getElementById('iris-input').value)">➤</button>
   </div>
 </div>
-
-<script>
-// Copie exacte du script original (toutes les fonctions JS sont conservées)
-// Je l'inclus dans le fichier final.
-</script>
 
 </body>
 </html>
