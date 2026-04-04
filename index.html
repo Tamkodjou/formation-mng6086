@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>FormationIE Conseil — Intelligence émotionnelle · CGI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('LZi-gSev32IrJNVz7');</script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --navy:#0A1628; --navy-mid:#132040;
+  --gold:#F5C518; --gold-dark:#C99A00; --gold-pale:#FFFBE6; --gold-light:#FFF3B0;
+  --white:#FFFFFF; --gray-100:#F4F5F7; --gray-200:#E8EAED; --gray-500:#6B7280; --gray-700:#374151;
+  --fd:'DM Serif Display',serif; --fb:'DM Sans',sans-serif;
+}
+body { font-family:var(--fb); background:var(--white); color:var(--navy); font-size:16px; line-height:1.7; }
+
+/* EDIT BAR */
+#edit-bar { position:fixed; top:0; left:0; right:0; z-index:999; background:var(--navy); border-bottom:2px solid var(--gold); padding:0.5rem 1.5rem; display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; }
+#edit-bar .eb-left { color:rgba(255,255,255,0.5); }
+#edit-bar .eb-left strong { color:var(--gold); }
+.eb-btn { background:rgba(245,197,24,0.15); border:1px solid rgba(245,197,24,0.3); color:var(--gold); font-family:var(--fb); font-size:0.75rem; font-weight:600; padding:0.35rem 0.9rem; border-radius:2rem; cursor:pointer; transition:all 0.2s; }
+.eb-btn:hover { background:var(--gold); color:var(--navy); }
+.eb-btn.danger { background:rgba(226,75,74,0.1); border-color:rgba(226,75,74,0.3); color:#E24B4A; }
+.eb-btn.danger:hover { background:#E24B4A; color:white; }
+#edit-indicator { width:8px; height:8px; border-radius:50%; background:#E24B4A; display:inline-block; margin-right:0.4rem; }
+#edit-indicator.on { background:var(--gold); }
+#sync-status { font-size:0.72rem; color:rgba(255,255,255,0.4); margin-left:0.75rem; }
+#sync-status.saving { color:var(--gold); }
+#sync-status.saved { color:#4ade80; }
+
+/* LOCK */
+#lock-overlay { position:fixed; inset:0; background:rgba(10,22,40,0.93); z-index:9999; display:flex; align-items:center; justify-content:center; }
+.lock-box { background:var(--white); border-radius:1rem; padding:2.5rem 2rem; width:340px; text-align:center; border:1px solid var(--gray-200); }
+.lock-icon { font-size:2.5rem; margin-bottom:1rem; }
+.lock-box h2 { font-family:var(--fd); font-size:1.4rem; margin-bottom:0.5rem; color:var(--y); }
+.lock-box p { font-size:0.85rem; color:var(--gray-500); margin-bottom:1.5rem; }
+.lock-input { width:100%; padding:0.75rem 1rem; border:1px solid var(--gray-200); border-radius:0.5rem; font-family:var(--fb); font-size:1rem; margin-bottom:1rem; text-align:center; letter-spacing:0.2em; }
+.lock-input:focus { outline:none; border-color:var(--gold); }
+.lock-btn { width:100%; background:var(--gold); color:var(--y); border:none; border-radius:0.5rem; padding:0.85rem; font-family:var(--fb); font-weight:700; font-size:0.95rem; cursor:pointer; }
+.lock-error { color:#E24B4A; font-size:0.8rem; margin-top:0.5rem; display:none; }
+.lock-hint { font-size:0.75rem; color:var(--gray-500); margin-top:1rem; }
+
+[contenteditable="true"] { outline:2px dashed rgba(245,197,24,0.5) !important; border-radius:4px; cursor:text; min-width:20px; }
+[contenteditable="true"]:hover { outline:2px dashed var(--gold) !important; }
+[contenteditable="true"]:focus { outline:2px solid var(--gold) !important; background:rgba(245,197,24,0.04); }
+
+#toast { position:fixed; bottom:1.5rem; right:1.5rem; z-index:9998; background:var(--navy); color:var(--white); border:1px solid var(--gold); padding:0.75rem 1.25rem; border-radius:0.5rem; font-size:0.82rem; opacity:0; transform:translateY(10px); transition:all 0.3s; pointer-events:none; }
+#toast.show { opacity:1; transform:translateY(0); }
+
+/* LOADING */
+#loading-screen { position:fixed; inset:0; background:var(--navy); z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; transition:opacity 0.5s; }
+#loading-screen.hide { opacity:0; pointer-events:none; }
+.loader-firm { font-family:var(--fd); font-size:2rem; color:var(--white); }
+.loader-firm span { color:var(--gold); font-:italic; }
+.loader-bar { width:200px; height:3px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden; }
+.loader-fill { height:100%; background:var(--gold); border-radius:2px; animation:load 1.5s ease forwards; }
+@keyframes load { from{width:0} to{width:100%} }
+.loader-text { font-size:0.8rem; color:rgba(255,255,255,0.4); }
+
+/* NAV */
+nav { background:var(--navy); padding:1rem 2.5rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:42px; z-index:100; border-bottom:2px solid var(--gold); }
+.nav-logo { font-family:var(--fd); color:var(--white); font-size:1.4rem; }
+.nav-logo span { color:var(--gold); font-:italic; }
+.nav-links a { color:rgba(255,255,255,0.7); text-decoration:none; font-size:0.8rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; transition:color 0.2s; margin-left:1.5rem; }
+.nav-links a:hover { color:var(--gold); }
+
+.page { display:none; }
+.page.active { display:block; }
+
+/* COVER */
+.cover-page { background:var(--navy); min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:3rem 2rem; position:relative; overflow:hidden; }
+.cover-page::before { content:''; position:absolute; top:-100px; left:-100px; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(245,197,24,0.1) 0%, transparent 70%); pointer-events:none; }
+.cover-quinn-badge { display:inline-flex; align-items:center; gap:0.75rem; background:rgba(245,197,24,0.12); border:1px solid rgba(245,197,24,0.3); border-radius:2rem; padding:0.5rem 1.25rem; margin-bottom:2.5rem; }
+.cover-quinn-dot { width:12px; height:12px; border-radius:2px; background:var(--gold); transform:rotate(45deg); flex-shrink:0; }
+.cover-quinn-badge span { font-size:0.78rem; color:rgba(255,255,255,0.75); letter-spacing:0.06em; }
+.cover-firm { font-family:var(--fd); font-size:clamp(3rem,8vw,5.5rem); color:var(--white); line-height:1; margin-bottom:0.5rem; }
+.cover-firm span { color:var(--gold); font-:italic; }
+.cover-tagline { font-size:1.05rem; color:rgba(255,255,255,0.5); margin-bottom:3rem; }
+.cover-divider { width:60px; height:3px; background:var(--gold); margin:0 auto 3rem; border-radius:2px; }
+.cover-formation-title { font-family:var(--fd); font-size:clamp(1.4rem,3vw,2rem); color:var(--white); margin-bottom:1.5rem; max-width:700px; line-height:1.3; }
+.cover-meta { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:2.5rem; }
+.cover-meta-line { font-size:0.88rem; color:rgba(255,255,255,0.55); }
+.cover-meta-line strong { color:rgba(255,255,255,0.85); font-weight:500; }
+.cover-team-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:0.75rem; margin-bottom:2.5rem; max-width:820px; }
+.cover-member { background:rgba(245,197,24,0.07); border:1px solid rgba(245,197,24,0.2); border-radius:0.5rem; padding:0.6rem 1.1rem; display:flex; align-items:center; gap:0.5rem; }
+.cover-initial { width:28px; height:28px; border-radius:50%; background:rgba(245,197,24,0.2); border:1px solid rgba(245,197,24,0.4); color:var(--gold); font-size:0.7rem; font-weight:700; line-height:28px; text-align:center; flex-shrink:0; }
+.cover-member-name { font-size:0.82rem; color:rgba(255,255,255,0.8); font-weight:500; }
+.cover-date { font-size:0.8rem; color:rgba(255,255,255,0.35); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:2rem; }
+.cover-btn { background:var(--gold); color:var(--navy); font-family:var(--fb); font-weight:700; font-size:0.95rem; padding:1rem 2.5rem; border:none; border-radius:0.4rem; cursor:pointer; transition:opacity 0.2s; }
+.cover-btn:hover { opacity:0.9; }
+
+/* TEAM */
+.team-hero { background:var(--navy); padding:4rem 2.5rem 3rem; border-bottom:3px solid var(--gold); }
+.team-hero h1 { font-family:var(--fd); color:var(--white); font-size:clamp(2rem,4vw,3rem); margin-bottom:0.75rem; }
+.team-hero p { color:rgba(255,255,255,0.55); max-width:560px; font-size:0.95rem; }
+.team-context { background:var(--gold-pale); padding:2rem 2.5rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; border-bottom:1px solid rgba(245,197,24,0.3); }
+.ctx-card { background:var(--white); border-radius:0.75rem; padding:1.25rem 1.5rem; border:1px solid rgba(245,197,24,0.3); border-top:3px solid var(--gold); }
+.ctx-label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold-dark); font-weight:600; margin-bottom:0.4rem; }
+.ctx-val { font-size:0.9rem; color:var(--navy); font-weight:500; line-height:1.4; }
+.team-grid { padding:3rem 2.5rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; }
+.member-card { background:var(--white); border:1px solid var(--gray-200); border-radius:1rem; padding:2rem 1.75rem; border-top:3px solid var(--gold); transition:transform 0.2s; }
+.member-card:hover { transform:translateY(-3px); }
+.avatar { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--fd); font-size:1.15rem; margin-bottom:1.25rem; background:rgba(245,197,24,0.15); color:var(--gold-dark); border:2px solid rgba(245,197,24,0.4); overflow:hidden; position:relative; flex-shrink:0; margin-left:auto; margin-right:auto; }
+.avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.avatar-upload-hint { position:absolute; inset:0; border-radius:50%; background:rgba(10,22,40,0.75); display:none; align-items:center; justify-content:center; cursor:pointer; font-size:1.4rem; }
+.edit-mode .avatar:hover .avatar-upload-hint { display:flex; }
+.logo-img-wrap { display:inline-flex; align-items:center; gap:0.6rem; }
+.logo-img-wrap img { height:30px; width:auto; object-fit:contain; cursor:pointer; }
+.logo-upload-hint { font-size:0.68rem; color:rgba(245,197,24,0.5); display:none; cursor:pointer; margin-left:0.4rem; }
+.edit-mode .logo-upload-hint { display:inline; }
+.inline-img-wrap { display:block; margin:1rem 0; position:relative; }
+.inline-img-wrap img { max-width:100%; border-radius:0.5rem; display:block; }
+.inline-img-delete { position:absolute; top:6px; right:6px; background:rgba(226,75,74,0.9); color:white; border:none; border-radius:50%; width:24px; height:24px; font-size:14px; cursor:pointer; display:none; align-items:center; justify-content:center; line-height:1; }
+.edit-mode .inline-img-wrap:hover .inline-img-delete { display:flex; }
+#img-upload-overlay { position:fixed; inset:0; background:rgba(10,22,40,0.92); z-index:10000; display:none; align-items:center; justify-content:center; }
+#img-upload-overlay.open { display:flex; }
+.img-upload-box { background:var(--white); border-radius:1rem; padding:2rem; width:380px; text-align:center; border:2px solid var(--gold); }
+.img-upload-box h3 { font-family:var(--fd); font-size:1.2rem; color:var(--navy); margin-bottom:0.5rem; }
+.img-upload-box p { font-size:0.82rem; color:var(--gray-500); margin-bottom:1.5rem; }
+.img-drop-zone { border:2px dashed rgba(245,197,24,0.5); border-radius:0.75rem; padding:2rem; margin-bottom:1rem; cursor:pointer; transition:all 0.2s; }
+.img-drop-zone:hover,.img-drop-zone.drag { border-color:var(--gold); background:rgba(245,197,24,0.05); }
+.img-drop-icon { font-size:2.5rem; margin-bottom:0.5rem; }
+.img-drop-text { font-size:0.85rem; color:var(--gray-500); }
+.img-upload-btn { background:var(--gold); color:var(--navy); border:none; border-radius:0.5rem; padding:0.75rem 1.5rem; font-family:var(--fb); font-weight:700; font-size:0.9rem; cursor:pointer; margin-right:0.5rem; }
+.img-cancel-btn { background:transparent; color:var(--gray-500); border:1px solid var(--gray-200); border-radius:0.5rem; padding:0.75rem 1.5rem; font-family:var(--fb); font-size:0.9rem; cursor:pointer; }
+.img-preview { max-width:100%; max-height:160px; border-radius:0.5rem; margin-bottom:1rem; display:none; }
+.img-uploading { font-size:0.82rem; color:var(--gold); margin-top:0.5rem; display:none; }
+.member-card h3 { font-family:var(--fd); font-size:1.05rem; color:var(--navy); margin-bottom:0.25rem; line-height:1.25; }
+.member-role { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold-dark); font-weight:600; margin-bottom:0.75rem; }
+.member-desc { font-size:0.85rem; color:var(--gray-500); line-height:1.6; }
+
+/* HERO FORMATION */
+.hero-f { background:var(--navy); padding:5rem 2.5rem 4rem; position:relative; overflow:hidden; border-bottom:3px solid var(--gold); }
+.hero-f::before { content:''; position:absolute; top:-80px; right:-80px; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle,rgba(245,197,24,0.1) 0%,transparent 70%); pointer-events:none; }
+.hero-tag { display:inline-block; background:rgba(245,197,24,0.15); color:var(--gold); font-size:0.75rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:0.4rem 1rem; border-radius:2rem; margin-bottom:1.5rem; border:1px solid rgba(245,197,24,0.3); }
+.hero-f h1 { font-family:var(--fd); color:var(--white); font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.15; max-width:780px; margin-bottom:1.5rem; }
+.hero-f h1 em { color:var(--gold); font-:italic; }
+.hero-sub { color:rgba(255,255,255,0.65); font-size:1.05rem; max-width:580px; margin-bottom:2.5rem; }
+.stat-row { display:flex; gap:2.5rem; margin-top:3rem; padding-top:2.5rem; border-top:1px solid rgba(255,255,255,0.1); flex-wrap:wrap; }
+.stat-item .num { font-family:var(--fd); font-size:2.2rem; color:var(--gold); line-height:1; }
+.stat-item .lbl { font-size:0.78rem; color:rgba(255,255,255,0.5); margin-top:0.25rem; text-transform:uppercase; letter-spacing:0.05em; }
+.btn-p { background:var(--gold); color:var(--navy); font-family:var(--fb); font-weight:700; font-size:0.9rem; padding:0.85rem 2rem; border:none; border-radius:0.4rem; cursor:pointer; transition:opacity 0.2s; }
+.btn-p:hover { opacity:0.9; }
+.btn-o { background:transparent; color:var(--white); font-family:var(--fb); font-weight:500; font-size:0.9rem; padding:0.85rem 2rem; border:1px solid rgba(255,255,255,0.3); border-radius:0.4rem; cursor:pointer; transition:all 0.2s; }
+.btn-o:hover { border-color:var(--gold); color:var(--gold); }
+.cta-r { display:flex; gap:1rem; flex-wrap:wrap; }
+
+section.s { padding:4rem 2.5rem; }
+.s-label { font-size:0.75rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:0.75rem; }
+.s-title { font-family:var(--fd); font-size:clamp(1.8rem,3vw,2.4rem); color:var(--navy); line-height:1.2; margin-bottom:1rem; max-width:640px; }
+.s-sub { color:var(--gray-500); max-width:560px; margin-bottom:2.5rem; font-size:0.95rem; }
+
+.firm-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:2rem; }
+.firm-card { background:var(--white); border-radius:1rem; padding:1.75rem; border:1px solid var(--gray-200); border-top:3px solid var(--gold); }
+.firm-icon { width:40px; height:40px; border-radius:0.6rem; background:var(--navy); display:flex; align-items:center; justify-content:center; margin-bottom:1rem; font-size:18px; }
+.firm-card h3 { font-family:var(--fd); font-size:1.1rem; color:var(--navy); margin-bottom:0.5rem; }
+.firm-card p { font-size:0.9rem; color:var(--gray-500); line-height:1.6; }
+
+.accroche { background:var(--navy); }
+.accroche .s-title { color:var(--white); }
+.accroche .s-label { color:var(--gold); }
+.stat-banner { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin:2.5rem 0; }
+.stat-box { background:rgba(245,197,24,0.07); border:1px solid rgba(245,197,24,0.2); border-radius:0.75rem; padding:1.5rem; text-align:center; }
+.stat-box .big { font-family:var(--fd); font-size:2.5rem; color:var(--gold); }
+.stat-box .desc { font-size:0.82rem; color:rgba(255,255,255,0.55); margin-top:0.4rem; line-height:1.4; }
+.qb { border-left:3px solid var(--gold); padding:1rem 1.5rem; background:rgba(245,197,24,0.06); border-radius:0 0.5rem 0.5rem 0; margin-top:2rem; }
+.qb p { font-size:1rem; color:rgba(255,255,255,0.8); font-:italic; }
+.qb cite { font-size:0.8rem; color:var(--gold); margin-top:0.5rem; display:block; font-:normal; }
+
+.two-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:2rem; }
+.c-card { border-radius:0.75rem; padding:1.5rem; border:1px solid var(--gray-200); }
+.c-card.hl { background:var(--navy); border-color:var(--navy); }
+.c-card h3 { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold-dark); margin-bottom:0.75rem; font-weight:600; }
+.c-card.hl h3 { color:var(--gold); }
+.c-card ul { list-:none; }
+.c-card ul li { font-size:0.88rem; padding:0.35rem 0; border-bottom:1px solid rgba(0,0,0,0.06); display:flex; gap:0.5rem; color:var(--gray-700); }
+.c-card.hl ul li { color:rgba(255,255,255,0.8); border-bottom-color:rgba(255,255,255,0.08); }
+.c-card ul li::before { content:'→'; color:var(--gold-dark); font-size:0.85rem; flex-shrink:0; }
+.c-card.hl ul li::before { color:var(--gold); }
+
+.obj-pale { background:var(--gold-pale); }
+.obj-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
+.obj-card { background:var(--white); border-radius:0.75rem; padding:1.5rem; border:1px solid rgba(245,197,24,0.3); border-top:3px solid var(--gold); }
+.obj-num { font-family:var(--fd); font-size:2.5rem; color:rgba(245,197,24,0.3); line-height:1; margin-bottom:0.75rem; }
+.obj-card p { font-size:0.88rem; color:var(--gray-700); line-height:1.6; }
+.obj-card strong { color:var(--navy); font-weight:600; }
+
+.mod-tabs { display:flex; gap:0.5rem; margin-bottom:2rem; flex-wrap:wrap; }
+.tab-btn { background:var(--gray-100); border:1px solid var(--gray-200); color:var(--gray-700); font-family:var(--fb); font-size:0.82rem; font-weight:500; padding:0.5rem 1.2rem; border-radius:2rem; cursor:pointer; transition:all 0.2s; }
+.tab-btn.active,.tab-btn:hover { background:var(--navy); color:var(--gold); border-color:var(--navy); }
+.mod-panel { display:none; }
+.mod-panel.active { display:grid; grid-template-columns:1fr 1.6fr; gap:2rem; }
+.mod-info { background:var(--navy); border-radius:1rem; padding:2rem; color:var(--white); border-top:4px solid var(--gold); }
+.mod-n { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold); margin-bottom:0.5rem; }
+.mod-title { font-family:var(--fd); font-size:1.45rem; color:var(--white); margin-bottom:1rem; line-height:1.25; }
+.mod-dur { display:inline-block; background:rgba(245,197,24,0.15); color:var(--gold); font-size:0.75rem; font-weight:600; padding:0.3rem 0.8rem; border-radius:2rem; margin-bottom:1rem; border:1px solid rgba(245,197,24,0.3); }
+.mod-desc { font-size:0.87rem; color:rgba(255,255,255,0.65); line-height:1.65; }
+.det-block { margin-bottom:1.5rem; background:var(--gray-100); border-radius:0.75rem; padding:1.25rem 1.5rem; }
+.det-block h4 { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--gray-500); margin-bottom:0.75rem; }
+.det-block ul { list-:none; }
+.det-block ul li { font-size:0.87rem; color:var(--gray-700); padding:0.3rem 0 0.3rem 1.2rem; position:relative; }
+.det-block ul li::before { content:'·'; position:absolute; left:0; color:var(--gold-dark); font-size:1.2rem; line-height:1.2; }
+.tg { background:var(--white); border:1px solid rgba(245,197,24,0.3); color:var(--gray-700); font-size:0.78rem; padding:0.3rem 0.7rem; border-radius:0.3rem; }
+.tag-r { display:flex; gap:0.5rem; flex-wrap:wrap; }
+
+.peda-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.25rem; margin-top:2rem; }
+.peda-card { border:1px solid rgba(245,197,24,0.25); border-radius:0.75rem; padding:1.5rem 1.25rem; text-align:center; border-top:3px solid var(--gold); }
+.peda-icon { font-size:2rem; margin-bottom:0.75rem; }
+.peda-card h4 { font-weight:600; font-size:0.88rem; color:var(--navy); margin-bottom:0.4rem; }
+.peda-card p { font-size:0.8rem; color:var(--gray-500); line-height:1.5; }
+
+.price-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
+.price-card { background:var(--white); border:1px solid var(--gray-200); border-radius:1rem; padding:2rem 1.5rem; position:relative; }
+.price-card.feat { background:var(--navy); border:2px solid var(--gold); }
+.price-badge { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--gold); color:var(--navy); font-size:0.7rem; font-weight:700; padding:0.25rem 1rem; border-radius:2rem; white-space:nowrap; text-transform:uppercase; letter-spacing:0.06em; }
+.price-name { font-weight:600; font-size:0.85rem; color:var(--gray-500); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.06em; }
+.price-card.feat .price-name { color:rgba(255,255,255,0.5); }
+.price-amt { font-family:var(--fd); font-size:2.2rem; color:var(--navy); margin-bottom:0.25rem; }
+.price-card.feat .price-amt { color:var(--gold); }
+.price-unit { font-size:0.8rem; color:var(--gray-500); margin-bottom:1.25rem; }
+.price-card.feat .price-unit { color:rgba(255,255,255,0.5); }
+.price-list { list-:none; }
+.price-list li { font-size:0.85rem; padding:0.4rem 0; border-bottom:1px solid var(--gray-200); color:var(--gray-700); display:flex; gap:0.5rem; }
+.price-card.feat .price-list li { border-bottom-color:rgba(255,255,255,0.08); color:rgba(255,255,255,0.75); }
+.price-list li::before { content:'✓'; color:var(--gold-dark); font-weight:700; flex-shrink:0; }
+.price-card.feat .price-list li::before { color:var(--gold); }
+
+.ref-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:2rem; }
+.ref-card { border:1px solid var(--gray-200); border-radius:0.5rem; padding:1rem 1.25rem; font-size:0.82rem; color:var(--gray-700); line-height:1.5; border-left:3px solid var(--gold); }
+.ref-card strong { color:var(--navy); }
+
+.quinn-section { background:var(--gold-pale); border-top:3px solid var(--gold); border-bottom:3px solid var(--gold); }
+.quinn-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; align-items:center; margin-top:2rem; }
+.quinn-diagram { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:0; border-radius:0.75rem; overflow:hidden; border:2px solid var(--gold); width:300px; height:300px; }
+.q-cell { display:flex; flex-direction:column; justify-content:center; align-items:center; padding:1rem; text-align:center; }
+.q-cell h4 { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.4rem; }
+.q-cell p { font-size:0.7rem; line-height:1.4; }
+.q-label { font-size:0.65rem; font-weight:700; background:rgba(0,0,0,0.1); padding:0.15rem 0.4rem; border-radius:2rem; margin-bottom:0.3rem; display:inline-block; }
+.q-yellow { background:var(--gold); color:var(--navy); border:3px solid var(--gold-dark); }
+.q-blue { background:#E6F1FB; color:#0A1628; }
+.q-green { background:#EAF3DE; color:#173404; }
+.q-red { background:#FCEBEB; color:#501313; }
+.quinn-text h3 { font-family:var(--fd); font-size:1.4rem; color:var(--navy); margin-bottom:0.75rem; }
+.quinn-text p { font-size:0.88rem; color:var(--gray-700); line-height:1.7; margin-bottom:1rem; }
+.quinn-highlight { background:var(--gold); color:var(--navy); padding:0.75rem 1.25rem; border-radius:0.5rem; font-size:0.85rem; font-weight:600; display:inline-block; }
+
+footer { background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; padding:2.5rem; font-size:0.8rem; border-top:3px solid var(--gold); display:block !important; }
+.ft-firm { font-family:var(--fd); font-size:1.3rem; color:var(--white); margin-bottom:0.4rem; }
+.ft-firm span { color:var(--gold); font-:italic; }
+.ft-div { width:40px; height:2px; background:var(--gold); margin:1rem auto; border-radius:2px; }
+.ft-acad { font-size:1rem; color:rgba(255,255,255,0.7); margin-top:0.75rem; line-height:1.8; }
+
+/* FORMATTING TOOLBAR */
+#fmt-toolbar {
+  position:fixed; z-index:9997; background:var(--navy); border:1px solid var(--gold);
+  border-radius:0.5rem; padding:0.4rem 0.6rem; display:none;
+  align-items:center; gap:0.3rem; box-shadow:0 4px 20px rgba(0,0,0,0.3);
+}
+#fmt-toolbar.visible { display:flex; }
+.fmt-btn {
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+  color:var(--white); font-family:var(--fb); font-size:0.78rem; font-weight:600;
+  width:28px; height:28px; border-radius:4px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all 0.15s;
+}
+.fmt-btn:hover { background:var(--gold); color:var(--navy); border-color:var(--gold); }
+.fmt-btn.active { background:var(--gold); color:var(--navy); border-color:var(--gold); }
+.fmt-sep { width:1px; height:20px; background:rgba(255,255,255,0.15); margin:0 0.2rem; }
+.fmt-select {
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+  color:var(--white); font-family:var(--fb); font-size:0.75rem;
+  padding:0.2rem 0.4rem; border-radius:4px; cursor:pointer; height:28px;
+}
+.fmt-color-btn {
+  width:28px; height:28px; border-radius:4px; border:2px solid rgba(255,255,255,0.3);
+  cursor:pointer; overflow:hidden; position:relative;
+}
+.fmt-color-btn input[type="color"] {
+  position:absolute; inset:-4px; width:calc(100% + 8px); height:calc(100% + 8px);
+  cursor:pointer; border:none; padding:0; opacity:0;
+}
+.fmt-color-swatch { width:100%; height:100%; pointer-events:none; }
+
+/* CONFIG PANEL */
+#config-panel {
+  position:fixed; top:42px; right:0; bottom:0; width:280px; z-index:998;
+  background:var(--navy); border-left:2px solid var(--gold);
+  transform:translateX(100%); transition:transform 0.3s;
+  overflow-y:auto; padding:1.25rem;
+  display:none;
+}
+#config-panel.open { transform:translateX(0); display:block; }
+.cfg-toggle {
+  position:fixed; right:0; top:50%; transform:translateY(-50%);
+  background:var(--gold); color:var(--navy); border:none;
+  width:28px; height:60px; border-radius:6px 0 0 6px;
+  cursor:pointer; font-size:1rem; z-index:997;
+  display:none; align-items:center; justify-content:center;
+  writing-mode:vertical-rl;
+}
+.cfg-toggle.visible { display:flex; }
+.cfg-section { margin-bottom:1.5rem; }
+.cfg-section-title {
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em;
+  color:var(--gold); font-weight:600; margin-bottom:0.75rem;
+  padding-bottom:0.4rem; border-bottom:1px solid rgba(245,197,24,0.2);
+}
+.cfg-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; }
+.cfg-label { font-size:0.8rem; color:rgba(255,255,255,0.7); }
+.cfg-color {
+  width:px; height:24px; border-radius:4px; border:1px solid rgba(255,255,255,0.2);
+  cursor:pointer; overflow:hidden; position:relative;
+}
+.cfg-color input[type="color"] {
+  position:absolute; inset:-4px; width:calc(100%+8px); height:calc(100%+8px);
+  opacity:0; cursor:pointer;
+}
+.cfg-color-swatch { width:100%; height:100%; pointer-events:none; border-radius:3px; }
+.cfg-range { width:110px; accent-color:var(--gold); }
+.cfg-range-val { font-size:0.75rem; color:var(--gold); min-width:30px; text-align:right; }
+.cfg-btn-row { display:flex; gap:0.5rem; margin-top:0.5rem; }
+.cfg-apply-btn {
+  flex:1; background:var(--gold); color:var(--navy); border:none;
+  border-radius:0.4rem; padding:0.5rem; font-family:var(--fb);
+  font-size:0.78rem; font-weight:700; cursor:pointer;
+}
+.cfg-reset-btn {
+  flex:1; background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.7);
+  border:1px solid rgba(255,255,255,0.15); border-radius:0.4rem;
+  padding:0.5rem; font-family:var(--fb); font-size:0.78rem; cursor:pointer;
+}
+
+/* IRIS CHATBOT - Position à droite */
+#iris-btn { 
+  position:fixed; 
+  bottom:1.5rem; 
+  right:1.5rem;  /* Changé de left à right */
+  z-index:9990; 
+  width:60px; 
+  height:60px; 
+  border-radius:50%; 
+  background:var(--gold); 
+  border:none; 
+  cursor:pointer; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  font-size:1.6rem; 
+  box-shadow:0 4px 20px rgba(245,197,24,0.4); 
+  transition:transform 0.2s; 
+  animation: gentlePulse 2s infinite; /* Animation de pulsation légère */
+}
+#iris-btn:hover { transform:scale(1.1); }
+#iris-btn .q-notif { position:absolute; top:0; right:0; width:16px; height:16px; background:#E24B4A; border-radius:50%; border:2px solid white; display:none; }
+#iris-btn .q-notif.on { display:block; }
+
+#iris-panel { 
+  position:fixed; 
+  bottom:5.5rem; 
+  right:1.5rem;
+  z-index:9991; 
+  width:360px; 
+  max-height:520px; 
+  background:var(--navy); 
+  border:2px solid var(--gold); 
+  border-radius:1rem; 
+  display:none; 
+  flex-direction:column; 
+  box-shadow:0 8px 40px rgba(0,0,0,0.4); 
+  overflow:hidden; 
+}
+
+/* Animation pour le message flottant */
+@keyframes gentlePulse {
+  0%,100% { box-shadow: 0 4px 20px rgba(245,197,24,0.4); transform:scale(1); }
+  50% { box-shadow: 0 4px 35px rgba(245,197,24,0.9); transform:scale(1.08); }
+}
+@keyframes irisBlinkBtn {
+  0%,100% { opacity:1; }
+  50% { opacity:0.55; }
+}
+#iris-btn.blinking { animation: irisBlinkBtn 0.9s ease-in-out infinite; }
+
+#iris-bubble {
+  position:fixed;
+  bottom:5.2rem;
+  right:1.5rem;
+  z-index:9989;
+  max-width:260px;
+  background:var(--navy);
+  color:rgba(255,255,255,0.92);
+  padding:0.7rem 1.1rem 0.7rem 1rem;
+  border-radius:1.2rem 1.2rem 0.2rem 1.2rem;
+  border:2px solid var(--gold);
+  font-size:0.85rem;
+  font-family:var(--fb);
+  line-height:1.45;
+  box-shadow:0 6px 24px rgba(0,0,0,0.35);
+  cursor:pointer;
+  display:none;
+  align-items:center;
+  gap:0.5rem;
+  transition:opacity 0.3s, transform 0.3s;
+}
+#iris-bubble::after {
+  content:'';
+  position:absolute;
+  bottom:-10px;
+  right:14px;
+  border-width:10px 8px 0 0;
+  border-style:solid;
+  border-color:var(--gold) transparent transparent transparent;
+}
+#iris-bubble.visible { display:flex; animation:bubbleIn 0.35s cubic-bezier(.34,1.56,.64,1) forwards; }
+#iris-bubble.hiding  { animation:bubbleOut 0.25s ease forwards; }
+@keyframes bubbleIn  { from{opacity:0;transform:translateY(12px) scale(0.92)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes bubbleOut { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(8px) scale(0.95)} }
+#iris-bubble .bubble-icon { font-size:1.1rem; flex-shrink:0; }
+#iris-bubble .bubble-text { flex:1; }
+#iris-panel.open { display:flex; }
+.quinn-head { background:var(--gold); padding:0.85rem 1.25rem; display:flex; align-items:center; gap:0.75rem; flex-shrink:0; }
+.quinn-avatar { width:px; height:px; border-radius:50%; background:var(--navy); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+.quinn-head-info { flex:1; }
+.quinn-head-name { font-family:var(--fd); font-size:1rem; color:var(--navy); font-weight:700; }
+.quinn-head-status { font-size:0.72rem; color:rgba(10,22,40,0.7); display:flex; align-items:center; gap:0.3rem; }
+.quinn-dot-live { width:7px; height:7px; border-radius:50%; background:#22c55e; display:inline-block; }
+.quinn-close { background:rgba(10,22,40,0.15); border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:0.9rem; display:flex; align-items:center; justify-content:center; color:var(--navy); flex-shrink:0; }
+.quinn-msgs { flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:0.75rem; }
+.quinn-msg { max-width:85%; padding:0.65rem 1rem; border-radius:1rem; font-size:0.85rem; line-height:1.55; animation:fadeIn 0.3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.quinn-msg.bot { background:rgba(245,197,24,0.1); border:1px solid rgba(245,197,24,0.2); color:rgba(255,255,255,0.88); border-bottom-left-radius:4px; align-self:flex-start; }
+.quinn-msg.user { background:var(--gold); color:var(--navy); border-bottom-right-radius:4px; align-self:flex-end; font-weight:500; }
+.quinn-msg.typing { background:rgba(245,197,24,0.07); border:1px solid rgba(245,197,24,0.15); align-self:flex-start; }
+.quinn-typing-dots { display:flex; gap:4px; padding:0.1rem 0; }
+.quinn-typing-dots span { width:7px; height:7px; border-radius:50%; background:var(--gold); opacity:0.4; animation:blink 1.2s infinite; }
+.quinn-typing-dots span:nth-child(2) { animation-delay:0.2s; }
+.quinn-typing-dots span:nth-child(3) { animation-delay:0.4s; }
+@keyframes blink { 0%,80%,100%{opacity:0.4} 40%{opacity:1} }
+.quinn-suggestions { display:flex; flex-wrap:wrap; gap:0.4rem; padding:0 1rem 0.75rem; flex-shrink:0; }
+.quinn-sug { background:rgba(245,197,24,0.08); border:1px solid rgba(245,197,24,0.25); color:var(--gold); font-size:0.75rem; padding:0.3rem 0.7rem; border-radius:2rem; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.quinn-sug:hover { background:var(--gold); color:var(--navy); }
+.quinn-input-row { display:flex; gap:0.5rem; padding:0.75rem 1rem; border-top:1px solid rgba(245,197,24,0.15); flex-shrink:0; }
+.quinn-input { flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:2rem; padding:0.55rem 1rem; color:white; font-family:var(--fb); font-size:0.85rem; outline:none; }
+.quinn-input:focus { border-color:var(--gold); }
+.quinn-send { background:var(--gold); color:var(--navy); border:none; border-radius:50%; width:px; height:px; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:opacity 0.2s; }
+.quinn-send:hover { opacity:0.85; }
+@media(max-width:480px){ #quinn-panel{width:calc(100vw - 2rem);left:1rem;} }
+@media(max-width:768px){
+  .firm-grid,.two-grid,.obj-grid,.peda-grid,.price-grid,.ref-grid,.team-context,.stat-banner,.quinn-grid{
+    grid-template-columns:1fr;
+  }
+  .mod-panel.active{
+    grid-template-columns:1fr;
+  }
+  nav{
+    padding:1rem;
+  }
+  section.s{
+    padding:3rem 1.25rem;
+  }
+  .team-grid,.quinn-diagram{
+    width:100%;
+  }
+  #config-panel{
+    width:100%;
+  }
+  
+  /* Styles pour Iris en mode mobile */
+  #iris-panel {
+    width: calc(100vw - 2rem);
+    right: 1rem;
+    left: auto;
+    max-height: 450px;
+  }
+  
+  #iris-btn {
+    bottom: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.4rem;
+  }
+  
+  #iris-bubble {
+    right:1rem;
+    bottom:5rem;
+    max-width:220px;
+    font-size:0.8rem;
+  }
+  
+  .quinn-suggestions {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding: 0 0.75rem 0.75rem;
+  }
+  
+  .quinn-sug {
+    white-space: nowrap;
+    font-size: 0.7rem;
+  }
+}
+#page-formationie .s-sub,
+#page-formationie p.s-sub {
+  max-width:100% !important;
+  width:100%;
+}
+#page-firme .s-sub {
+  max-width:100% !important;
+  width:100%;
+}
+.nav-links a.active {
+  color:var(--gold) !important;
+  border-bottom:2px solid var(--gold);
+  padding-bottom:2px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="loader-firm">Formation<span>IE</span></div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <div class="loader-text">Chargement du contenu...</div>
+</div>
+
+<!-- EDIT BAR -->
+<div id="edit-bar">
+  <div class="eb-left">
+    <span id="edit-indicator"></span>
+    <strong id="edit-status">Mode lecture</strong>
+    <span id="sync-status"></span>
+  </div>
+  <div style="display:flex;gap:0.75rem;align-items:center;">
+    <button class="eb-btn" id="toggle-edit-btn" onclick="toggleEditMode()">🔒 Activer l'édition</button>
+    <button class="eb-btn" id="save-btn" onclick="saveAll()" style="display:none">💾 Sauvegarder tout</button>
+    <button class="eb-btn danger" id="reset-btn" onclick="resetContent()" style="display:none">↩ Réinitialiser</button>
+  </div>
+</div>
+
+<!-- LOCK -->
+<div id="lock-overlay" style="display:none">
+  <div class="lock-box">
+    <div class="lock-icon">🔐</div>
+    <h2>Mode édition</h2>
+    <p>Entrez le mot de passe pour modifier le contenu</p>
+    <input class="lock-input" type="password" id="pw-input" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="lock-btn" onclick="checkPw()">Déverrouiller</button>
+    <div class="lock-error" id="pw-error">Mot de passe incorrect</div>
+    <div class="lock-hint">Mot de passe : <strong>formationie****</strong></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- FORMATTING TOOLBAR -->
+<div id="fmt-toolbar">
+  <select class="fmt-select" id="fmt-size" onchange="execFmt('fontSize',this.value)" title="Taille">
+    <option value="1">Très petit</option>
+    <option value="2">Petit</option>
+    <option value="3" selected>Normal</option>
+    <option value="4">Grand</option>
+    <option value="5">Très grand</option>
+    <option value="6">Énorme</option>
+  </select>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="execFmt('bold')" title="Gras"><b>G</b></button>
+  <button class="fmt-btn" onclick="execFmt('italic')" title="Italique"><i>I</i></button>
+  <button class="fmt-btn" onclick="execFmt('underline')" title="Souligné"><u>S</u></button>
+  <div class="fmt-sep"></div>
+  <div class="fmt-color-btn" title="Couleur du texte" style="background:#F5C518">
+    <div class="fmt-color-swatch" id="txt-color-swatch" style="background:#F5C518"></div>
+    <input type="color" value="#F5C518" id="txt-color-input" oninput="document.getElementById('txt-color-swatch').style.background=this.value" onchange="execFmt('foreColor',this.value)">
+  </div>
+  <div class="fmt-color-btn" title="Surlignage" style="background:#ffffff22">
+    <div class="fmt-color-swatch" id="bg-color-swatch" style="background:#ffffff22"></div>
+    <input type="color" value="#ffffff" id="bg-color-input" oninput="document.getElementById('bg-color-swatch').style.background=this.value" onchange="execFmt('hiliteColor',this.value)">
+  </div>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="execFmt('justifyLeft')" title="Gauche">⬅</button>
+  <button class="fmt-btn" onclick="execFmt('justifyCenter')" title="Centre">☰</button>
+  <button class="fmt-btn" onclick="execFmt('justifyRight')" title="Droite">➡</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="openImgUpload('inline',null,null)" title="Insérer une image">🖼</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="execFmt('removeFormat')" title="Effacer la mise en forme">✕</button>
+</div>
+
+<!-- IMAGE UPLOAD OVERLAY -->
+<div id="img-upload-overlay">
+  <div class="img-upload-box">
+    <h3 id="img-upload-title">Ajouter une image</h3>
+    <p id="img-upload-desc">Glissez une image ou cliquez pour parcourir</p>
+    <img class="img-preview" id="img-preview-el">
+    <div class="img-drop-zone" id="img-drop-zone" onclick="document.getElementById('img-file-input').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleImgDrop(event)">
+      <div class="img-drop-icon">📸</div>
+      <div class="img-drop-text">JPG, PNG, WebP · max 2 Mo</div>
+    </div>
+    <input type="file" id="img-file-input" accept="image/*" style="display:none" onchange="previewImg(this)">
+    <div class="img-uploading" id="img-uploading">⏳ Téléversement en cours...</div>
+    <div style="margin-top:1rem">
+      <button class="img-upload-btn" onclick="confirmImgUpload()">✓ Confirmer</button>
+      <button class="img-cancel-btn" onclick="closeImgUpload()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIG PANEL TOGGLE -->
+<button class="cfg-toggle" id="cfg-toggle-btn" onclick="toggleConfigPanel()" title="Configuration visuelle">⚙</button>
+
+<!-- CONFIG PANEL -->
+<div id="config-panel">
+  <div style="font-family:var(--fd);font-size:1.1rem;color:var(--white);margin-bottom:1.25rem;">Configuration visuelle</div>
+
+  <div class="cfg-section">
+    <div class="cfg-section-title">Couleurs principales</div>
+    <div class="cfg-row">
+      <span class="cfg-label">Couleur accent</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-gold" style="background:#F5C518"></div><input type="color" value="#F5C518" onchange="updateCSSVar('--gold',this.value);document.getElementById('sw-gold').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond principal</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-navy" style="background:#0A1628"></div><input type="color" value="#0A1628" onchange="updateCSSVar('--navy',this.value);document.getElementById('sw-navy').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond clair</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-pale" style="background:#FFFBE6"></div><input type="color" value="#FFFBE6" onchange="updateCSSVar('--gold-pale',this.value);document.getElementById('sw-pale').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond sections grises</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-gray" style="background:#F4F5F7"></div><input type="color" value="#F4F5F7" onchange="updateCSSVar('--gray-100',this.value);document.getElementById('sw-gray').style.background=this.value"></div>
+    </div>
+  </div>
+
+  <div class="cfg-section">
+    <div class="cfg-section-title">Typographie</div>
+    <div class="cfg-row">
+      <span class="cfg-label">Taille corps</span>
+      <input type="range" class="cfg-range" min="12" max="22" value="16" id="font-size-range" oninput="updateFontSize(this.value)">
+      <span class="cfg-range-val" id="font-size-val">16px</span>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Interligne</span>
+      <input type="range" class="cfg-range" min="1.2" max="2.2" step="0.1" value="1.7" id="line-height-range" oninput="updateLineHeight(this.value)">
+      <span class="cfg-range-val" id="line-height-val">1.7</span>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Police corps</span>
+      <select class="fmt-select" onchange="updateBodyFont(this.value)" style="width:130px">
+        <option value="'DM Sans',sans-serif">DM Sans</option>
+        <option value="'Georgia',serif">Georgia</option>
+        <option value="'Arial',sans-serif">Arial</option>
+        <option value="'Helvetica',sans-serif">Helvetica</option>
+        <option value="'Trebuchet MS',sans-serif">Trebuchet</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="cfg-section">
+    <div class="cfg-section-title">Sections spécifiques</div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond Hero/Nav</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-hero" style="background:#0A1628"></div><input type="color" value="#0A1628" onchange="updateSectionBg('.hero-f,.accroche,nav,.team-hero,.cover-page',this.value);document.getElementById('sw-hero').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Fond footer</span>
+      <div class="cfg-color"><div class="cfg-color-swatch" id="sw-footer" style="background:#0A1628"></div><input type="color" value="#0A1628" onchange="updateSectionBg('footer',this.value);document.getElementById('sw-footer').style.background=this.value"></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-label">Bordures accent</span>
+      <input type="range" class="cfg-range" min="0" max="6" value="2" id="border-range" oninput="updateBorderWidth(this.value)">
+      <span class="cfg-range-val" id="border-val">2px</span>
+    </div>
+  </div>
+
+  <div class="cfg-btn-row">
+    <button class="cfg-apply-btn" onclick="saveVisualConfig()">💾 Sauvegarder</button>
+    <button class="cfg-reset-btn" onclick="resetVisualConfig()">↩ Réinitialiser</button>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-logo">
+    <span class="logo-img-wrap" id="logo-wrap">
+      <img id="logo-img" src="" alt="" style="display:none" onclick="editMode&&openImgUpload('logo','logo-img','__logo__')">
+      <span id="logo-text" style="font-family:var(--fd);color:var(--white);font-size:1.4rem;">Formation<span style="color:var(--gold);font-style:italic;">IE</span></span>
+    </span>
+    <span class="logo-upload-hint" onclick="openImgUpload('logo','logo-img','__logo__')" title="Changer le logo">📷 logo</span>
+  </div>
+    <div class="nav-links">
+    <a onclick="showPage('cover')">Accueil</a>
+    <a onclick="showPage('firme')">Notre Client</a>
+    <a onclick="showPage('formationie')">Qui sommes-nous ?</a>
+    <a onclick="showPage('team')">L'équipe</a>
+    <a onclick="showPage('main')">Notre offre</a>
+    <a onclick="showPage('team', true)">Nous écrire</a>
+  </div>
+</nav>
+
+<!-- COVER -->
+<div class="page active" id="page-cover">
+<div class="cover-page">
+  <div class="cover-quinn-badge"><div class="cover-quinn-dot"></div><span data-ed="cover-univ">Cadran IE · Modèle CVF de Quinn · Université Laval · MNG-6086 · Avril 2026</span></div>
+  <div class="cover-firm">Formation<span>IE</span></div>
+  <div class="cover-tagline" data-ed="cover-tagline">Intelligence émotionnelle · Leadership technologique · CGI</div>
+  <div class="cover-divider"></div>
+  <div class="cover-formation-title" data-ed="cover-ftitle">Formation en habiletés de gestion :<br>L'intelligence émotionnelle au service du leadership tech</div>
+  <div class="cover-meta">
+    <div class="cover-meta-line" style="font-size:1.2rem;">Cours : <strong data-ed="cover-cours">Habiletés personnelles de gestion — MNG-6086</strong></div>
+    <div class="cover-meta-line" style="font-size:1.2rem;">Enseignante : <strong data-ed="cover-prof">Iris Roland</strong></div>
+    <div class="cover-meta-line" style="font-size:1.2rem;color:rgba(255,255,255,0.75);margin-top:0.75rem;">Travail de session — Création et présentation d'une formation sur les habiletés de gestion</div>
+  </div>
+  <div class="cover-team-grid">
+    <div style="width:100%;text-align:center;color:var(--gold);font-size:0.85rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;">Équipe #14</div>
+    <div class="cover-member"><div class="cover-initial">GT</div><span class="cover-member-name" data-ed="m1">Guy Carlos Tamkodjou Tchio</span></div>
+    <div class="cover-member"><div class="cover-initial">AP</div><span class="cover-member-name" data-ed="m2">Aka Pierre Patrick Aka</span></div>
+    <div class="cover-member"><div class="cover-initial">JF</div><span class="cover-member-name" data-ed="m3">Julien Frascadore</span></div>
+    <div class="cover-member"><div class="cover-initial">AG</div><span class="cover-member-name" data-ed="m4">Amine Gouizine</span></div>
+    <div class="cover-member"><div class="cover-initial">BG</div><span class="cover-member-name" data-ed="m5">Bommanin Franck Aristide Gnonteme</span></div>
+  </div>
+  <div class="cover-date" data-ed="cover-date">Avril 2026 · Présenté à Mme Iris Roland</div>
+  <button class="cover-btn" onclick="showPage('main')">Découvrir la formation →</button>
+</div>
+</div>
+
+  <!-- FORMATIONIE CONSEIL -->
+<div class="page" id="page-formationie">
+
+  <div class="hero-f">
+    <div class="hero-tag">À propos · FormationIE Conseil</div>
+    <h1>Former les leaders<br><em>de demain.</em></h1>
+    <p class="hero-sub" data-ed="fie-hero-sub">FormationIE Conseil est une firme spécialisée en développement du leadership dans les organisations technologiques. Nous croyons que l'intelligence émotionnelle est la compétence la plus rentable qu'un gestionnaire tech puisse développer.</p>
+    <div class="cta-r">
+      <button class="btn-p" onclick="showPage('main')">Voir la formation →</button>
+      <button class="btn-o" onclick="showPage('team')">Rencontrer l'équipe →</button>
+    </div>
+  </div>
+
+  <!-- QUI SOMMES NOUS -->
+  <section class="s" style="background:var(--gray-100)">
+    <div class="s-label">À propos</div>
+    <div class="s-title">Qui sommes-nous ?</div>
+    <p class="s-sub">Fondé en mars 2021 à Montréal, FormationIE est un cabinet de formation à taille humaine.</p>
+    <p style="font-size:0.95rem;color:var(--gray-700);line-height:1.8;margin-bottom:1.25rem;max-width:100%;">
+      Notre création repose sur une conviction fondamentale partagée par ses associés : vos collaborateurs constituent la première richesse de votre entreprise.<br><br>
+      Pour consolider votre position de leader, il est crucial de permettre à vos équipes de valoriser leur savoir-faire, mais aussi leur savoir-être et de s'adapter avec agilité aux mutations constantes du marché.<br><br>
+      Notre rôle est de vous accompagner dans cette dynamique de transformation.
+    </p>
+    <div class="two-grid" style="margin-top:2rem;">
+      <div class="c-card hl">
+        <h3>LE CONSTAT FONDATEUR</h3>
+        <ul>
+          <li>Les meilleurs développeurs deviennent chefs d'équipe sans formation managériale</li>
+          <li>Les compétences techniques ne suffisent plus dès qu'on gère des humains</li>
+          <li>Les organisations perdent leurs talents faute de leaders compétents en gestion humaine</li>
+          <li>Les formations génériques ne parlent pas le langage des équipes tech</li>
+        </ul>
+      </div>
+      <div class="c-card">
+        <h3>NOTRE RÉPONSE FACE AUX PROBLÈMES RENCONTRÉS PAR LES ORGANISATIONS</h3>
+        <ul>
+          <li>Des formations ancrées dans la réalité des équipes agiles</li>
+          <li>Un vocabulaire natif : sprints, code review, daily standup</li>
+          <li>Des études de cas tirées de situations réelles en contexte TI</li>
+          <li>Un suivi mesurable à 60 jours post-formation</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTRE FIRME (déplacé depuis Notre offre) -->
+  <section class="s accroche">
+    <div class="s-label">Notre firme</div>
+    <div class="s-title" data-ed="firm-title">FormationIE Conseil</div>
+    <p class="s-sub" data-ed="firm-sub">Nous croyons que les meilleures formations naissent de la rencontre entre la rigueur académique et la réalité opérationnelle des organisations TI.</p>
+    <div class="firm-grid">
+      <div class="firm-card"><div class="firm-icon">🧭</div><h3 data-ed="fc1t">Notre vision</h3><p data-ed="fc1p">Un monde où la promotion interne ne signifie plus isolement et désorientation, mais croissance accompagnée.</p></div>
+      <div class="firm-card"><div class="firm-icon">💎</div><h3 data-ed="fc2t">Nos valeurs</h3><p data-ed="fc2p">Authenticité · Rigueur académique · Empathie pédagogique · Imputabilité</p></div>
+      <div class="firm-card"><div class="firm-icon">🏗️</div><h3 data-ed="fc3t">Notre approche</h3><p data-ed="fc3p">Inspirée du modèle CVF de Quinn, ancrée dans la pratique agile, validée par le suivi à 60 jours.</p></div>
+      <div class="firm-card"><div class="firm-icon">🎯</div><h3 data-ed="fc4t">Notre spécialité</h3><p data-ed="fc4p">Le secteur TI : sprints, code review, daily standup — nous parlons votre langue.</p></div>
+    </div>
+  </section>
+
+
+  <!-- MISSION VISION VALEURS -->
+  <section class="s accroche">
+    <div class="s-label">Mission · Vision · Valeurs</div>
+    <div class="s-title" data-ed="fie-mvv-title">Ce qui nous anime chaque jour</div>
+    <div class="stat-banner">
+      <div class="stat-box">
+        <div class="big" style="font-size:1.4rem;" data-ed="fie-mission-titre">MISSION</div>
+        <div class="desc" data-ed="fie-mission">Transformer des experts techniques en leaders humains capables de mobiliser, inspirer et retenir leurs équipes.</div>
+      </div>
+      <div class="stat-box">
+        <div class="big" style="font-size:1.4rem;" data-ed="fie-vision-titre">VISION</div>
+        <div class="desc" data-ed="fie-vision">Un monde où la promotion interne ne signifie plus isolement et désorientation, mais croissance accompagnée.</div>
+      </div>
+      <div class="stat-box">
+        <div class="big" style="font-size:1.4rem;" data-ed="fie-impact-titre">IMPACT</div>
+        <div class="desc" data-ed="fie-impact">Chaque formation livrée réduit le risque de départ, améliore la performance d'équipe et renforce la culture organisationnelle.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROCHE QUINN -->
+  <section class="s quinn-section">
+    <div class="s-label">Notre approche pédagogique</div>
+    <div class="s-title">Ancrée dans le modèle CVF de Quinn</div>
+    <p style="font-size:0.95rem;color:var(--gray-500);line-height:1.7;margin-bottom:2.5rem;max-width:100%;width:100%;" data-ed="fie-quinn-sub">Le modèle des valeurs concurrentes de Quinn (1988) structure toutes nos formations. Chaque programme cible un ou plusieurs cadrans selon les besoins organisationnels.</p>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem;align-items:start;width:100%;">
+      <div style="text-align:center;">
+        <img src="https://raw.githubusercontent.com/Tamkodjou/formation-mng6086/main/Orientation.png" alt="Modèle de Quinn — cercle" style="width:100%;height:400px;object-fit:contain;border-radius:0.75rem;border:2px solid rgba(245,197,24,0.3);background:white;">
+        <p style="font-size:1rem;color:var(--gray-700);margin-top:0.75rem;font-weight:600;">Les 4 cadrans du modèle CVF — Quinn (1988)</p>
+      </div>
+      <div style="text-align:center;">
+        <img src="https://raw.githubusercontent.com/Tamkodjou/formation-mng6086/main/Quinn_roles.png" alt="Les 8 rôles managériaux selon Quinn" style="width:100%;height:400px;object-fit:contain;border-radius:0.75rem;border:2px solid rgba(245,197,24,0.3);background:white;">
+        <p style="font-size:1rem;color:var(--gray-700);margin-top:0.75rem;font-weight:600;">Les 8 rôles managériaux selon Quinn</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMATIONS PAR CADRAN -->
+  <section class="s obj-pale">
+    <div class="s-label">Nos formations — les 4 cadrans</div>
+    <div class="s-title">Une offre complète couvrant tout le modèle CVF</div>
+    <p style="font-size:0.95rem;color:var(--gray-500);line-height:1.7;margin-bottom:2.5rem;max-width:100%;width:100%;" data-ed="fie-cadrans-sub">FormationIE Conseil propose des formations dans chacun des 4 cadrans du modèle CVF de Quinn (2015). Chaque programme cible les rôles managériaux spécifiques au cadran visé et s'appuie sur des pratiques éprouvées issues de la recherche en gestion.</p>
+    <div class="obj-grid">
+      <div class="obj-card" style="border-top:3px solid #F5C518;background:#FFFDE7;">
+        <div class="obj-num" style="color:rgba(245,197,24,0.4);">🟡</div>
+        <p data-ed="fie-c1"><strong style="color:#C99A00;">Cadran Collaborer (Jaune) — Développement des personnes</strong><br><br>
+        <strong style="font-size:0.82rem;color:#8B6914;">Rôles : Coach · Facilitateur</strong><br>
+        Intelligence émotionnelle · Mentorat · Facilitation · Écoute active · Feedback constructif · Gestion des conflits · Délégation situationnelle · Sécurité psychologique<br><br>
+        <strong style="font-size:0.82rem;color:#8B6914;">Profil du gestionnaire jaune :</strong> empathique, mobilise l'engagement, construit la confiance, pratique l'empowerment, respecte les différences.<br><br>
+        <em style="font-size:0.8rem;color:#8B6914;">← Notre formation CGI actuelle · Goleman (2000) · Quinn et al. (2015)</em></p>
+      </div>
+      <div class="obj-card" style="border-top:3px solid #4CAF50;">
+        <div class="obj-num" style="color:rgba(76,175,80,0.3);">🟢</div>
+        <p data-ed="fie-c2"><strong style="color:#2E7D32;">Cadran Créer (Vert) — Adaptation au changement</strong><br><br>
+        <strong style="font-size:0.82rem;color:#2E7D32;">Rôles : Innovateur · Négociateur</strong><br>
+        Innovation radicale · Vision stratégique · Gestion du changement · Négociation · Pensée créative · Développement de nouveaux marchés · Leadership transformationnel<br><br>
+        <strong style="font-size:0.82rem;color:#2E7D32;">Profil du gestionnaire vert :</strong> visionnaire, optimiste, enthousiaste, agile, rêveur, encourage l'innovation et stimule la pensée originale.<br><br>
+        <em style="font-size:0.8rem;color:#2E7D32;">Quinn et al. (2015) · Cameron (2004)</em></p>
+      </div>
+      <div class="obj-card" style="border-top:3px solid #F443;">
+        <div class="obj-num" style="color:rgba(244,67,54,0.3);">🔴</div>
+        <p data-ed="fie-c3"><strong style="color:#C62828;">Cadran Contrôler (Rouge) — Intégration et normalisation</strong><br><br>
+        <strong style="font-size:0.82rem;color:#C62828;">Rôles : Contrôleur · Coordonnateur</strong><br>
+        Gestion des processus · Coordination multidisciplinaire · Conformité réglementaire · Amélioration continue · Planification de projets · Management situationnel (Tissier, 2001)<br><br>
+        <strong style="font-size:0.82rem;color:#C62828;">Profil du gestionnaire rouge :</strong> pragmatique, organisé, méthodique, objectif, tenace, habile à résoudre les problèmes.<br><br>
+        <em style="font-size:0.8rem;color:#C62828;">Quinn et al. (2015) · Tissier (2001) · Cameron (2011)</em></p>
+      </div>
+      <div class="obj-card" style="border-top:3px solid #2196F3;">
+        <div class="obj-num" style="color:rgba(33,150,243,0.3);">🔵</div>
+        <p data-ed="fie-c4"><strong style="color:#1565C0;">Cadran Concurrencer (Bleu) — Maximisation des résultats</strong><br><br>
+        <strong style="font-size:0.82rem;color:#1565C0;">Rôles : Directeur · Producteur</strong><br>
+        Performance · Productivité · Gestion des priorités (Matrice Covey) · Auto-motivation · Leadership à distance · Gestion du stress (Lupien, 2010) · Discipline d'exécution<br><br>
+        <strong style="font-size:0.82rem;color:#1565C0;">Profil du gestionnaire bleu :</strong> orienté résultats et action, assertif, énergique, décision rapide, compétitif, aime les défis.<br><br>
+        <em style="font-size:0.8rem;color:#1565C0;">Quinn et al. (2015) · Brunelle (2009) · Covey (2004)</em></p>
+      </div>
+      <div class="obj-card" style="border-top:3px solid var(--navy);grid-column:span 2;">
+        <div class="obj-num" style="color:rgba(10,22,40,0.2);">⭐</div>
+        <p data-ed="fie-c5"><strong>Formations intégrées — Multi-cadrans</strong><br><br>
+        Pour les organisations qui souhaitent développer des leaders capables de naviguer dans tous les cadrans selon les situations — un gestionnaire maître possède des compétences dans les 4 cadrans (Quinn et al., 2015). Programme sur mesure co-construit avec le client, diagnostic CVF préalable inclus, accompagnement post-formation à 60 jours.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALEURS -->
+  <section class="s" style="background:var(--gray-100)">
+    <div class="s-label">Nos valeurs</div>
+    <div class="s-title" data-ed="fie-val-title">Ce en quoi nous croyons profondément</div>
+    <div class="firm-grid">
+      <div class="firm-card"><div class="firm-icon">🎯</div><h3 data-ed="fie-v1t">Authenticité</h3><p data-ed="fie-v1p">Nous disons ce que nous faisons et faisons ce que nous disons. Nos formations sont construites sur des résultats réels, pas sur des promesses génériques.</p></div>
+      <div class="firm-card"><div class="firm-icon">📚</div><h3 data-ed="fie-v2t">Rigueur académique</h3><p data-ed="fie-v2p">Chaque contenu repose sur des recherches scientifiques validées. Goleman, Quinn, Edmondson, Deci & Ryan — nos sources sont citées et vérifiables.</p></div>
+      <div class="firm-card"><div class="firm-icon">🤝</div><h3 data-ed="fie-v3t">Empathie pédagogique</h3><p data-ed="fie-v3p">Nous apprenons à nos clients l'empathie en la pratiquant nous-mêmes. Chaque formation est conçue avec une compréhension profonde des défis vécus.</p></div>
+      <div class="firm-card"><div class="firm-icon">📊</div><h3 data-ed="fie-v4t">Imputabilité</h3><p data-ed="fie-v4p">Nous mesurons nos résultats. Le suivi à 60 jours n'est pas optionnel — c'est notre engagement envers la transformation réelle des comportements.</p></div>
+    </div>
+  </section>
+
+  <!-- RÉALISATIONS -->
+  <section class="s accroche">
+    <div class="s-label">Nos réalisations & chiffres clés</div>
+    <div class="s-title" data-ed="fie-real-title">Ce que nous avons accompli</div>
+    <div class="stat-banner">
+      <div class="stat-box"><div class="big" data-ed="fie-stat1">4</div><div class="desc" data-ed="fie-stat1d">cadrans du modèle CVF de Quinn couverts par notre offre de formations</div></div>
+      <div class="stat-box"><div class="big" data-ed="fie-stat2">60j</div><div class="desc" data-ed="fie-stat2d">de suivi post-formation inclus dans chaque programme pour mesurer le transfert</div></div>
+      <div class="stat-box"><div class="big" data-ed="fie-stat3">10×</div><div class="desc" data-ed="fie-stat3d">le ROI minimum si un seul départ de développeur senior est évité grâce à la formation</div></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="s">
+    <div class="s-label">Nos services</div>
+    <div class="s-title" data-ed="fie-serv-title">Une offre complète de développement du leadership</div>
+    <div class="two-grid">
+      <div class="c-card hl">
+        <h3>Formations</h3>
+        <ul>
+          <li data-ed="fie-s1">Formations en présentiel — 2 jours / 4 demi-journées</li>
+          <li data-ed="fie-s2">Formations hybrides pour équipes distribuées</li>
+          <li data-ed="fie-s3">Programmes sur mesure co-construits avec le client</li>
+          <li data-ed="fie-s4">Formation de formateurs internes</li>
+        </ul>
+      </div>
+      <div class="c-card">
+        <h3>Accompagnement</h3>
+        <ul>
+          <li data-ed="fie-a1">Diagnostic organisationnel préalable</li>
+          <li data-ed="fie-a2">Coaching individuel de gestionnaires</li>
+          <li data-ed="fie-a3">Suivi post-formation à 60 jours</li>
+          <li data-ed="fie-a4">Rapport d'impact et recommandations</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- NOS DOMAINES D'INTERVENTION -->
+  <section class="s" style="background:var(--navy);">
+    <div class="s-label" style="color:var(--gold);">Expertise</div>
+    <div class="s-title" style="color:var(--white);">Nos Domaines d'Intervention</div>
+    <p style="font-size:0.9rem;color:rgba(255,255,255,0.6);margin-bottom:2rem;">Des formations adaptées aux enjeux actuels du leadership en organisations technologiques, ancrées dans le modèle CVF de Quinn.</p>
+    <div class="firm-grid">
+      <div class="firm-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(245,197,24,0.2);">
+        <div class="firm-icon">🟡</div>
+        <h3 style="color:var(--gold);">Leadership et Management</h3>
+        <p style="color:rgba(255,255,255,0.75);">Fédérer les équipes et piloter le changement. Intelligence émotionnelle, management situationnel, coaching d'équipe — cadran jaune du modèle CVF de Quinn.</p>
+      </div>
+      <div class="firm-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(245,197,24,0.2);">
+        <div class="firm-icon">🟢</div>
+        <h3 style="color:var(--gold);">Communication et Négociation</h3>
+        <p style="color:rgba(255,255,255,0.75);">Développer la force de conviction et la communication interpersonnelle. Feedback SBI, écoute active, gestion des conflits — cadran vert du modèle CVF de Quinn.</p>
+      </div>
+      <div class="firm-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(245,197,24,0.2);">
+        <div class="firm-icon">🔵</div>
+        <h3 style="color:var(--gold);">Efficacité Professionnelle</h3>
+        <p style="color:rgba(255,255,255,0.75);">Optimiser les méthodes de travail face aux nouveaux enjeux du marché. Gestion des priorités (Matrice Covey), productivité agile — cadran bleu du modèle CVF de Quinn.</p>
+      </div>
+      <div class="firm-card" style="background:rgba(255,255,255,0.05);border:1px solid rgba(245,197,24,0.2);">
+        <div class="firm-icon">🔴</div>
+        <h3 style="color:var(--gold);">Gestion du Changement</h3>
+        <p style="color:rgba(255,255,255,0.75);">Accompagner la transformation organisationnelle. Processus d'amélioration continue, conformité et coordination — cadran rouge du modèle CVF de Quinn.</p>
+      </div>
+    </div>
+  </section>
+
+<!-- ENTREPRISES -->
+  <section class="s obj-pale">
+    <div class="s-label">Références clients</div>
+    <div style="margin-bottom:2rem;">
+      <p style="font-family:var(--fd);font-size:clamp(1.4rem,2.5vw,2rem);color:var(--navy);line-height:1.3;margin-bottom:1rem;" data-ed="fie-ent-titre">Ils nous font confiance pour leurs projets en développement du leadership et en intelligence émotionnelle</p>
+      <p style="font-size:0.95rem;color:var(--gray-500);max-width:100%;width:100%;line-height:1.7;" data-ed="fie-ent-desc">C'est un honneur d'avoir gagné la confiance de nombreuses sociétés de renom. Grâce à notre excellente équipe ainsi qu'à nos formations sur mesure, toutes les entreprises, peu importe leur taille, peuvent bénéficier de nos produits et services.</p>
+    </div>
+    <div style="background:var(--white);border-radius:1rem;padding:2rem;border:1px solid rgba(245,197,24,0.3);">
+      <img src="https://raw.githubusercontent.com/Tamkodjou/formation-mng6086/main/Entreprises.png" alt="Entreprises partenaires" style="max-width:100%;border-radius:0.5rem;display:block;margin:0 auto;">
+    </div>
+  </section>
+
+  <div style="padding:2.5rem;text-align:center;background:var(--navy);border-top:2px solid var(--gold)">
+    <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:1.25rem">Prêt à transformer vos leaders techniques ?</p>
+    <button class="btn-p" onclick="showPage('main')">Découvrir la formation CGI →</button>
+  </div>
+
+</div>
+
+  <!-- FIRME -->
+<div class="page" id="page-firme">
+
+  <div class="hero-f">
+    <div class="hero-tag">Notre client · Contexte organisationnel</div>
+    <h1>CGI :<br><em>Un géant technologique.</em></h1>
+    <p class="hero-sub">FormationIE Conseil a conçu cette formation en intelligence émotionnelle spécifiquement pour répondre aux défis de leadership vécus au sein de CGI.</p>
+  </div>
+
+  <section class="s" style="background:var(--gray-100)">
+    <div class="s-label">Qui est CGI ?</div>
+    <div class="s-title" data-ed="cgi-title">L'un des plus grands acteurs mondiaux des services TI</div>
+    <p class="s-sub" data-ed="cgi-sub">Fondée en 1976 à Québec, CGI est aujourd'hui une référence mondiale en services-conseils en TI et en gestion des processus d'affaires.</p>
+    <div class="two-grid">
+      <div class="c-card hl">
+        <h3>Chiffres clés</h3>
+        <ul>
+          <li data-ed="cgi-f1">Fondée en 1976 à Québec par Serge Godin et André Imbeau</li>
+          <li data-ed="cgi-f2">Plus de 90 000 membres (employés) dans le monde</li>
+          <li data-ed="cgi-f3">Présence dans plus de 40 pays</li>
+          <li data-ed="cgi-f4">Revenus annuels dépassant 14 milliards $ CAD</li>
+          <li data-ed="cgi-f5">Cotée à la Bourse de Toronto (TSX : GIB.A) et de New York (NYSE : GIB)</li>
+        </ul>
+      </div>
+      <div class="c-card">
+        <h3>Secteurs d'activité</h3>
+        <ul>
+          <li data-ed="cgi-s1">Services-conseils en transformation numérique</li>
+          <li data-ed="cgi-s2">Développement et intégration de systèmes</li>
+          <li data-ed="cgi-s3">Gestion des opérations TI (infogérance)</li>
+          <li data-ed="cgi-s4">Cybersécurité et infonuagique</li>
+          <li data-ed="cgi-s5">Secteurs : gouvernement, santé, finance, défense, énergie</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="s accroche">
+    <div class="s-label">Pourquoi CGI a besoin de notre formation</div>
+    <div class="s-title" data-ed="cgi-why-title">La croissance rapide crée un défi de leadership</div>
+    <div class="stat-banner">
+      <div class="stat-box">
+        <div class="big" data-ed="cgi-stat1">90 000+</div>
+        <div class="desc" data-ed="cgi-stat1d">membres dans le monde dont une forte proportion de professionnels TI hautement spécialisés</div>
+      </div>
+      <div class="stat-box">
+        <div class="big" data-ed="cgi-stat2">40+</div>
+        <div class="desc" data-ed="cgi-stat2d">pays où CGI opère, créant des équipes multiculturelles qui exigent une intelligence émotionnelle élevée</div>
+      </div>
+      <div class="stat-box">
+        <div class="big" data-ed="cgi-stat3">Agile</div>
+        <div class="desc" data-ed="cgi-stat3d">méthode de travail dominante chez CGI, où la gestion humaine est aussi critique que la gestion technique</div>
+      </div>
+    </div>
+    <div class="qb">
+      <p data-ed="cgi-quote">« Chez CGI, nos meilleurs développeurs deviennent nos chefs d'équipe. Mais passer du code à la gestion des humains est un saut que personne ne prépare vraiment. »</p>
+      <cite data-ed="cgi-cite">— Observation terrain FormationIE Conseil · Contexte CGI · 2026</cite>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="s-label">Culture d'entreprise</div>
+    <div class="s-title" data-ed="cgi-culture-title">Les valeurs CGI — un terreau fertile pour l'IE</div>
+    <p class="s-sub" data-ed="cgi-culture-sub">La culture CGI repose sur des valeurs qui s'alignent naturellement avec les compétences développées dans notre formation.</p>
+    <div class="firm-grid">
+      <div class="firm-card">
+        <div class="firm-icon">🤝</div>
+        <h3 data-ed="cgi-v1t">Partenariat</h3>
+        <p data-ed="cgi-v1p">CGI valorise des relations à long terme avec ses clients et ses membres. L'intelligence émotionnelle est le fondement de tout partenariat durable.</p>
+      </div>
+      <div class="firm-card">
+        <div class="firm-icon">🏆</div>
+        <h3 data-ed="cgi-v2t">Intégrité</h3>
+        <p data-ed="cgi-v2p">L'intégrité est au cœur de la culture CGI. Un leader émotionnellement intelligent agit avec authenticité et cohérence — les deux piliers de l'intégrité managériale.</p>
+      </div>
+      <div class="firm-card">
+        <div class="firm-icon">🚀</div>
+        <h3 data-ed="cgi-v3t">Excellence</h3>
+        <p data-ed="cgi-v3p">CGI vise l'excellence dans chaque livrable. Notre formation outille les gestionnaires pour créer les conditions humaines nécessaires à la performance collective.</p>
+      </div>
+      <div class="firm-card">
+        <div class="firm-icon">💡</div>
+        <h3 data-ed="cgi-v4t">Innovation</h3>
+        <p data-ed="cgi-v4p">L'innovation chez CGI naît d'équipes psychologiquement sécuritaires où chacun ose proposer. La sécurité psychologique est l'un des 6 objectifs de notre formation.</p>
+      </div>
+    </div>
+  </section>
+
+  <div style="padding:2.5rem;text-align:center;background:var(--navy);border-top:2px solid var(--gold)">
+    <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:1.25rem">Prêt à découvrir la formation conçue pour CGI ?</p>
+    <button class="btn-p" onclick="showPage('main')">Voir la formation complète →</button>
+  </div>
+
+</div>
+
+<!-- TEAM -->
+<div class="page" id="page-team">
+  <div class="team-hero">
+    <div class="hero-tag">FormationIE Conseil · L'équipe</div>
+    <h1 data-ed="team-h1">Cinq esprits.<br>Une vision commune.</h1>
+    <p data-ed="team-sub">Une équipe multidisciplinaire réunie autour d'une conviction : les organisations technologiques méritent des gestionnaires pleinement équipés pour diriger des humains, pas seulement des projets.</p>
+  </div>
+<!--
+  <div class="team-context" style="grid-template-columns:repeat(4,1fr);">
+  <div class="ctx-card"><div class="ctx-label">Université</div><div class="ctx-val" data-ed="ctx-univ">Université Laval · Faculté des sciences de l'administration</div></div>
+  <div class="ctx-card"><div class="ctx-label">Cours</div><div class="ctx-val" data-ed="ctx-cours">Habiletés personnelles de gestion · MNG-6086 · Hiver 2026</div></div>
+  <div class="ctx-card"><div class="ctx-label">Enseignante</div><div class="ctx-val" data-ed="ctx-prof">Mme Iris Roland · Travail de session · Avril 2026</div></div>
+  <div class="ctx-card"><div class="ctx-label">Équipe</div><div class="ctx-val">Équipe #14</div></div>
+  </div>
+  -->
+  <div class="team-grid">
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av1','__avatar_tm1__')"><span id="av1-init">GT</span><img id="av1" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm1-name">Guy Carlos Tamkodjou Tchio</h3><div class="member-role" data-ed="tm1-role">Chef de projet · Stratégie de contenu</div><p class="member-desc" data-ed="tm1-desc">Responsable de la cohérence globale de la formation et de l'architecture des modules.</p><a id="em1" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av2','__avatar_tm2__')"><span id="av2-init">AP</span><img id="av2" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm2-name">Aka Pierre Patrick Aka</h3><div class="member-role" data-ed="tm2-role">Expert pédagogique · Modules 1 &amp; 2</div><p class="member-desc" data-ed="tm2-desc">Responsable du design pédagogique des deux premiers modules.</p><a id="em2" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av3','__avatar_tm3__')"><span id="av3-init">JF</span><img id="av3" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm3-name">Julien Frascadore</h3><div class="member-role" data-ed="tm3-role">Expert pédagogique · Modules 3 &amp; 4</div><p class="member-desc" data-ed="tm3-desc">Responsable des modules sur l'empathie, le feedback et le leadership résonant.</p><a id="em3" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av4','__avatar_tm4__')"><span id="av4-init">AG</span><img id="av4" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm4-name">Amine Gouizine</h3><div class="member-role" data-ed="tm4-role">Analyste · Recherche &amp; références</div><p class="member-desc" data-ed="tm4-desc">Responsable de la revue de littérature et de la validation des sources académiques.</p><a id="em4" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+    <div class="member-card"><div class="avatar" onclick="editMode&&openImgUpload('avatar','av5','__avatar_tm5__')"><span id="av5-init">BG</span><img id="av5" src="" alt="" style="display:none"><div class="avatar-upload-hint">📷</div></div><h3 data-ed="tm5-name">Bommanin Franck Aristide Gnonteme</h3><div class="member-role" data-ed="tm5-role">Stratège commercial · Tarification &amp; vente</div><p class="member-desc" data-ed="tm5-desc">Responsable de la stratégie de mise en marché et de l'argumentaire de vente.</p><a id="em5" href="#" style="display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--gold-dark);text-decoration:none;"></a></div>
+  </div>
+
+  <!-- FORMULAIRE DE CONTACT -->
+  <section class="s" style="background:var(--navy);" id="contact-section">
+    <div class="s-label" style="color:var(--gold);">Nous joindre</div>
+    <div class="s-title" style="color:var(--white);">Écrivez-nous</div>
+    <p style="color:rgba(255,255,255,0.6);font-size:0.95rem;margin-bottom:2rem;max-width:100%;">Une question sur la formation ? Un intérêt pour un partenariat ? Remplissez le formulaire ci-dessous.</p>
+
+    <div id="contact-form-wrap" style="background:rgba(255,255,255,0.04);border:1px solid rgba(245,197,24,0.2);border-radius:1rem;padding:2rem;">
+      <!-- Ligne 1 : Nom + Courriel -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;">
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Votre nom *</label>
+          <input id="cf-nom" type="text" placeholder="Prénom Nom" style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Votre courriel *</label>
+          <input id="cf-email" type="email" placeholder="vous@exemple.com" style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+        </div>
+      </div>
+
+      <!-- Ligne 2 : Destinataire + Thème -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;">
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Destinataire *</label>
+          <select id="cf-dest" style="width:100%;padding:0.75rem 1rem;background:#0e1e35;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;cursor:pointer;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+            <option value="ALL">📧 Toute l'équipe</option>
+            <option value="guy-carlos.tamkodjou-tchio.1@ulaval.ca">GT · Guy Carlos Tamkodjou Tchio</option>
+            <option value="patrick.aka.1@ulaval.ca">AP · Aka Pierre Patrick Aka</option>
+            <option value="julien.frascadore.1@ulaval.ca">JF · Julien Frascadore</option>
+            <option value="amine.gouizine.1@ulaval.ca">AG · Amine Gouizine</option>
+            <option value="bommanin-franck-aristide.gnonteme.1@ulaval.ca">BG · Bommanin Franck Aristide Gnonteme</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Thème *</label>
+          <select id="cf-theme" onchange="toggleAutreTheme()" style="width:100%;padding:0.75rem 1rem;background:#0e1e35;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;cursor:pointer;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+            <option value="Demande d'information sur la formation">📚 Demande d'information sur la formation</option>
+            <option value="Demande de tarification">💰 Demande de tarification</option>
+            <option value="Partenariat ou collaboration">🤝 Partenariat ou collaboration</option>
+            <option value="Demande de devis sur mesure">📋 Demande de devis sur mesure</option>
+            <option value="Inscription à la formation">✅ Inscription à la formation</option>
+            <option value="Question sur le modèle CVF de Quinn">🧩 Question sur le modèle CVF de Quinn</option>
+            <option value="Autre">✏️ Autre (préciser ci-dessous)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Thème autre -->
+      <div id="cf-autre-wrap" style="display:none;margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Précisez votre thème</label>
+        <input id="cf-autre" type="text" placeholder="Décrivez votre sujet..." style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+      </div>
+
+      <!-- Organisation + Téléphone -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;">
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Organisation <span style="color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;">(optionnel)</span></label>
+          <input id="cf-org" type="text" placeholder="Votre entreprise ou université" style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Fonction <span style="color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;">(optionnel)</span></label>
+          <input id="cf-fonction" type="text" placeholder="Ex : Directeur, Chef d'équipe..." style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+        </div>
+      </div>
+
+      <!-- Téléphone -->
+      <div style="margin-bottom:1.25rem;">
+        <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Téléphone <span style="color:rgba(255,255,255,0.4);font-weight:400;text-transform:none;">(optionnel)</span></label>
+        <input id="cf-tel" type="tel" placeholder="+1 (514) 000-0000" style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
+      </div>
+
+      <!-- Message -->
+      <div style="margin-bottom:1.5rem;">
+        <label style="display:block;font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Votre message * <span id="cf-count" style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;float:right;">0 / 1000</span></label>
+        <textarea id="cf-msg" rows="5" maxlength="1000" oninput="document.getElementById('cf-count').textContent=this.value.length+' / 1000'" placeholder="Bonjour, je souhaite en savoir plus sur..." style="width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;color:var(--white);font-family:var(--fb);font-size:0.9rem;outline:none;resize:vertical;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'"></textarea>
+      </div>
+
+      <!-- Boutons -->
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+        <button onclick="submitContactForm()" style="background:var(--gold);color:var(--navy);border:none;border-radius:0.5rem;padding:0.85rem 2rem;font-family:var(--fb);font-weight:700;font-size:0.9rem;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.9" onmouseout="this.style.opacity=1">
+          ✉ Envoyer le message
+        </button>
+        <button onclick="resetContactForm()" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:0.5rem;padding:0.85rem 1.5rem;font-family:var(--fb);font-size:0.9rem;cursor:pointer;">
+          ↺ Réinitialiser
+        </button>
+        <button onclick="cancelContactForm()" style="background:transparent;color:rgba(255,255,255,0.4);border:none;padding:0.85rem 1rem;font-family:var(--fb);font-size:0.85rem;cursor:pointer;">
+          ✕ Annuler
+        </button>
+        <span id="cf-status" style="font-size:0.82rem;margin-left:0.5rem;"></span>
+      </div>
+    </div>
+
+    <!-- Message de confirmation -->
+    <div id="cf-confirm" style="display:none;text-align:center;padding:3rem 2rem;">
+      <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+      <h3 style="font-family:var(--fd);color:var(--white);font-size:1.5rem;margin-bottom:0.75rem;">Message envoyé !</h3>
+      <p style="color:rgba(255,255,255,0.6);margin-bottom:1.5rem;">Nous vous répondrons dans les plus brefs délais.</p>
+      <button onclick="document.getElementById('cf-confirm').style.display='none';document.getElementById('contact-form-wrap').style.display='block';resetContactForm();" style="background:var(--gold);color:var(--navy);border:none;border-radius:0.5rem;padding:0.75rem 1.75rem;font-family:var(--fb);font-weight:700;cursor:pointer;">Envoyer un autre message</button>
+    </div>
+  </section>
+
+  <div style="padding:2.5rem;text-align:center;background:var(--gold-pale);border-top:2px solid rgba(245,197,24,0.3)">
+    <button class="btn-p" onclick="showPage('main')">Voir la formation complète →</button>
+  </div>
+</div>
+
+<!-- FORMATION -->
+<div class="page" id="page-main">
+
+<div class="hero-f">
+  <div class="hero-tag" data-ed="h-tag">Formation en habiletés de gestion · CGI · 2026</div>
+  <h1 data-ed="h-title">Quand le code ne suffit plus.<br><em>Le leadership aussi s'apprend.</em></h1>
+  <p class="hero-sub" data-ed="h-sub">Une formation taillée sur mesure pour les chefs d'équipe techniques de CGI, propulsés gestionnaires sans avoir été formés à l'être.</p>
+  <div class="cta-r">
+  <button class="btn-p" onclick="document.getElementById('mod-anchor').scrollIntoView({behavior:'smooth'})">Découvrir les modules</button>
+  <button class="btn-o" onclick="document.getElementById('prix-anchor').scrollIntoView({behavior:'smooth'})">Voir les tarifs</button>
+</div>
+  <div class="stat-row">
+    <div class="stat-item" style="background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.25);border-radius:0.75rem;padding:1.25rem 1.5rem;"><div class="num" data-ed="s1">70%</div><div class="lbl">des nouveaux gestionnaires tech manquent de formation managériale (Harter, 2024)</div></div>
+    <div class="stat-item" style="background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.25);border-radius:0.75rem;padding:1.25rem 1.5rem;"><div class="num" data-ed="s2">4</div><div class="lbl">modules progressifs</div></div>
+    <div class="stat-item" style="background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.25);border-radius:0.75rem;padding:1.25rem 1.5rem;"><div class="num" data-ed="s3">2 jours</div><div class="lbl">présentiel ou hybride</div></div>
+    <div class="stat-item" style="background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.25);border-radius:0.75rem;padding:1.25rem 1.5rem;"><div class="num" data-ed="s4">100%</div><div class="lbl">alignée CGI</div></div>
+  </div>
+</div>
+
+  <!-- CONSTAT FONDATEUR dans Notre offre -->
+  <section class="s" style="background:var(--gold-pale);border-top:3px solid var(--gold);border-bottom:3px solid var(--gold);">
+    <div class="s-label">Le constat</div>
+    <div class="s-title" style="color:var(--navy);">Les organisations perdent leurs talents faute de leaders compétents en gestion humaine</div>
+    <div class="two-grid" style="margin-top:1.5rem;">
+      <div class="c-card hl">
+        <h3>LE CONSTAT FONDATEUR</h3>
+        <ul>
+          <li>Les meilleurs développeurs deviennent chefs d'équipe sans formation managériale</li>
+          <li>Les compétences techniques ne suffisent plus dès qu'on gère des humains</li>
+          <li>Les organisations perdent leurs talents faute de leaders compétents en gestion humaine</li>
+          <li>Les formations génériques ne parlent pas le langage des équipes tech</li>
+        </ul>
+      </div>
+      <div class="c-card">
+        <h3>Qu'est-ce que nous vous proposons ?</h3>
+        <p style="font-size:0.95rem;color:var(--gray-700);line-height:1.7;">
+          Une formation en Intelligence Émotionnelle basée sur le modèle de Quinn pour les chefs d'équipes techniques et les chefs de projets TI.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+<section class="s quinn-section">
+  <div class="s-label">Ancrage théorique</div>
+  <div class="s-title">Pourquoi le jaune ? Le modèle CVF de Quinn</div>
+  <div class="quinn-grid">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;">
+      <div class="quinn-diagram">
+        <div class="q-cell q-yellow"><div class="q-label">Notre formation</div><h4>Relations humaines</h4><p>Intelligence émotionnelle · Cohésion · Empathie</p></div>
+        <div class="q-cell q-blue"><div class="q-label" style="background:rgba(0,0,0,0.1)">Système ouvert</div><h4>Innovation</h4><p>Créativité · Croissance</p></div>
+        <div class="q-cell q-green"><div class="q-label" style="background:rgba(0,0,0,0.1)">Processus interne</div><h4>Contrôle</h4><p>Stabilité · Mesure</p></div>
+        <div class="q-cell q-red"><div class="q-label" style="background:rgba(0,0,0,0.1)">Objectifs rationnels</div><h4>Performance</h4><p>Résultats · Efficacité</p></div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--gray-500);text-align:center;">Modèle CVF — Quinn (1988)</div>
+    </div>
+    <div class="quinn-text">
+      <h3>Le cadran jaune : Relations humaines</h3>
+      <p>Dans le modèle CVF de Quinn, le cadran jaune représente les compétences de relations humaines — la capacité à mobiliser, comprendre, motiver et développer les membres de son équipe.</p>
+      <p>C'est précisément dans ce cadran que s'inscrit l'intelligence émotionnelle. Les gestionnaires TI de CGI maîtrisent les autres cadrans mais négligent souvent le cadran jaune, le plus décisif pour la rétention et l'engagement.</p>
+      <div class="quinn-highlight">Notre formation comble ce cadran jaune.</div>
+    </div>
+  </div>
+</section>
+
+
+<section class="s accroche">
+  <div class="s-label">Le problème qu'on résout</div>
+  <div class="s-title" data-ed="acc-title">Le syndrome du meilleur développeur promu</div>
+  <div class="stat-banner">
+    <div class="stat-box"><div class="big" data-ed="sb1">60%</div><div class="desc" data-ed="sb1d">des gestionnaires n'ont reçu aucune formation avant leur prise de poste (Center for Creative Leadership, 2022)</div></div>
+    <div class="stat-box"><div class="big" data-ed="sb2">4×</div><div class="desc" data-ed="sb2d">plus de risque de désengagement quand le gestionnaire manque d'IE (Nink & Robison, 2016)</div></div>
+    <div class="stat-box"><div class="big" data-ed="sb3">46%</div><div class="desc" data-ed="sb3d">des embauches en TI échouent pour des raisons comportementales (Leadership IQ., 2021)</div></div>
+  </div>
+  <div class="qb"><p data-ed="qbp"><strong style="color:var(--gold);">•</strong> 90 % des meilleurs managers en entreprise possèdent un haut niveau d'IE. <br><strong style="color:var(--gold);">•</strong> Les organisations qui investissent dans le développement des compétences émotionnelles observent une augmentation de 36 % de la performance des équipes. »</p><cite data-ed="qbc">— (Bradberry & Greaves, 2011 ; Psico-Smart, 2024).</cite></div>
+  <div class="qb" style="margin-top:1.25rem;">
+    <p style="font-size:1rem;color:rgba(255,255,255,0.85);">
+      <strong style="color:var(--gold);">•</strong> Remplacer un employé coûte entre <strong>90 % et 200 %</strong> de son salaire annuel. <br><strong style="color:var(--gold);">•</strong> Chez CGI, le coût de remplacement d'un développeur senior ayant un salaire annuel de <strong>110 000 $</strong> varie entre <strong>99 000 $</strong> et <strong>220 000 $</strong>.
+    </p>
+    <cite style="font-size:0.8rem;color:var(--gold);margin-top:0.5rem;display:block;font-style:normal;">— (Cascio, 2006 ; Mitchell et al., 2001).</cite>
+  </div>
+</section>
+
+<section class="s">
+  <div class="s-label">Clientèle visée</div>
+  <div class="s-title" data-ed="cib-title">Chefs d'équipe technique chez CGI</div>
+  <p class="s-sub" data-ed="cib-sub">Une cible précise, un problème réel, une solution sur mesure.</p>
+  <div class="two-grid">
+    <div class="c-card hl"><h3>Profil cible</h3><ul>
+      <li data-ed="ci1">Chefs d'équipe (Team Leads) et gestionnaires de projets TI</li>
+      <li data-ed="ci2">En poste depuis moins de 18 mois dans un rôle de gestion</li>
+      <li data-ed="ci3">Promus depuis un poste technique</li>
+      <li data-ed="ci4">Encadrant des équipes de 5 à 15 personnes</li>
+      <li data-ed="ci5">Travaillant en mode agile chez CGI</li>
+    </ul></div>
+    <div class="c-card"><h3>Besoins identifiés</h3><ul>
+      <li data-ed="be1">Comprendre leur nouveau rôle relationnel (savoir)</li>
+      <li data-ed="be2">Donner du feedback constructif (savoir-faire)</li>
+      <li data-ed="be3">Gérer leurs réactions émotionnelles sous pression (savoir-être)</li>
+      <li data-ed="be4">Mobiliser l'équipe sans micro-management</li>
+      <li data-ed="be5">Naviguer les conflits en contexte agile</li>
+      <li data-ed="be6">Créer un environnement psychologiquement sécuritaire</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="s obj-pale">
+  <div class="s-label">Objectifs d'apprentissage</div>
+  <div class="s-title">À la fin de cette formation, le participant sera en mesure de…</div>
+  <div class="obj-grid">
+    <div class="obj-card"><div class="obj-num">01</div><p data-ed="ob1"><strong>Maîtriser</strong> les cinq composantes ou piliers de l'IE selon Goleman (Conscience de soi, maîtrise de soi, motivation interne, empathie, maîtrise des relations).</p></div>
+    <div class="obj-card"><div class="obj-num">02</div><p data-ed="ob2"><strong>Identifier ses déclencheurs émotionnels</strong> et adopter des stratégies adaptées (observation, regulation, etc.).</p></div>
+    <div class="obj-card"><div class="obj-num">03</div><p data-ed="ob3"><strong>Utiliser des modèles de feedback</strong> pour formuler des rétroactions constructives (modèle SBI, Feedforward, etc.)</p></div>
+    <div class="obj-card"><div class="obj-num">04</div><p data-ed="ob4"><strong>Appliquer des techniques de communication empathique</strong> pour désamorcer les conflits (validation émotionnelle, méthode OSBD, etc.)</p></div>
+    <div class="obj-card"><div class="obj-num">05</div><p data-ed="ob5"><strong>Poser des gestes concrets</strong> pour créer un environnement de sécurité psychologique (humilité, curiosité radicale, etc.)</p></div>
+    <div class="obj-card"><div class="obj-num">06</div><p data-ed="ob6"><strong>Élaborer un plan de développement personnel</strong> en IE avec des indicateurs mesurables (plan SMART, KPIs, etc.)</p></div>
+  </div>
+</section>
+
+<section class="s" id="mod-anchor">
+  <div class="s-label">Structure de la formation</div>
+  <div class="s-title">4 modules progressifs · 2 jours</div>
+  <div class="mod-tabs">
+    <button class="tab-btn active" onclick="showMod(0)">Module 1 · Se connaître</button>
+    <button class="tab-btn" onclick="showMod(1)">Module 2 · Se réguler</button>
+    <button class="tab-btn" onclick="showMod(2)">Module 3 · Comprendre l'autre</button>
+    <button class="tab-btn" onclick="showMod(3)">Module 4 · Agir en leader</button>
+  </div>
+  <div class="mod-panel active" id="mp0">
+    <div class="mod-info"><div class="mod-n">Module 01</div><div class="mod-title" data-ed="m1t">Se connaître soi-même avant de diriger</div><div class="mod-dur">⏱ Demi-journée · 3h</div><p class="mod-desc" data-ed="m1d">Le point de départ de tout leadership authentique : la conscience de soi. Comprendre ses émotions, ses forces et ses angles morts avant de prétendre guider les autres. Ancré dans le cadran jaune de Quinn — rôles de coach et facilitateur.</p></div>
+    <div><div class="det-block"><h4>Contenu théorique</h4><ul><li data-ed="m1c1">Le modèle de Goleman : les 4 dimensions IE — conscience de soi, gestion de soi, conscience des autres, gestion des relations (Goleman, 2000)</li><li data-ed="m1c2">La fenêtre de Johari : zones publique, aveugle, cachée, inconnue (Luft & Ingham, 1969)</li><li data-ed="m1c3">Le modèle CVF de Quinn — cadran jaune : rôles de coach et facilitateur</li><li data-ed="m1c4">Le profil du gestionnaire jaune : empathie, mobilisation, empowerment, confiance</li></ul></div><div class="det-block"><h4>Activités</h4><ul><li data-ed="m1a1">Auto-évaluation IE : Questionnaire adapté EQi-2.0</li><li data-ed="m1a2">Cartographie de ses déclencheurs émotionnels — meilleure/pire expérience de gestion</li><li data-ed="m1a3">Exercice fenêtre de Johari : solliciter et donner du feedback</li><li data-ed="m1a4">Journal réflexif : première entrée guidée</li></ul></div><div class="det-block"><h4>Modalité</h4><div class="tag-r"><span class="tg">Présentiel</span><span class="tg">Exposé magistral</span><span class="tg">Exercice individuel</span></div></div></div>
+  </div>
+  <div class="mod-panel" id="mp1">
+    <div class="mod-info"><div class="mod-n">Module 02</div><div class="mod-title" data-ed="m2t">Réguler ses émotions sous pression</div><div class="mod-dur">⏱ Demi-journée · 3h</div><p class="mod-desc" data-ed="m2d">Un sprint qui tourne mal, un déploiement raté, un développeur qui lâche en code review. Ce module outille les participants pour rester performants dans la tempête grâce au modèle CINÉ, à la cohérence cardiaque et à la pleine conscience (Kabat-Zinn, 2009).</p></div>
+    <div><div class="det-block"><h4>Contenu théorique</h4><ul><li data-ed="m2c1">Le modèle CINÉ du stress : Contrôle, Imprévisibilité, Nouveauté, Égo menacé (Lupien, 2010)</li><li data-ed="m2c2">Les 3 phases du stress : alarme, résistance, épuisement</li><li data-ed="m2c3">Cohérence cardiaque et variabilité de la fréquence cardiaque (Heartmath Institute)</li><li data-ed="m2c4">Méditation pleine conscience — MBSR (Kabat-Zinn, 2009) : présence, concentration, non-jugement</li></ul></div><div class="det-block"><h4>Activités</h4><ul><li data-ed="m2a1">Simulation : gestion d'une crise d'équipe (jeu de rôle filmé)</li><li data-ed="m2a2">Matrice de gestion des priorités — Covey : urgent/important</li><li data-ed="m2a3">Exercice cohérence cardiaque : technique respiratoire guidée</li><li data-ed="m2a4">Plan personnel de gestion du stress — choisir l'action ou le lâcher-prise</li></ul></div><div class="det-block"><h4>Modalité</h4><div class="tag-r"><span class="tg">Présentiel</span><span class="tg">Jeu de rôle</span><span class="tg">Exercice pratique</span></div></div></div>
+  </div>
+  <div class="mod-panel" id="mp2">
+    <div class="mod-info"><div class="mod-n">Module 03</div><div class="mod-title" data-ed="m3t">Comprendre et mobiliser son équipe</div><div class="mod-dur">⏱ Demi-journée · 3h</div><p class="mod-desc" data-ed="m3d">L'empathie et la communication efficace comme leviers de performance collective. Maîtriser les 5 habiletés de communication, le feedback constructif, la délégation situationnelle et la sécurité psychologique pour bâtir des équipes performantes (Aubé & Rousseau, 2009).</p></div>
+    <div><div class="det-block"><h4>Contenu théorique</h4><ul><li data-ed="m3c1">Les 5 habiletés de communication efficace : messages non verbaux, écoute active, questions facilitantes, styles de communication, feedback constructif</li><li data-ed="m3c2">La sécurité psychologique — équipes performantes (Edmondson, 1999) · Aubé & Rousseau (2009)</li><li data-ed="m3c3">Le management situationnel — 4 niveaux d'autonomie A1 à A4 (Tissier, 2001)</li><li data-ed="m3c4">Les 3 postures en communication : Parent · Adulte · Enfant (Analyse transactionnelle, Berne)</li></ul></div><div class="det-block"><h4>Activités</h4><ul><li data-ed="m3a1">Atelier feedback constructif : modèle SBI (Situation-Comportement-Impact)</li><li data-ed="m3a2">Reformulation et reflet empathique : écoute active en triades</li><li data-ed="m3a3">Étude de cas CGI : équipe agile en perte de vitesse — délégation situationnelle</li><li data-ed="m3a4">Simulation : faciliter une réunion difficile — les 4 P d'une réunion efficace</li></ul></div><div class="det-block"><h4>Modalité</h4><div class="tag-r"><span class="tg">Présentiel</span><span class="tg">Étude de cas</span><span class="tg">Feedback entre pairs</span></div></div></div>
+  </div>
+  <div class="mod-panel" id="mp3">
+    <div class="mod-info"><div class="mod-n">Module 04</div><div class="mod-title" data-ed="m4t">Agir en leader émotionnellement intelligent</div><div class="mod-dur">⏱ Demi-journée · 3h</div><p class="mod-desc" data-ed="m4d">L'intégration finale. Du co-développement professionnel (Payette & Champagne, 1997) au plan d'action personnel : ancrer durablement les nouvelles pratiques dans le quotidien de CGI selon les 8 étapes de Cameron (2004).</p></div>
+    <div><div class="det-block"><h4>Contenu théorique</h4><ul><li data-ed="m4c1">Leadership résonant vs dissonant (Goleman, Boyatzis & McKee, 2002)</li><li data-ed="m4c2">Faire évoluer une culture — 8 étapes (Cameron, 2004) : clarifier, identifier, poser des gestes, mesurer</li><li data-ed="m4c3">Le co-développement professionnel : apprendre les uns des autres (Payette & Champagne, 1997)</li><li data-ed="m4c4">Les 7 comportements clés du leader pour la productivité d'équipe (Quinn et al., 2015)</li></ul></div><div class="det-block"><h4>Activités</h4><ul><li data-ed="m4a1">Simulation intégratrice : entretien difficile avec un collaborateur</li><li data-ed="m4a2">Co-développement : présentation individuelle 5-7 min + consultation par les pairs 10 min</li><li data-ed="m4a3">Élaboration du Plan de Développement Personnel IE — indicateurs mesurables</li><li data-ed="m4a4">Pacte d'équipe : « Nos 3 engagements » — engagement public</li></ul></div><div class="det-block"><h4>Modalité</h4><div class="tag-r"><span class="tg">Présentiel</span><span class="tg">Simulation</span><span class="tg">Co-développement</span></div></div></div>
+  </div>
+</section>
+
+<section class="s" style="background:var(--gray-100)">
+  <div class="s-label">Approche pédagogique</div>
+  <div class="s-title">Apprendre par l'expérience, ancrer par la réflexion</div>
+  <div class="peda-grid">
+    <div class="peda-card"><div class="peda-icon">🎭</div><h4>Jeux de rôle filmés</h4><p>Feedback difficile, gestion de crise, conversation de performance.</p></div>
+    <div class="peda-card"><div class="peda-icon">📋</div><h4>Études de cas CGI</h4><p>Scénarios inspirés de situations authentiques en contexte agile.</p></div>
+    <div class="peda-card"><div class="peda-icon">✏️</div><h4>Journal réflexif</h4><p>Suivi du développement, complété entre modules et à 60 jours post-formation.</p></div>
+    <div class="peda-card"><div class="peda-icon">🤝</div><h4>Co-développement</h4><p>Partage de défis réels, résolution collective, intelligence de groupe.</p></div>
+  </div>
+</section>
+
+<section class="s" style="background:var(--gray-100);padding-top:0">
+  <div class="s-label">Modalités d'évaluation</div>
+  <div class="s-title">Mesurer le transfert, pas la mémorisation</div>
+  <div class="two-grid">
+    <div class="c-card" style="border-left:3px solid var(--gold)"><h3>Pendant la formation</h3><ul><li data-ed="ev1">Auto-évaluation IE en début et en fin de formation</li><li data-ed="ev2">Grille d'observation des jeux de rôle</li><li data-ed="ev3">Rétroaction structurée (modèle SBI)</li></ul></div>
+    <div class="c-card" style="border-left:3px solid var(--navy)"><h3>À 60 jours post-formation</h3><ul><li data-ed="ev4">Remise du Plan de Développement Personnel IE</li><li data-ed="ev5">Questionnaire de transfert (superviseur et participant)</li><li data-ed="ev6">Session de co-développement virtuelle (2h, optionnel)</li></ul></div>
+  </div>
+</section>
+
+<section class="s" style="background:var(--gold-pale)" id="prix-anchor">
+  <div class="s-label">Investissement</div>
+  <div class="s-title" data-ed="pr-title">Des tarifs adaptés à la réalité de CGI</div>
+  <div class="price-grid">
+    <div class="price-card"><div class="price-name" data-ed="p1n">Formule Essentiel</div><div class="price-amt" data-ed="p1a">2 800 $</div><div class="price-unit" data-ed="p1u">par participant · groupe de 12</div><ul class="price-list"><li data-ed="p1i1">4 modules en présentiel (2 jours)</li><li data-ed="p1i2">Matériel pédagogique inclus</li><li data-ed="p1i3">Journal réflexif numérique</li><li data-ed="p1i4">Attestation de formation</li></ul></div>
+    <div class="price-card feat"><div class="price-badge">Recommandé</div><div class="price-name" data-ed="p2n">Formule Complète</div><div class="price-amt" data-ed="p2a">3 950 $</div><div class="price-unit" data-ed="p2u">par participant · groupe de 12</div><ul class="price-list"><li data-ed="p2i1">Tout inclus dans Essentiel</li><li data-ed="p2i2">Session co-développement 60 jours</li><li data-ed="p2i3">Plan de développement IE suivi</li><li data-ed="p2i4">Rapport d'impact organisationnel</li></ul></div>
+    <div class="price-card"><div class="price-name" data-ed="p3n">Formule Sur Mesure</div><div class="price-amt" data-ed="p3a">Sur devis</div><div class="price-unit" data-ed="p3u">adapté à vos besoins</div><ul class="price-list"><li data-ed="p3i1">Diagnostic organisationnel préalable</li><li data-ed="p3i2">Formation co-construite avec CGI</li><li data-ed="p3i3">Coaching individuel</li><li data-ed="p3i4">Formation de formateurs internes</li></ul></div>
+  </div>
+</section>
+
+
+  <section class="s obj-pale">
+    <div class="s-label">Alignement stratégique</div>
+    <div class="s-title">Pourquoi notre formation est taillée pour CGI</div>
+    <div class="obj-grid">
+      <div class="obj-card">
+        <div class="obj-num">01</div>
+        <p data-ed="cgi-al1"><strong>Vocabulaire natif</strong> — Nos études de cas utilisent le langage CGI : sprints, code review, daily standup, dette technique, livrables agiles.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">02</div>
+        <p data-ed="cgi-al2"><strong>Profil cible précis</strong> — Nous nous adressons spécifiquement aux experts promus gestionnaires, profil dominant chez CGI.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">03</div>
+        <p data-ed="cgi-al3"><strong>Format adapté</strong> — 4 demi-journées modulaires qui s'intègrent dans les cycles de projets sans perturber les livraisons.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">04</div>
+        <p data-ed="cgi-al4"><strong>ROI mesurable</strong> — Chaque dollar investi est justifiable : coût de remplacement d'un développeur senior = 99 000 $ à 220 000 $.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">05</div>
+        <p data-ed="cgi-al5"><strong>Suivi à 60 jours</strong> — Des données concrètes remises aux gestionnaires CGI pour mesurer le transfert des apprentissages.</p>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">06</div>
+        <p data-ed="cgi-al6"><strong>Ancrage académique</strong> — Goleman, Quinn, Edmondson : des auteurs reconnus dans les programmes de formation continue de CGI.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORGANIGRAMME CGI -->
+  <section class="s" style="background:var(--gray-100);overflow-x:auto;">
+    <div class="s-label">Structure organisationnelle</div>
+    <div class="s-title">Un extrait de l'organigramme de CGI</div>
+    <p style="font-size:0.88rem;color:var(--gray-500);margin-bottom:1.5rem;">Les gestionnaires TI que nous formons se situent aux niveaux intermédiaires — entre les directeurs et les équipes opérationnelles.</p>
+    <div style="font-family:Arial,sans-serif;overflow-x:auto;">
+      <style>
+        .org-node{border:1px solid #888;padding:8px 12px;margin:4px;border-radius:5px;min-width:170px;text-align:center;font-size:0.82rem;line-height:1.4;}
+        .org-level{display:flex;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+        .org-sublevel{display:flex;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+        .org-arch{background:#ffcccc;}.org-dev{background:#ccffcc;}.org-infra{background:#ccccff;}
+        .org-sec{background:#ffccff;}.org-data{background:#ffffcc;}.org-support{background:#ccffff;}
+        .org-top{background:var(--navy);color:var(--gold);font-weight:700;padding:10px 20px;border-radius:8px;display:inline-block;margin-bottom:8px;}
+      </style>
+      <div style="text-align:center;">
+        <div class="org-top">CTO / VP TI global</div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-arch"><strong>Architecture &amp; Innovation</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-arch">Directeur architecture d'entreprise<br><em>Gestionnaire architecture applicative</em><br><em>Gestionnaire architecture infrastructure</em><br>Architectes seniors / solutions</div>
+          <div class="org-node org-arch">Directeur innovation &amp; R&amp;D<br><em>Gestionnaire projets IA</em><br><em>Gestionnaire projets Cloud</em><br><em>Gestionnaire cybersécurité</em><br>Experts IA, Cloud, Cybersécurité</div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-dev"><strong>Développement &amp; Livraison</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-dev">Directeur développement applicatif<br><em>Gestionnaire projets TI</em><br><em>Scrum Master / Lead technique</em><br>QA / Testeurs</div>
+          <div class="org-node org-dev">Directeur services-conseils TI<br><em>Gestionnaire consultants TI</em><br><em>Gestionnaire support projet</em></div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-infra"><strong>Infrastructures &amp; Cloud</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-infra">Directeur infrastructures<br><em>Gestionnaire systèmes</em><br><em>Gestionnaire réseaux</em><br><em>Gestionnaire cloud</em></div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-sec"><strong>Cybersécurité</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-sec">Directeur sécurité (CISO)<br><em>Gestionnaire sécurité opérationnelle</em><br><em>Gestionnaire GRC</em><br><em>Gestionnaire sécurité offensive</em></div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-data"><strong>Données &amp; IA</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-data">Directeur data<br><em>Gestionnaire data engineering</em><br><em>Gestionnaire data science</em><br><em>Gestionnaire BI</em></div>
+        </div>
+      </div>
+      <div class="org-level">
+        <div class="org-node org-support"><strong>Support &amp; Exploitation</strong></div>
+        <div class="org-sublevel">
+          <div class="org-node org-support">Directeur opérations TI<br><em>Gestionnaire support 1-2</em><br><em>Gestionnaire support 3</em><br><em>Gestionnaire ITSM</em></div>
+        </div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--gray-500);margin-top:1rem;text-align:center;font-style:italic;">Figure : Extrait représentatif de la structure TI de CGI Inc. · Les <em>gestionnaires en italique</em> sont les profils cibles de notre formation.</p>
+    </div>
+  </section>
+
+<section class="s">
+  <div class="s-label">Références académiques et praticiennes</div>
+  <div class="s-title">Fondements scientifiques de la formation</div>
+  <div class="ref-grid">  
+    <div class="ref-card" data-ed="r"><strong>Goleman, D. (2000).</strong> L'intelligence émotionnelle. J'ai lu. [Édition originale : Emotional Intelligence, 1995, Bantam Books.]</div>
+    <div class="ref-card" data-ed="r2"><strong>Goleman, D., Boyatzis, R., & McKee, A. (2002).</strong> Primal Leadership: Realizing the Power of Emotional Intelligence. Harvard Business School Press.</div>
+    <div class="ref-card" data-ed="r3"><strong>Quinn, R.E. et al. (2015).</strong> Becoming a Master Manager: A Competing Values Approach (5e éd.). Wiley. [Modules 1-4 : Collaborer, Contrôler, Concurrencer, Créer.]</div>
+    <div class="ref-card" data-ed="r4"><strong>Edmondson, A. (1999).</strong> Psychological Safety and Learning Behavior in Work Teams. Administrative Science Quarterly, 44(2), 350-383.</div>
+    <div class="ref-card" data-ed="r5"><strong>Cameron, K.S. & Whetten, D.A. (2011).</strong> Developing Management Skills (8e éd.). Prentice Hall. [Gestion du stress et des conflits.]</div>
+    <div class="ref-card" data-ed="r6"><strong>Tissier, D. (2001).</strong> Le management situationnel : vers l'autonomie et la responsabilisation. INSEP Consulting. [4 niveaux d'autonomie A1-A4.]</div>
+    <div class="ref-card" data-ed="r7"><strong>Brunelle, É. (2009).</strong> E-leadership : l'art de gérer les distances psychologiques. Revue Gestion, 34(2), 10-20.</div>
+    <div class="ref-card" data-ed="r8"><strong>Cameron, K. (2004).</strong> A process for changing organizational culture. In M. Driver (Ed.), The Handbook of Organizational Development. Jossey-Bass.</div>
+    <div class="ref-card" data-ed="r9"><strong>Aubé, C. & Rousseau, V. (2009).</strong> Des équipes de travail efficaces : ce qu'il faut faire et ne pas faire. Revue Gestion, 34(2), 60-67.</div>
+    <div class="ref-card" data-ed="r10"><strong>Lupien, S. (2010).</strong> Par amour du stress. Éditions au Carré. [Modèle CINÉ : Contrôle, Imprévisibilité, Nouveauté, Égo menacé.]</div>
+    <div class="ref-card" data-ed="r11"><strong>Kabat-Zinn, J. (2009).</strong> Au cœur de la tourmente, la pleine conscience : MBSR. De Boeck. [Mindfulness Based Stress Reduction.]</div>
+    <div class="ref-card" data-ed="r12"><strong>Payette, A. & Champagne, C. (1997).</strong> Le groupe de codéveloppement professionnel. Presses de l'Université du Québec.</div>
+    <div class="ref-card"><strong>Cascio, W. F. (2006).</strong> Managing human resources: Productivity, quality of work life, profits (7e éd.). Burr Ridge, IL: Irwin/McGraw-Hill.</div>
+    <div class="ref-card"><strong>Mitchell, T. R., Holtom, B. C., & Lee, T. W. (2001).</strong> How to keep your best employees. Harvard Business Review, 79(1), 1‑6.</div>
+    <div class="ref-card" data-ed="r13"><strong>Center for Creative Leadership. (2022).</strong> Developing new managers? How to set your first-time leaders up for success.</div>
+    <div class="ref-card" data-ed="r14"><strong>Leadership IQ. (2021).</strong> Why new hires fail (the landmark "Hiring for Attitude" study).</div>
+    <div class="ref-card" data-ed="r15"><strong>Harter, J. (2024).</strong> In new workplace, U.S. employee engagement stagnates. Gallup.</div>
+    <div class="ref-card" data-ed="r16"><strong>Nink, M., & Robison, J. (2016).</strong> The damage inflicted by poor managers. Gallup.</div>
+    <div class="ref-card" data-ed="r17"><strong>Bradberry, T., & Greaves, J. (2011).</strong> Emotional intelligence 2.0 step by step. TalentSmartEQ.</div>
+    <div class="ref-card" data-ed="r18"><strong>Psico-Smart (2024).</strong> L'impact de l'intelligence émotionnelle sur les résultats des tests. Blogs Psico-Smart.</div>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="ft-firm">Formation<span>IE</span> Conseil</div>
+  <p style="font-size:1.1rem;">Formation · Coaching · Développement organisationnel</p>
+  <div class="ft-div"></div>
+  <div class="ft-acad" data-ed="footer-acad">
+    Travail présenté dans le cadre du cours Habiletés personnelles de gestion — MNG-6086<br>
+    Enseignante : Mme Iris Roland · Université Laval · Avril 2026<br>
+    <strong style="color:#ffffff;">Par :</strong> Guy Carlos Tamkodjou Tchio · Aka Pierre Patrick Aka · Julien Frascadore · Amine Gouizine · Bommanin Franck Aristide Gnonteme
+  </div>
+  <div class="ft-div"></div>
+  <div style="font-size:0.85rem;line-height:2.2;">
+    <p style="color:#ffffff;margin-bottom:0.5rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;font-size:0.9rem;">Nous contacter</p>
+    <p>
+      <a id="em-footer" href="#" style="color:var(--gold);text-decoration:none;"></a>
+    </p>
+    <p>
+      <a href="tel:+15142996482" style="color:rgba(255,255,255,0.7);text-decoration:none;">📞 +1 (514) 299-6482</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+const SUPABASE_URL = 'https://rvtylqrsaahjprnjesam.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_-pFypKhYTd09pRjgoz6vYg_6Kgz_NMF';
+const PW = 'formationie2026';
+let editMode = false;
+let saveTimeout = null;
+let sb = null;
+
+async function initSupabase() {
+  try {
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    await loadFromSupabase();
+  } catch(e) {
+    console.warn('Supabase init error:', e);
+  } finally {
+    setTimeout(() => {
+      const ls = document.getElementById('loading-screen');
+      ls.classList.add('hide');
+      setTimeout(() => ls.style.display = 'none', 500);
+    }, 1500);
+  }
+}
+
+async function loadFromSupabase() {
+  try {
+    const { data, error } = await sb.from('contenu').select('cle, valeur');
+    if (error) throw error;
+    if (!data || data.length === 0) return;
+
+    const avatarMap = {'__avatar_tm1__':'av1','__avatar_tm2__':'av2','__avatar_tm3__':'av3','__avatar_tm4__':'av4','__avatar_tm5__':'av5'};
+    const imageKeys = [...Object.keys(avatarMap), '__logo__'];
+
+    data.forEach(row => {
+      if (!row.valeur) return;
+
+      // Images — avatars
+      if (avatarMap[row.cle]) {
+        const imgEl = document.getElementById(avatarMap[row.cle]);
+        const initEl = document.getElementById(avatarMap[row.cle] + '-init');
+        if (imgEl) { imgEl.src = row.valeur; imgEl.style.display = 'block'; }
+        if (initEl) initEl.style.display = 'none';
+        return;
+      }
+
+      // Image — logo
+      if (row.cle === '__logo__') {
+        const imgEl = document.getElementById('logo-img');
+        const txtEl = document.getElementById('logo-text');
+        if (imgEl && row.valeur) { imgEl.src = row.valeur; imgEl.style.display = 'block'; }
+        if (txtEl && row.valeur) txtEl.style.display = 'none';
+        return;
+      }
+
+      // Config visuelle
+      if (row.cle === '__visual_config__') {
+        try { applyVisualConfig(JSON.parse(row.valeur)); } catch(e) {}
+        return;
+      }
+
+      // Textes éditables
+      const el = document.querySelector('[data-ed="' + row.cle + '"]');
+      if (el) el.innerHTML = row.valeur;
+    });
+
+    setSyncStatus('✓ Contenu chargé', 'saved');
+  } catch(e) {
+    console.warn('Load error:', e);
+  }
+}
+
+async function saveToSupabase(cle, valeur) {
+  if (!sb) return;
+  setSyncStatus('Sauvegarde...', 'saving');
+  try {
+    const { error } = await sb.from('contenu').upsert({ cle, valeur }, { onConflict: 'cle' });
+    if (error) throw error;
+    setSyncStatus('✓ Sauvegardé en ligne', 'saved');
+    setTimeout(() => setSyncStatus('', ''), 3000);
+  } catch(e) {
+    setSyncStatus('⚠ Erreur de sauvegarde', '');
+    console.warn('Save error:', e);
+  }
+}
+
+async function saveAll() {
+  const elements = document.querySelectorAll('[data-ed]');
+  setSyncStatus('Sauvegarde de tout...', 'saving');
+  const rows = Array.from(elements).map(el => ({
+    cle: el.getAttribute('data-ed'),
+    valeur: el.innerHTML
+  }));
+  try {
+    const { error } = await sb.from('contenu').upsert(rows, { onConflict: 'cle' });
+    if (error) throw error;
+    setSyncStatus('✓ Tout sauvegardé !', 'saved');
+    showToast('💾 Tout le contenu sauvegardé en ligne !');
+    setTimeout(() => setSyncStatus('', ''), 4000);
+  } catch(e) {
+    setSyncStatus('⚠ Erreur', '');
+    showToast('⚠️ Erreur de sauvegarde — vérifiez la connexion');
+  }
+}
+
+async function resetContent() {
+  if (!confirm('Supprimer tout le contenu personnalisé et revenir au texte original ?')) return;
+  try {
+    await sb.from('contenu').delete().neq('cle', '');
+    showToast('↩ Réinitialisé — rechargez la page');
+    setTimeout(() => location.reload(), 1500);
+  } catch(e) {
+    showToast('⚠️ Erreur lors de la réinitialisation');
+  }
+}
+
+function setSyncStatus(msg, cls) {
+  const el = document.getElementById('sync-status');
+  el.textContent = msg;
+  el.className = cls;
+}
+
+function showPage(n, scrollToContact = false) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + n).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  
+  const map = {
+    'cover':'Accueil',
+    'firme':'Notre Client',
+    'formationie':'Qui sommes-nous ?',
+    'team':'L\'équipe',
+    'main':'La formation',
+    'ecrire':'Nous écrire'  // ← AJOUTÉ
+  };
+  
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    // Si on est sur la page team et qu'on a scrollToContact = true, on active "Nous écrire"
+    if (n === 'team' && scrollToContact && a.textContent.trim() === 'Nous écrire') {
+      a.classList.add('active');
+    }
+    // Sinon, on active normalement selon le map
+    else if (a.textContent.trim() === map[n]) {
+      a.classList.add('active');
+    }
+  });
+  
+  // Si c'est le menu "Nous écrire", on scroll vers le formulaire de contact
+  if (scrollToContact && n === 'team') {
+    setTimeout(() => {
+      const contactSection = document.querySelector('#page-team section.s[style*="background:var(--navy)"]');
+      if (contactSection) {
+        contactSection.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+    }, 300);
+  }
+}
+
+function showMod(i) {
+  document.querySelectorAll('.mod-panel').forEach((p,j) => p.classList.toggle('active', i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j) => b.classList.toggle('active', i===j));
+}
+
+function toggleEditMode() {
+  if (!editMode) {
+    document.getElementById('lock-overlay').style.display = 'flex';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-error').style.display = 'none';
+    setTimeout(() => document.getElementById('pw-input').focus(), 100);
+  } else {
+    disableEdit();
+  }
+}
+
+function checkPw() {
+  if (document.getElementById('pw-input').value === PW) {
+    document.getElementById('lock-overlay').style.display = 'none';
+    enableEdit();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+function enableEdit() {
+  editMode = true;
+  document.querySelectorAll('[data-ed]').forEach(el => {
+    el.contentEditable = 'true';
+    el.addEventListener('input', () => {
+      clearTimeout(saveTimeout);
+      setSyncStatus('En attente...', 'saving');
+      saveTimeout = setTimeout(() => {
+        saveToSupabase(el.getAttribute('data-ed'), el.innerHTML);
+      }, 1500);
+    });
+  });
+  document.getElementById('edit-status').textContent = 'Mode édition — sauvegarde automatique activée';
+  document.getElementById('edit-indicator').className = 'on';
+  document.getElementById('toggle-edit-btn').textContent = '🔓 Désactiver';
+  document.getElementById('save-btn').style.display = 'inline-block';
+  document.getElementById('reset-btn').style.display = 'inline-block';
+  showToast('✏️ Mode édition actif — chaque modification se sauvegarde automatiquement en ligne');
+}
+
+function disableEdit() {
+  editMode = false;
+  document.querySelectorAll('[data-ed]').forEach(el => el.contentEditable = 'false');
+  document.getElementById('edit-status').textContent = 'Mode lecture';
+  document.getElementById('edit-indicator').className = '';
+  document.getElementById('toggle-edit-btn').textContent = '🔒 Activer l\'édition';
+  document.getElementById('save-btn').style.display = 'none';
+  document.getElementById('reset-btn').style.display = 'none';
+  showToast('👁 Mode lecture réactivé');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+initSupabase();
+
+// ─── FORMATTING TOOLBAR ───────────────────────────────────────
+function execFmt(cmd, val) {
+  document.execCommand(cmd, false, val || null);
+  const el = document.activeElement.closest('[data-ed]') || lastFocused;
+  if (el) {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => saveToSupabase(el.getAttribute('data-ed'), el.innerHTML), 1500);
+  }
+}
+
+let lastFocused = null;
+let toolbarPinned = false;
+
+document.addEventListener('selectionchange', () => {
+  if (!editMode) return;
+  const sel = window.getSelection();
+  const toolbar = document.getElementById('fmt-toolbar');
+  if (!sel || sel.isCollapsed || sel.toString().trim() === '') {
+    if (!toolbarPinned) toolbar.classList.remove('visible');
+    return;
+  }
+  const range = sel.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  if (rect.width === 0) return;
+  toolbar.classList.add('visible');
+  const top = rect.top + window.scrollY - toolbar.offsetHeight - 10;
+  const left = Math.min(rect.left + window.scrollX, window.innerWidth - toolbar.offsetWidth - 10);
+  toolbar.style.top = Math.max(50, top) + 'px';
+  toolbar.style.left = Math.max(10, left) + 'px';
+});
+
+document.addEventListener('focusin', (e) => {
+  const ed = e.target.closest('[data-ed]');
+  if (ed) lastFocused = ed;
+});
+
+// ─── CONFIG PANEL ─────────────────────────────────────────────
+function toggleConfigPanel() {
+  const panel = document.getElementById('config-panel');
+  panel.classList.toggle('open');
+}
+
+function updateCSSVar(varName, value) {
+  document.documentElement.style.setProperty(varName, value);
+  if (varName === '--gold') {
+    const dark = shadeColor(value, -20);
+    document.documentElement.style.setProperty('--gold-dark', dark);
+  }
+}
+
+function shadeColor(hex, pct) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, Math.max(0, (num >> 16) + pct*2.55|0));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + pct*2.55|0));
+  const b = Math.min(255, Math.max(0, (num & 0xff) + pct*2.55|0));
+  return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function updateFontSize(val) {
+  document.body.style.fontSize = val + 'px';
+  document.getElementById('font-size-val').textContent = val + 'px';
+}
+
+function updateLineHeight(val) {
+  document.body.style.lineHeight = val;
+  document.getElementById('line-height-val').textContent = val;
+}
+
+function updateBodyFont(val) {
+  document.body.style.fontFamily = val;
+}
+
+function updateSectionBg(selector, color) {
+  document.querySelectorAll(selector).forEach(el => el.style.background = color);
+}
+
+function updateBorderWidth(val) {
+  document.getElementById('border-val').textContent = val + 'px';
+  document.querySelectorAll('nav, .team-hero, .hero-f, footer, .quinn-section').forEach(el => {
+    el.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim();
+    if (el.style.borderBottomWidth !== undefined) el.style.borderBottomWidth = val + 'px';
+    if (el.style.borderTopWidth !== undefined) el.style.borderTopWidth = val + 'px';
+  });
+}
+
+function getVisualConfig() {
+  return {
+    gold: document.documentElement.style.getPropertyValue('--gold') || '#F5C518',
+    navy: document.documentElement.style.getPropertyValue('--navy') || '#0A1628',
+    goldPale: document.documentElement.style.getPropertyValue('--gold-pale') || '#FFFBE6',
+    gray100: document.documentElement.style.getPropertyValue('--gray-100') || '#F4F5F7',
+    fontSize: document.getElementById('font-size-range').value,
+    lineHeight: document.getElementById('line-height-range').value,
+    bodyFont: document.body.style.fontFamily || "'DM Sans',sans-serif",
+    borderWidth: document.getElementById('border-range').value,
+  };
+}
+
+async function saveVisualConfig() {
+  const config = getVisualConfig();
+  try {
+    await sb.from('contenu').upsert({ cle: '__visual_config__', valeur: JSON.stringify(config) }, { onConflict: 'cle' });
+    showToast('🎨 Configuration visuelle sauvegardée !');
+  } catch(e) {
+    showToast('⚠️ Erreur de sauvegarde de la configuration');
+  }
+}
+
+function applyVisualConfig(config) {
+  if (!config) return;
+  if (config.gold) { updateCSSVar('--gold', config.gold); document.getElementById('sw-gold').style.background = config.gold; }
+  if (config.navy) { updateCSSVar('--navy', config.navy); document.getElementById('sw-navy').style.background = config.navy; }
+  if (config.goldPale) { updateCSSVar('--gold-pale', config.goldPale); document.getElementById('sw-pale').style.background = config.goldPale; }
+  if (config.gray100) { updateCSSVar('--gray-100', config.gray100); document.getElementById('sw-gray').style.background = config.gray100; }
+  if (config.fontSize) { updateFontSize(config.fontSize); document.getElementById('font-size-range').value = config.fontSize; }
+  if (config.lineHeight) { updateLineHeight(config.lineHeight); document.getElementById('line-height-range').value = config.lineHeight; }
+  if (config.bodyFont) updateBodyFont(config.bodyFont);
+  if (config.borderWidth) { updateBorderWidth(config.borderWidth); document.getElementById('border-range').value = config.borderWidth; }
+}
+
+async function resetVisualConfig() {
+  if (!confirm('Réinitialiser toute la configuration visuelle ?')) return;
+  try {
+    await sb.from('contenu').delete().eq('cle', '__visual_config__');
+    showToast('↩ Configuration réinitialisée — rechargez la page');
+    setTimeout(() => location.reload(), 1500);
+  } catch(e) {
+    showToast('⚠️ Erreur lors de la réinitialisation');
+  }
+}
+
+// Charger la config visuelle depuis Supabase au chargement
+// Patch loadFromSupabase pour la config visuelle (géré directement dans loadFromSupabase)
+
+// Montrer le panneau config + edit-mode class
+const origEnable = enableEdit;
+enableEdit = function() {
+  origEnable();
+  document.getElementById('cfg-toggle-btn').classList.add('visible');
+  document.body.classList.add('edit-mode');
+};
+const origDisable = disableEdit;
+disableEdit = function() {
+  origDisable();
+  document.getElementById('cfg-toggle-btn').classList.remove('visible');
+  document.getElementById('config-panel').classList.remove('open');
+  document.getElementById('fmt-toolbar').classList.remove('visible');
+  document.body.classList.remove('edit-mode');
+};
+
+// ─── IMAGE UPLOAD ─────────────────────────────────────────────
+let imgUploadMode = null;
+let imgTargetId   = null;
+let imgStorageKey = null;
+let imgSavedRange = null;
+let imgSelectedFile = null;
+
+function openImgUpload(mode, targetId, storageKey) {
+  if (!editMode) return;
+  imgUploadMode = mode; imgTargetId = targetId; imgStorageKey = storageKey;
+  imgSelectedFile = null;
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) imgSavedRange = sel.getRangeAt(0).cloneRange();
+  document.getElementById('img-preview-el').style.display = 'none';
+  document.getElementById('img-preview-el').src = '';
+  document.getElementById('img-file-input').value = '';
+  document.getElementById('img-uploading').style.display = 'none';
+  document.getElementById('img-drop-zone').classList.remove('drag');
+  const titles = { avatar:'Photo de profil', logo:'Logo FormationIE', inline:'Insérer une image' };
+  document.getElementById('img-upload-title').textContent = titles[mode] || 'Image';
+  document.getElementById('img-upload-overlay').classList.add('open');
+}
+
+function closeImgUpload() {
+  document.getElementById('img-upload-overlay').classList.remove('open');
+  imgSelectedFile = null;
+}
+
+function handleImgDrop(e) {
+  e.preventDefault();
+  document.getElementById('img-drop-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) { imgSelectedFile = file; showImgPreview(file); }
+}
+
+function previewImg(input) {
+  if (input.files && input.files[0]) { imgSelectedFile = input.files[0]; showImgPreview(imgSelectedFile); }
+}
+
+function showImgPreview(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const p = document.getElementById('img-preview-el');
+    p.src = e.target.result; p.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function confirmImgUpload() {
+  if (!imgSelectedFile) { showToast('⚠️ Veuillez choisir une image'); return; }
+  if (imgSelectedFile.size > 2*1024*1024) { showToast('⚠️ Image trop lourde — max 2 Mo'); return; }
+  document.getElementById('img-uploading').style.display = 'block';
+  try {
+    const ext  = imgSelectedFile.name.split('.').pop().toLowerCase();
+    const key  = imgStorageKey || ('inline_' + Date.now());
+    const path = (key.replace(/^__|__$/g,'') || 'img') + '_' + Date.now() + '.' + ext;
+    const { error: upErr } = await sb.storage.from('images').upload(path, imgSelectedFile, { upsert:true });
+    if (upErr) throw upErr;
+    const { data: urlData } = sb.storage.from('images').getPublicUrl(path);
+    const publicUrl = urlData.publicUrl;
+    await sb.from('contenu').upsert({ cle: key, valeur: publicUrl }, { onConflict:'cle' });
+    if (imgUploadMode === 'avatar') {
+      const imgEl = document.getElementById(imgTargetId);
+      const initEl = document.getElementById(imgTargetId + '-init');
+      imgEl.src = publicUrl; imgEl.style.display = 'block';
+      if (initEl) initEl.style.display = 'none';
+    } else if (imgUploadMode === 'logo') {
+      const imgEl = document.getElementById('logo-img');
+      const txtEl = document.getElementById('logo-text');
+      imgEl.src = publicUrl; imgEl.style.display = 'block';
+      if (txtEl) txtEl.style.display = 'none';
+    } else {
+      insertInlineImg(publicUrl, path);
+    }
+    showToast('🖼 Image sauvegardée en ligne !');
+    closeImgUpload();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('img-uploading').style.display = 'none';
+    showToast('⚠️ Erreur upload — vérifiez que le bucket "images" est Public dans Supabase Storage');
+  }
+}
+
+function insertInlineImg(url, path) {
+  const wrap = document.createElement('span');
+  wrap.className = 'inline-img-wrap';
+  const img = document.createElement('img');
+  img.src = url; img.alt = '';
+  wrap.appendChild(img); wrap.appendChild(del);
+  if (imgSavedRange) {
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(imgSavedRange);
+    imgSavedRange.deleteContents(); imgSavedRange.insertNode(wrap);
+  } else if (lastFocused) {
+    lastFocused.appendChild(wrap);
+  }
+  if (lastFocused) {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => saveToSupabase(lastFocused.getAttribute('data-ed'), lastFocused.innerHTML), 1500);
+  }
+}
+
+// ─── FORMULAIRE DE CONTACT ────────────────────────────────────
+function toggleAutreTheme() {
+  const sel = document.getElementById('cf-theme');
+  const wrap = document.getElementById('cf-autre-wrap');
+  wrap.style.display = sel.value === 'Autre' ? 'block' : 'none';
+}
+
+function resetContactForm() {
+  ['cf-nom','cf-email','cf-org','cf-fonction','cf-tel','cf-msg','cf-autre'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('cf-dest').selectedIndex = 0;
+  document.getElementById('cf-theme').selectedIndex = 0;
+  document.getElementById('cf-autre-wrap').style.display = 'none';
+  document.getElementById('cf-count').textContent = '0 / 1000';
+  document.getElementById('cf-status').textContent = '';
+}
+
+function cancelContactForm() {
+  resetContactForm();
+  document.getElementById('contact-form-wrap').style.borderColor = 'rgba(245,197,24,0.2)';
+}
+
+async function submitContactForm() {
+  const at = '\u0040';
+  const CARLOS  = 'guy-carlos.tamkodjou-tchio.1' + at + 'ulaval.ca';
+  const MEMBRES_CC = [
+    'patrick.aka.1'                          + at + 'ulaval.ca',
+    'julien.frascadore.1'                    + at + 'ulaval.ca',
+    'amine.gouizine.1'                       + at + 'ulaval.ca',
+    'bommanin-franck-aristide.gnonteme.1'    + at + 'ulaval.ca',
+  ];
+
+  const nom    = document.getElementById('cf-nom').value.trim();
+  const email  = document.getElementById('cf-email').value.trim();
+  const msg    = document.getElementById('cf-msg').value.trim();
+  const dest   = document.getElementById('cf-dest').value;
+  const themeEl= document.getElementById('cf-theme');
+  const theme  = themeEl.value === 'Autre'
+    ? (document.getElementById('cf-autre').value.trim() || 'Autre')
+    : themeEl.value;
+  const org      = document.getElementById('cf-org').value.trim();
+  const fonction = document.getElementById('cf-fonction').value.trim();
+  const tel      = document.getElementById('cf-tel').value.trim();
+  const status = document.getElementById('cf-status');
+
+  if (!nom)  { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez entrer votre nom.'; return; }
+  if (!email || !email.includes('@')) { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez entrer un courriel valide.'; return; }
+  if (!msg)  { status.style.color='#E24B4A'; status.textContent='⚠ Veuillez écrire un message.'; return; }
+
+  status.style.color='var(--gold)'; status.textContent='⏳ Envoi en cours...';
+
+  // Déterminer destinataire principal et CC
+  let to, cc;
+  if (dest === 'ALL') {
+    // Toute l'équipe → Carlos principal + autres membres en CC
+    to = CARLOS;
+    cc = MEMBRES_CC.join(', ');
+  } else {
+    // Membre spécifique → lui seul, pas de CC
+    to = dest;
+    cc = '';
+  }
+
+  try {
+    await emailjs.send('service_360gift', 'template_45djwlt', {
+      nom:          nom,
+      email:        email,
+      organisation: org      || '—',
+      fonction:     fonction || '—',
+      telephone:    tel      || '—',
+      theme:        theme,
+      destinataire: to,
+      cc:           cc,
+      message:      msg,
+      name:         nom
+    });
+    status.textContent = '';
+    document.getElementById('contact-form-wrap').style.display = 'none';
+    document.getElementById('cf-confirm').style.display = 'block';
+  } catch(e) {
+    status.style.color='#E24B4A';
+    status.textContent='⚠ Erreur d\'envoi. Contactez-nous directement à guy-carlos.tamkodjou-tchio.1@ulaval.ca';
+    console.error('EmailJS error:', e);
+  }
+}
+
+// ─── CHATBOT IRIS ─────────────────────────────────────────────
+const IRIS_SYSTEM = `Tu es Iris, l'assistante IA de FormationIE Conseil.
+Ton prénom est un hommage à Mme Iris Roland, professeure du cours MNG-6086 à l'Université Laval, dans le cadre duquel cette formation a été développée.
+
+RÈGLES DE FORMATAGE — à respecter absolument :
+- Écris en français uniquement.
+- Mets un point à la fin de chaque phrase.
+- Va à la ligne après chaque phrase ou chaque nouvelle idée.
+- Utilise le gras avec ** pour les termes importants, les noms de formules, les montants — ex : **Formule Essentiel**, **3 950 $**.
+- Ne fais jamais de listes avec des tirets sauf si on te le demande explicitement.
+- Réponds en 3 à 6 phrases maximum sauf si on demande plus de détails.
+- Sois chaleureuse, professionnelle et enthousiaste.
+
+INFORMATIONS SUR L'ÉQUIPE FormationIE Conseil — Équipe #14 :
+- **Guy Carlos Tamkodjou Tchio** · Chef de projet · Stratégie de contenu · guy-carlos.tamkodjou-tchio.1@ulaval.ca
+- **Aka Pierre Patrick Aka** · Expert pédagogique · Modules 1 & 2 · patrick.aka.1@ulaval.ca
+- **Julien Frascadore** · Expert pédagogique · Modules 3 & 4 · julien.frascadore.1@ulaval.ca
+- **Amine Gouizine** · Analyste · Recherche & références · amine.gouizine.1@ulaval.ca
+- **Bommanin Franck Aristide Gnonteme** · Stratège commercial · Tarification & vente · bommanin-franck-aristide.gnonteme.1@ulaval.ca
+
+CONTEXTE ACADÉMIQUE :
+- Université : Université Laval · Faculté des sciences de l'administration
+- Cours : Habiletés personnelles de gestion · MNG-6086 · Hiver 2026
+- Enseignante : Mme Iris Roland
+- Travail : Création et présentation d'une formation sur les habiletés de gestion
+
+INFORMATIONS SUR CGI :
+- Fondée en 1976 à Québec par Serge Godin et André Imbeau.
+- Plus de 90 000 membres dans le monde, présence dans plus de 40 pays.
+- Revenus annuels dépassant 14 milliards $ CAD.
+- Cotée à la Bourse de Toronto (TSX : GIB.A) et de New York (NYSE : GIB).
+- Secteurs : services-conseils TI, transformation numérique, cybersécurité, infonuagique, gouvernement, santé, finance, défense.
+- Les chefs d'équipe TI de CGI sont souvent promus depuis des postes techniques sans formation managériale.
+
+INFORMATIONS SUR FormationIE Conseil :
+- Firme spécialisée en développement du leadership dans les organisations technologiques.
+- Mission : transformer des experts techniques en leaders humains capables de mobiliser, inspirer et retenir leurs équipes.
+- Vision : un monde où la promotion interne ne signifie plus isolement, mais croissance accompagnée.
+- Approche : ancrée dans le modèle CVF de Quinn (1988), cadran jaune — Relations humaines.
+- Valeurs : authenticité, rigueur académique, empathie pédagogique, imputabilité.
+- Contact : guy-carlos.tamkodjou-tchio.1@ulaval.ca · +1 (514) 299-6482
+
+INFORMATIONS SUR LA FORMATION :
+- Titre : Intelligence émotionnelle au service du leadership tech.
+- Cible : chefs d'équipe TI de CGI, promus depuis un poste technique, en poste depuis moins de 18 mois, supervisant des équipes agiles de 5 à 15 personnes.
+- Format : 4 modules · 2 jours · 4 demi-journées de 3h chacune · présentiel ou hybride.
+- Suivi post-formation à 60 jours inclus avec questionnaire de transfert.
+
+TARIFS :
+- **Formule Essentiel** : **2 800 $** par participant · groupe de 12 · inclut les 4 modules, le matériel pédagogique, le journal réflexif numérique et l'attestation de formation.
+- **Formule Complète** : **3 950 $** par participant · groupe de 12 · inclut tout l'Essentiel + session de co-développement à 60 jours + plan de développement IE suivi + rapport d'impact organisationnel.
+- **Formule Sur Mesure** : sur devis · diagnostic organisationnel préalable + formation co-construite avec CGI + coaching individuel.
+- ROI : le coût de remplacement d'un développeur senior est de 40 000 $ à 80 000 $ — la formation se rembourse si elle retient un seul talent.
+
+LES 4 MODULES :
+- **Module 1 — Se connaître soi-même** (3h) : IE selon Goleman, fenêtre de Johari, profil CVF Quinn jaune, auto-évaluation EQi-2.0.
+- **Module 2 — Réguler ses émotions sous pression** (3h) : modèle CINÉ de Lupien, cohérence cardiaque, pleine conscience MBSR de Kabat-Zinn, matrice Covey.
+- **Module 3 — Comprendre et mobiliser son équipe** (3h) : feedback SBI, management situationnel Tissier, sécurité psychologique Edmondson, écoute active.
+- **Module 4 — Agir en leader émotionnellement intelligent** (3h) : co-développement Payette & Champagne, 8 étapes Cameron, plan de développement personnel IE.
+
+MODÈLE CVF DE QUINN :
+- Modèle des valeurs concurrentes (Competing Values Framework) de Robert Quinn (1988, 2015).
+- 4 cadrans : Collaborer (jaune) · Créer (vert) · Contrôler (rouge) · Concurrencer (bleu).
+- Notre formation est ancrée dans le cadran jaune — Relations humaines — rôles de coach et facilitateur.
+- Pôle flexibilité (haut) vs pôle contrôle (bas) · orientation interne (gauche) vs externe (droite).
+
+RÉFÉRENCES ACADÉMIQUES :
+- Goleman, D. (2000). L'intelligence émotionnelle.
+- Quinn et al. (2015). Becoming a Master Manager (5e éd.).
+- Edmondson, A. (1999). Psychological Safety.
+- Tissier, D. (2001). Le management situationnel.
+- Lupien, S. (2010). Par amour du stress.
+- Kabat-Zinn, J. (2009). Pleine conscience MBSR.
+- Cameron, K. (2004). Changer la culture organisationnelle.
+- Payette & Champagne (1997). Le co-développement professionnel.
+  Réponds toujours en 2-4 phrases maximum, en allant à la ligne pour chaque nouvelle sauf si on demande plus de détails. Sois chaleureuse, professionnelle et enthousiaste.`;
+
+let irisHistory = [];
+let irisOpen = false;
+
+function toggleIris() {
+  irisOpen = !irisOpen;
+  const panel = document.getElementById('iris-panel');
+  const notif = document.querySelector('#iris-btn .q-notif');
+  panel.classList.toggle('open', irisOpen);
+  if (irisOpen) {
+    notif.classList.remove('on');
+    document.getElementById('iris-input').focus();
+    if (irisHistory.length === 0) {
+ setTimeout(() => addIrisMsg('bot', '👋 Bonjour ! Je suis <strong>Iris</strong>, votre assistante IA.<br>Je peux vous parler de notre formation en intelligence émotionnelle, du modèle CVF de Quinn, ou répondre à toutes vos questions sur FormationIE Conseil.<br><strong>Je sais bien plus que ça !</strong><br>Comment puis-je vous aider ?'), 300);
+    }
+  }
+}
+
+// ─── EMAILS ANTI-CLOUDFLARE ───────────────────────────────────
+// Les emails sont construits par JS — Cloudflare ne peut pas les détecter
+function buildEmails() {
+  const at = '\u0040';
+  const emails = [
+    { id:'em1', u:'guy-carlos.tamkodjou-tchio.1',        d:'ulaval.ca' },
+    { id:'em2', u:'patrick.aka.1',                       d:'ulaval.ca' },
+    { id:'em3', u:'julien.frascadore.1',                 d:'ulaval.ca' },
+    { id:'em4', u:'amine.gouizine.1',                    d:'ulaval.ca' },
+    { id:'em5', u:'bommanin-franck-aristide.gnonteme.1', d:'ulaval.ca' },
+  ];
+  emails.forEach(e => {
+    const el = document.getElementById(e.id);
+    if (!el) return;
+    const addr = e.u + at + e.d;
+    el.href = 'mai' + 'lto:' + addr;
+    el.textContent = '\u2709 ' + addr;
+  });
+  // Footer — Carlos principal, tous les autres en CC + Gmail
+  const footer = document.getElementById('em-footer');
+  if (footer) {
+    const carlos = 'guy-carlos.tamkodjou-tchio.1' + at + 'ulaval.ca';
+    const cc = [
+      'patrick.aka.1'                       + at + 'ulaval.ca',
+      'julien.frascadore.1'                 + at + 'ulaval.ca',
+      'amine.gouizine.1'                    + at + 'ulaval.ca',
+      'bommanin-franck-aristide.gnonteme.1' + at + 'ulaval.ca',
+    ].join(',');
+    footer.href = 'mai' + 'lto:' + carlos + '?cc=' + encodeURIComponent(cc);
+    footer.textContent = '\u2709 \u00c9crire \u00e0 l\u0027\u00e9quipe';
+  }
+}
+document.addEventListener('DOMContentLoaded', buildEmails);
+setTimeout(buildEmails, 500);
+const irisMessages = [
+  "Je suis Iris 🌸, votre assistante virtuelle — cliquez pour me parler !",
+  "Bonjour ! Je suis Iris, je suis là pour vous aider 😊",
+  "Venez discuter avec moi — je suis Iris, votre IA FormationIE !",
+  "Je peux vous expliquer la formation en détail — je suis Iris 🌸",
+  "Je connais tout sur la formation, l'équipe, le modèle CVF et bien plus !",
+  "Posez-moi vos questions — je suis Iris, disponible 24h/24 🌸"
+];
+
+let irisBubbleIndex = 0;
+let irisBubbleTimer = null;
+let irisBubbleActive = false;
+
+function showIrisBubble() {
+  if (irisOpen) return;
+  const bubble = document.getElementById('iris-bubble');
+  const text   = document.getElementById('iris-bubble-text');
+  const btn    = document.getElementById('iris-btn');
+  if (!bubble || !text) return;
+
+  // Texte du message courant
+  text.textContent = irisMessages[irisBubbleIndex];
+
+  // Faire clignoter le bouton
+  btn.classList.add('blinking');
+
+  // Animer l'apparition
+  bubble.classList.remove('hiding');
+  bubble.classList.add('visible');
+
+  // Après 4s — masquer puis passer au suivant
+  irisBubbleTimer = setTimeout(() => {
+    hideBubbleThen(() => {
+      irisBubbleIndex = (irisBubbleIndex + 1) % irisMessages.length;
+      if (!irisOpen) showIrisBubble();
+    });
+  }, 4000);
+}
+
+function hideBubbleThen(cb) {
+  const bubble = document.getElementById('iris-bubble');
+  if (!bubble) { if(cb) cb(); return; }
+  bubble.classList.add('hiding');
+  bubble.addEventListener('animationend', function handler() {
+    bubble.removeEventListener('animationend', handler);
+    bubble.classList.remove('visible', 'hiding');
+    if (cb) cb();
+  }, { once: true });
+}
+
+function stopIrisFloatingMessages() {
+  clearTimeout(irisBubbleTimer);
+  irisBubbleActive = false;
+  const bubble = document.getElementById('iris-bubble');
+  const btn    = document.getElementById('iris-btn');
+  if (bubble) { bubble.classList.remove('visible','hiding'); }
+  if (btn) btn.classList.remove('blinking');
+}
+
+function startIrisFloatingMessages() {
+  if (irisBubbleActive || irisOpen) return;
+  irisBubbleActive = true;
+  irisBubbleIndex = 0;
+  showIrisBubble();
+}
+
+// Modifier toggleIris pour arrêter/reprendre les messages
+const originalToggleIris = toggleIris;
+toggleIris = function() {
+  originalToggleIris();
+  if (irisOpen) {
+    stopIrisFloatingMessages();
+  } else {
+    setTimeout(startIrisFloatingMessages, 2000);
+  }
+};
+
+// Démarrer 3 secondes après le chargement
+setTimeout(startIrisFloatingMessages, 3000);
+
+function markdownToHtml(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+}
+
+function addIrisMsg(role, html) {
+  const msgs = document.getElementById('iris-msgs');
+  const div = document.createElement('div');
+  div.className = 'quinn-msg ' + role;
+  div.innerHTML = html;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function showIrisTyping() {
+  const msgs = document.getElementById('iris-msgs');
+  const div = document.createElement('div');
+  div.className = 'quinn-msg typing';
+  div.id = 'iris-typing';
+  div.innerHTML = '<div class="quinn-typing-dots"><span></span><span></span><span></span></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeIrisTyping() {
+  const t = document.getElementById('iris-typing');
+  if (t) t.remove();
+}
+
+async function sendIrisMsg(text) {
+  if (!text.trim()) return;
+  const input = document.getElementById('iris-input');
+  input.value = '';
+  addIrisMsg('user', text);
+  irisHistory.push({ role:'user', content: text });
+  document.getElementById('iris-suggestions').style.display = 'none';
+  showIrisTyping();
+
+  try {
+    const response = await fetch('https://rvtylqrsaahjprnjesam.supabase.co/functions/v1/iris-chat', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        system: IRIS_SYSTEM,
+        messages: irisHistory
+      })
+    });
+    const data = await response.json();
+    const reply = data.content?.[0]?.text || "Je n'ai pas pu traiter votre question. Contactez-nous à guy-carlos.tamkodjou-tchio.1@ulaval.ca";
+    removeIrisTyping();
+    addIrisMsg('bot', markdownToHtml(reply));
+    irisHistory.push({ role:'assistant', content: reply });
+  } catch(e) {
+    removeIrisTyping();
+    addIrisMsg('bot', '⚠️ Connexion temporairement indisponible. Écrivez-nous directement à <a href="mailto:guy-carlos.tamkodjou-tchio.1@ulaval.ca" style="color:var(--gold)">guy-carlos.tamkodjou-tchio.1@ulaval.ca</a>');
+  }
+}
+
+function irisKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    const val = document.getElementById('iris-input').value.trim();
+    if (val) sendIrisMsg(val);
+  }
+}
+
+// Notification gérée par le système de bulles ci-dessus
+
+// ─── FIN AJOUTS ────────────────────────────────────────────────
+
+// Images chargées directement dans loadFromSupabase
+</script>
+
+<!-- IRIS BUBBLE MESSAGES -->
+<div id="iris-bubble" onclick="toggleIris()">
+  <span class="bubble-icon">🌸</span>
+  <span class="bubble-text" id="iris-bubble-text"></span>
+</div>
+
+<!-- IRIS CHATBOT HTML -->
+<button id="iris-btn" onclick="toggleIris()" title="Parler à Iris, notre assistante IA">
+  🌸
+  <span class="q-notif"></span>
+</button>
+
+<div id="iris-panel">
+  <div class="quinn-head">
+    <div class="quinn-avatar">🌸</div>
+    <div class="quinn-head-info">
+      <div class="quinn-head-name">Iris</div>
+      <div class="quinn-head-status"><span class="quinn-dot-live"></span> Assistante IA · FormationIE</div>
+    </div>
+    <button class="quinn-close" onclick="toggleIris()">✕</button>
+  </div>
+  <div class="quinn-msgs" id="iris-msgs"></div>
+  <div class="quinn-suggestions" id="iris-suggestions">
+    <button class="quinn-sug" onclick="sendIrisMsg('C\'est quoi la formation ?')">C'est quoi la formation ?</button>
+    <button class="quinn-sug" onclick="sendIrisMsg('Quel est le prix ?')">Quel est le prix ?</button>
+    <button class="quinn-sug" onclick="sendIrisMsg('Expliquez le modèle CVF de Quinn')">Le modèle CVF ?</button>
+    <button class="quinn-sug" onclick="sendIrisMsg('Qui sont les membres de l\'équipe ?')">L'équipe</button>
+  </div>
+  <div class="quinn-input-row">
+    <input class="quinn-input" id="iris-input" type="text" placeholder="Posez votre question à Iris..." onkeydown="irisKeydown(event)">
+    <button class="quinn-send" onclick="sendIrisMsg(document.getElementById('iris-input').value)">➤</button>
+  </div>
+</div>
+
+</body>
+</html>
